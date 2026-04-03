@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salon POS Camera MVP</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <section id="login-card" class="card">
+      <h1>Salon POS</h1>
+      <p class="muted">Minimal camera attendance test app</p>
+      <form id="login-form" class="form-grid">
+        <label>
+          Username
+          <input id="username" name="username" required placeholder="manager" />
+        </label>
+        <label>
+          Password
+          <input id="password" name="password" type="password" required placeholder="password" />
+        </label>
+        <button type="submit">Login</button>
+      </form>
+      <p id="login-status" class="status"></p>
+    </section>
+
+    <section id="app-card" class="card hidden">
+      <div class="row-between">
+        <div>
+          <h2>Clock In</h2>
+          <p id="user-meta" class="muted"></p>
+        </div>
+        <button id="logout-btn" class="btn-secondary">Logout</button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Staff ID
+          <input id="staff-id" type="number" min="1" required placeholder="1" />
+        </label>
+        <label>
+          Branch ID
+          <input id="branch-id" type="number" min="1" required placeholder="1" />
+        </label>
+      </div>
+
+      <div class="camera-shell">
+        <video id="camera-preview" autoplay playsinline muted></video>
+        <canvas id="capture-canvas" class="hidden"></canvas>
+      </div>
+
+      <div id="captured-shell" class="hidden">
+        <p class="muted">Captured selfie preview</p>
+        <img id="captured-image" alt="Captured selfie" />
+      </div>
+
+      <div class="actions">
+        <button id="start-camera-btn" type="button">Start Camera</button>
+        <button id="capture-btn" type="button" disabled>Capture</button>
+        <button id="retake-btn" type="button" class="btn-secondary" disabled>Retake</button>
+      </div>
+
+      <div class="actions">
+        <label class="file-input">
+          <span>Fallback Upload (mobile camera/file)</span>
+          <input id="fallback-file" type="file" accept="image/*" capture="user" />
+        </label>
+      </div>
+
+      <div class="actions">
+        <button id="verify-btn" type="button" disabled>Verify Face</button>
+        <button id="clock-in-btn" type="button" disabled>Clock In</button>
+        <button id="clock-out-btn" type="button" disabled>Clock Out</button>
+      </div>
+
+      <p id="verify-status" class="status"></p>
+      <p id="clockin-status" class="status"></p>
+    </section>
+  </main>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>

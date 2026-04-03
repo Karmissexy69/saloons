@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BrowPOS | Internal Operations Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-container": "#4c4e69",
+              "outline": "#717c82",
+              "on-secondary": "#f7f9ff",
+              "tertiary-fixed-dim": "#cecfef",
+              "on-error-container": "#752121",
+              "tertiary-container": "#dcddfe",
+              "on-background": "#2a3439",
+              "inverse-on-surface": "#9a9d9f",
+              "primary-dim": "#4a5268",
+              "on-tertiary": "#fbf8ff",
+              "on-primary-container": "#4a5167",
+              "surface-container-high": "#e1e9ee",
+              "on-primary-fixed-variant": "#535b71",
+              "on-secondary-fixed": "#314055",
+              "on-error": "#fff7f6",
+              "on-secondary-container": "#435368",
+              "surface-container-low": "#f0f4f7",
+              "on-primary": "#f7f7ff",
+              "secondary": "#506076",
+              "secondary-fixed-dim": "#c5d6f0",
+              "on-surface-variant": "#566166",
+              "error": "#9f403d",
+              "on-surface": "#2a3439",
+              "surface-container-highest": "#d9e4ea",
+              "tertiary": "#5b5d78",
+              "surface-container": "#e8eff3",
+              "surface-variant": "#d9e4ea",
+              "inverse-primary": "#dae2fd",
+              "secondary-fixed": "#d3e4fe",
+              "inverse-surface": "#0b0f10",
+              "primary-container": "#dae2fd",
+              "error-dim": "#4e0309",
+              "primary-fixed": "#dae2fd",
+              "on-tertiary-fixed": "#393c55",
+              "on-secondary-fixed-variant": "#4d5d73",
+              "surface-bright": "#f7f9fb",
+              "outline-variant": "#a9b4b9",
+              "secondary-dim": "#44546a",
+              "background": "#f7f9fb",
+              "primary-fixed-dim": "#ccd4ee",
+              "tertiary-fixed": "#dcddfe",
+              "on-primary-fixed": "#373f54",
+              "surface-dim": "#cfdce3",
+              "surface-tint": "#565e74",
+              "surface": "#f7f9fb",
+              "secondary-container": "#d3e4fe",
+              "primary": "#565e74",
+              "on-tertiary-fixed-variant": "#565873",
+              "error-container": "#fe8983",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-dim": "#4f516c"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-login-gradient {
+            background: linear-gradient(135deg, #565e74 0%, #4a5268 100%);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface min-h-screen flex items-center justify-center p-6">
+<!-- The Shell Visibility & Relevance: Navigation suppressed for Transactional screen -->
+<main class="w-full max-w-md flex flex-col gap-10">
+<!-- Branding Header -->
+<header class="text-center">
+<div class="inline-flex items-center justify-center w-16 h-16 bg-surface-container-highest rounded-xl mb-6">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="content_cut">content_cut</span>
+</div>
+<h1 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface">BrowPOS</h1>
+<p class="text-on-surface-variant font-body mt-2">Internal Operations Portal</p>
+</header>
+<!-- Authentication Card -->
+<section class="bg-surface-container-lowest p-10 rounded-xl shadow-[0_24px_24px_-4px_rgba(42,52,57,0.06)]">
+<!-- Error Feedback Area (Conditional Example) -->
+<div class="hidden mb-6 p-4 bg-error-container rounded-lg border border-error/10 flex items-start gap-3" id="error-panel">
+<span class="material-symbols-outlined text-on-error-container text-xl" data-icon="error">error</span>
+<div class="flex flex-col">
+<span class="text-label text-sm font-semibold text-on-error-container">Invalid Credentials</span>
+<span class="text-label text-xs text-on-error-container/80">Please check your username and password and try again.</span>
+</div>
+</div>
+<form action="/api/auth/login" class="space-y-6" method="POST">
+<!-- Username Input -->
+<div class="space-y-1">
+<label class="block text-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant ml-1" for="username">Username</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="person">person</span>
+<input class="w-full pl-12 pr-4 py-3.5 bg-surface-container-high border-none rounded-lg text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 transition-all outline-none font-body text-sm" id="username" name="username" placeholder="e.g. jdoe_admin" required="" type="text"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-1">
+<div class="flex justify-between items-center px-1">
+<label class="text-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant" for="password">Password</label>
+<a class="text-label text-xs text-primary font-medium hover:underline" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="lock">lock</span>
+<input class="w-full pl-12 pr-12 py-3.5 bg-surface-container-high border-none rounded-lg text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 transition-all outline-none font-body text-sm" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-xl" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Device -->
+<div class="flex items-center gap-2 px-1">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/20 bg-surface-container" id="remember" type="checkbox"/>
+<label class="text-label text-xs text-on-surface-variant" for="remember">Trust this station for 12 hours</label>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-login-gradient text-on-primary font-headline font-bold py-4 rounded-lg shadow-lg shadow-primary/20 hover:scale-[0.99] active:scale-[0.97] transition-all flex items-center justify-center gap-2" type="submit">
+                    Sign In
+                    <span class="material-symbols-outlined text-lg" data-icon="login">login</span>
+</button>
+</form>
+</section>
+<!-- Footer / Support -->
+<footer class="flex flex-col items-center gap-4 text-center">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="close up macro shot of a sleek professional biometric scanner sensor with soft blue LED light indicator" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCW-SWXm0iwqDkvWXQSs9dTLknEEykw-2SJjU2FXVbOsAa8Jnb1lPa-t254saPeaWfABimB_MIHPnMdcrtsi4bkRXIA6WK5gB0h88q_Ye4c2hFP3WKKvv2fa_0zEIUd1Z6VHxkrNZZTkBFolAW8jxJYn1tbQG4M7lQ9BY_aNVXGGeJPyYgELgusga71Rvi4D2o1m7DQZOHMx6DSxpqLckOnzyC42jCD7-mM2COpS0QJIx7pWw5ty6wsHfplBq4_6XM64-5F14xyZ9xN"/>
+</div>
+<span class="text-label text-xs text-on-surface-variant">Biometric bypass active for registered terminals</span>
+</div>
+<p class="text-label text-[10px] uppercase tracking-widest text-outline">
+                © 2024 Downtown Branch Operations • v4.2.1-stable
+            </p>
+</footer>
+</main>
+<!-- Decorative Elements (Precision Curator Style) -->
+<div class="fixed top-0 left-0 w-full h-1.5 bg-login-gradient opacity-80"></div>
+<div class="fixed bottom-0 right-0 p-8 hidden lg:block">
+<div class="flex items-center gap-4 opacity-40 grayscale">
+<div class="text-right">
+<p class="font-headline font-bold text-sm text-on-surface">Precision Control</p>
+<p class="font-body text-[10px] text-on-surface-variant">ENTERPRISE SECURE ENV</p>
+</div>
+<div class="h-10 w-[1px] bg-outline-variant"></div>
+<span class="material-symbols-outlined text-4xl" data-icon="shield_lock">shield_lock</span>
+</div>
+</div>
+</body></html>

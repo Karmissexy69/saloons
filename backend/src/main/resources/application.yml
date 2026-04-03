@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/salonpos}
+    username: ${SPRING_DATASOURCE_USERNAME:myuser}
+    password: ${SPRING_DATASOURCE_PASSWORD:mypassword}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  flyway:
+    enabled: true
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: INFO
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:change-this-secret-change-this-secret-2026}
+    expiration-seconds: ${APP_JWT_EXPIRATION_SECONDS:3600}
+  attendance-terminal:
+    enabled: ${APP_ATTENDANCE_TERMINAL_ENABLED:true}
+    username: ${APP_ATTENDANCE_TERMINAL_USERNAME:attendance}
+    password: ${APP_ATTENDANCE_TERMINAL_PASSWORD:password}
+  biometric:
+    aws-region: ${APP_BIOMETRIC_AWS_REGION:ap-southeast-1}
+    aws-access-key-id: ${AWS_ACCESS_KEY_ID:AKIA2BQZ3VEPXH376KUA}
+    aws-secret-access-key: ${AWS_SECRET_ACCESS_KEY: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}
+    rekognition-collection-id: ${APP_BIOMETRIC_COLLECTION_ID:salonpos-staff-faces}
+    s3-biometric-bucket: ${APP_BIOMETRIC_S3_BUCKET:files.workerflow.io}
+    face-match-threshold: ${APP_BIOMETRIC_FACE_MATCH_THRESHOLD:80}
+    verification-token-ttl-minutes: ${APP_BIOMETRIC_TOKEN_TTL_MINUTES:10}
+    probe-purge-day-of-month: ${APP_BIOMETRIC_PROBE_PURGE_DAY_OF_MONTH:7}
+    

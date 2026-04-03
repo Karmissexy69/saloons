@@ -1,0 +1,11 @@
+package com.salonpos.domain;
+
+public enum FaceVerificationFailureReason {
+    NO_FACE_DETECTED,
+    MULTIPLE_FACES_DETECTED,
+    LOW_SIMILARITY,
+    STAFF_FACE_PROFILE_NOT_FOUND,
+    MATCHED_OTHER_STAFF,
+    AWS_REKOGNITION_UNAVAILABLE,
+    INVALID_IMAGE
+}

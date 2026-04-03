@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BrowPOS - Terminal 01</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-background": "#2a3439",
+              "surface-container-lowest": "#ffffff",
+              "secondary": "#506076",
+              "on-error": "#fff7f6",
+              "primary": "#565e74",
+              "on-primary-fixed": "#373f54",
+              "secondary-fixed-dim": "#c5d6f0",
+              "inverse-on-surface": "#9a9d9f",
+              "surface-container-highest": "#d9e4ea",
+              "surface-container-low": "#f0f4f7",
+              "on-secondary-fixed-variant": "#4d5d73",
+              "inverse-primary": "#dae2fd",
+              "primary-dim": "#4a5268",
+              "on-primary-fixed-variant": "#535b71",
+              "on-error-container": "#752121",
+              "on-primary-container": "#4a5167",
+              "tertiary-fixed": "#dcddfe",
+              "on-tertiary-container": "#4c4e69",
+              "on-secondary-container": "#435368",
+              "background": "#f7f9fb",
+              "error-container": "#fe8983",
+              "on-secondary": "#f7f9ff",
+              "on-surface": "#2a3439",
+              "secondary-dim": "#44546a",
+              "surface-dim": "#cfdce3",
+              "tertiary-dim": "#4f516c",
+              "tertiary-container": "#dcddfe",
+              "surface-tint": "#565e74",
+              "on-tertiary-fixed-variant": "#565873",
+              "surface-container": "#e8eff3",
+              "inverse-surface": "#0b0f10",
+              "error-dim": "#4e0309",
+              "primary-container": "#dae2fd",
+              "on-surface-variant": "#566166",
+              "tertiary-fixed-dim": "#cecfef",
+              "on-tertiary": "#fbf8ff",
+              "on-tertiary-fixed": "#393c55",
+              "surface-variant": "#d9e4ea",
+              "surface-container-high": "#e1e9ee",
+              "surface": "#f7f9fb",
+              "outline": "#717c82",
+              "on-secondary-fixed": "#314055",
+              "outline-variant": "#a9b4b9",
+              "secondary-container": "#d3e4fe",
+              "surface-bright": "#f7f9fb",
+              "error": "#9f403d",
+              "primary-fixed": "#dae2fd",
+              "primary-fixed-dim": "#ccd4ee",
+              "tertiary": "#5b5d78",
+              "on-primary": "#f7f7ff",
+              "secondary-fixed": "#d3e4fe"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+        .glass-viewfinder {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface overflow-hidden">
+<!-- Sidebar Monolith -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-100 dark:bg-slate-900 flex flex-col py-8 z-50">
+<div class="px-6 mb-10">
+<h1 class="text-xl font-bold text-slate-900 dark:text-slate-100 font-headline tracking-tight">BrowPOS</h1>
+<p class="text-xs text-on-surface-variant font-medium uppercase tracking-widest mt-1">Terminal 01</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white rounded-full px-4 py-3 mx-2 transition-colors font-headline font-semibold tracking-tight" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span>Terminal</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors font-headline font-semibold tracking-tight" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span>Transactions</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors font-headline font-semibold tracking-tight" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Customers</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors font-headline font-semibold tracking-tight" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span>Inventory</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 px-4 py-3 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors font-headline font-semibold tracking-tight" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="flex items-center gap-3 p-3 bg-surface-container-highest/30 rounded-xl">
+<img alt="Manager Avatar" class="w-10 h-10 rounded-full object-cover" data-alt="professional portrait of a confident woman manager in a modern salon setting, soft cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlTWQQqfm8E7POD5b2MwkcMuv6x1YRx2pCZ5lFWjsFuCWgj1MHdJt2RGn2VnxXpp4VX0APeifK21E8eipTTUqpqhtKq2EZ7wPrIfHLI0TQFjXnpjuDVs2WYE6nF4UvVMeiugn1ni0StytEND-XIGAKTKm9maUyMSjaiEKsHehoh6RYDrnqG_7OBDz1uq6bBN5bYlrM6x1PifeuAgcriTq4ixGVwkF6c0LmRNduw0bQD0rlwyvyxfBhSjFEF4w6I3LShQxQkgJF7y0D"/>
+<div class="overflow-hidden">
+<p class="text-sm font-bold truncate">Sarah Jenkins</p>
+<p class="text-xs text-on-surface-variant">Manager</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Workspace -->
+<main class="ml-64 flex h-screen">
+<!-- Service Selection Area -->
+<section class="flex-1 flex flex-col h-full bg-background p-8 overflow-hidden">
+<!-- Top Navigation Cluster -->
+<header class="flex justify-between items-center mb-8">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full bg-surface-container-highest border-none rounded-full py-3 pl-12 pr-6 text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-on-surface-variant/60 font-body" placeholder="Search services or categories..." type="text"/>
+</div>
+<div class="flex gap-4">
+<button class="p-2 text-on-surface-variant hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+</header>
+<!-- Category Pills -->
+<div class="flex gap-3 mb-8 overflow-x-auto pb-2 no-scrollbar">
+<button class="px-6 py-2 bg-primary text-on-primary rounded-full text-sm font-semibold font-headline">All Services</button>
+<button class="px-6 py-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-container-highest rounded-full text-sm font-semibold font-headline transition-colors">Brows</button>
+<button class="px-6 py-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-container-highest rounded-full text-sm font-semibold font-headline transition-colors">Facials</button>
+<button class="px-6 py-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-container-highest rounded-full text-sm font-semibold font-headline transition-colors">Lashes</button>
+<button class="px-6 py-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-container-highest rounded-full text-sm font-semibold font-headline transition-colors">Waxing</button>
+</div>
+<!-- Service Grid -->
+<div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Service Card -->
+<div class="group bg-surface-container-lowest p-5 rounded-xl transition-all duration-300 hover:bg-surface-container hover:scale-[1.02] cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-primary-container text-on-primary-container rounded-lg material-symbols-outlined" data-icon="face">face</span>
+<span class="text-xs font-bold text-on-surface-variant/40 tracking-widest font-headline">BRW-01</span>
+</div>
+<h3 class="text-lg font-bold font-headline mb-1 text-on-surface">Signature Brow Sculpt</h3>
+<p class="text-sm text-on-surface-variant mb-6 font-body">Mapping, wax, and bespoke tinting.</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span class="text-xs font-semibold">45 min</span>
+</div>
+<span class="text-lg font-extrabold font-headline">$65.00</span>
+</div>
+</div>
+<!-- Service Card -->
+<div class="group bg-surface-container-lowest p-5 rounded-xl transition-all duration-300 hover:bg-surface-container hover:scale-[1.02] cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-secondary-container text-on-secondary-container rounded-lg material-symbols-outlined" data-icon="spa">spa</span>
+<span class="text-xs font-bold text-on-surface-variant/40 tracking-widest font-headline">FCL-04</span>
+</div>
+<h3 class="text-lg font-bold font-headline mb-1 text-on-surface">Deep Cleansing Facial</h3>
+<p class="text-sm text-on-surface-variant mb-6 font-body">Double cleanse, extraction, and mask.</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span class="text-xs font-semibold">60 min</span>
+</div>
+<span class="text-lg font-extrabold font-headline">$120.00</span>
+</div>
+</div>
+<!-- Service Card -->
+<div class="group bg-surface-container-lowest p-5 rounded-xl transition-all duration-300 hover:bg-surface-container hover:scale-[1.02] cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-tertiary-container text-on-tertiary-container rounded-lg material-symbols-outlined" data-icon="visibility">visibility</span>
+<span class="text-xs font-bold text-on-surface-variant/40 tracking-widest font-headline">LSH-02</span>
+</div>
+<h3 class="text-lg font-bold font-headline mb-1 text-on-surface">Lash Lift</h3>
+<p class="text-sm text-on-surface-variant mb-6 font-body">Keratin-infused lift for natural curl.</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span class="text-xs font-semibold">50 min</span>
+</div>
+<span class="text-lg font-extrabold font-headline">$85.00</span>
+</div>
+</div>
+<!-- Service Card -->
+<div class="group bg-surface-container-lowest p-5 rounded-xl transition-all duration-300 hover:bg-surface-container hover:scale-[1.02] cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-primary-container text-on-primary-container rounded-lg material-symbols-outlined" data-icon="ink_highlighter">ink_highlighter</span>
+<span class="text-xs font-bold text-on-surface-variant/40 tracking-widest font-headline">BRW-05</span>
+</div>
+<h3 class="text-lg font-bold font-headline mb-1 text-on-surface">Brow Lamination</h3>
+<p class="text-sm text-on-surface-variant mb-6 font-body">Fluffy, groomed brows that stay in place.</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span class="text-xs font-semibold">45 min</span>
+</div>
+<span class="text-lg font-extrabold font-headline">$90.00</span>
+</div>
+</div>
+<!-- Service Card -->
+<div class="group bg-surface-container-lowest p-5 rounded-xl transition-all duration-300 hover:bg-surface-container hover:scale-[1.02] cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-secondary-container text-on-secondary-container rounded-lg material-symbols-outlined" data-icon="cleaning_services">cleaning_services</span>
+<span class="text-xs font-bold text-on-surface-variant/40 tracking-widest font-headline">FCL-09</span>
+</div>
+<h3 class="text-lg font-bold font-headline mb-1 text-on-surface">Microdermabrasion</h3>
+<p class="text-sm text-on-surface-variant mb-6 font-body">Advanced exfoliation for glowing skin.</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span class="text-xs font-semibold">40 min</span>
+</div>
+<span class="text-lg font-extrabold font-headline">$145.00</span>
+</div>
+</div>
+<!-- Service Card -->
+<div class="group bg-surface-container-lowest p-5 rounded-xl transition-all duration-300 hover:bg-surface-container hover:scale-[1.02] cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<span class="p-2 bg-tertiary-container text-on-tertiary-container rounded-lg material-symbols-outlined" data-icon="brush">brush</span>
+<span class="text-xs font-bold text-on-surface-variant/40 tracking-widest font-headline">LSH-06</span>
+</div>
+<h3 class="text-lg font-bold font-headline mb-1 text-on-surface">Full Volume Set</h3>
+<p class="text-sm text-on-surface-variant mb-6 font-body">Dramatic lash extensions (3D-6D).</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span class="text-xs font-semibold">120 min</span>
+</div>
+<span class="text-lg font-extrabold font-headline">$220.00</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Transaction Sidebar -->
+<aside class="w-96 h-screen bg-surface-container-low flex flex-col p-6 z-10 border-l border-outline-variant/10">
+<h2 class="text-xl font-extrabold font-headline mb-8 text-on-surface">Current Transaction</h2>
+<!-- Assignment Section -->
+<div class="space-y-4 mb-8">
+<div>
+<label class="text-[10px] uppercase font-bold text-on-surface-variant tracking-widest mb-1.5 block">Assigned Staff</label>
+<div class="flex items-center justify-between p-3 bg-surface-container-lowest rounded-xl cursor-pointer hover:bg-surface transition-colors">
+<div class="flex items-center gap-3">
+<img alt="Staff Avatar" class="w-8 h-8 rounded-full object-cover" data-alt="portrait of a professional aesthetician in a white uniform, warm studio lighting, minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzP6xbBH1j_BBmLQGvnDtAgULkaWgvGbGbKP8brHsFZY2HDQt_doZCK-w-x1b5sJ0xaHbhmb8aJ-RfWF_ibXQPsaHKTnDkf-O53imsELJXKRlcNkb0IP_rhpyTKrGtXTsWR2uFCsu2sY9wLNDeCusaHsMDMP8ct-qzqxxlKJQIF0F95xdKis8W0S6zolJfsbRDyFLFGFA0H3Y-hdS2ZTeWoRQLg7MeeAZKz52gYqu1ModcGktP5WgCfWHHimkSqHqOLjbkISyQnynT"/>
+<span class="text-sm font-semibold font-body">Elena Rodriguez</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-lg" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div>
+<label class="text-[10px] uppercase font-bold text-on-surface-variant tracking-widest mb-1.5 block">Select Customer</label>
+<div class="flex items-center justify-between p-3 bg-surface-container-lowest rounded-xl cursor-pointer hover:bg-surface transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined text-sm" data-icon="person_add">person_add</span>
+</div>
+<span class="text-sm font-semibold font-body">Walk-in Customer</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-lg" data-icon="search">search</span>
+</div>
+</div>
+</div>
+<!-- Item List -->
+<div class="flex-1 overflow-y-auto mb-8 pr-2 custom-scrollbar">
+<div class="space-y-4">
+<!-- Line Item -->
+<div class="flex justify-between items-center group">
+<div class="flex gap-4">
+<div class="w-10 h-10 bg-surface-container-highest rounded-lg flex items-center justify-center text-xs font-bold">1×</div>
+<div>
+<h4 class="text-sm font-bold font-headline">Signature Brow Sculpt</h4>
+<p class="text-[10px] text-on-surface-variant font-medium">Elena R.</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold">$65.00</p>
+<button class="text-[10px] text-error font-bold opacity-0 group-hover:opacity-100 transition-opacity">REMOVE</button>
+</div>
+</div>
+<!-- Line Item -->
+<div class="flex justify-between items-center group">
+<div class="flex gap-4">
+<div class="w-10 h-10 bg-surface-container-highest rounded-lg flex items-center justify-center text-xs font-bold">1×</div>
+<div>
+<h4 class="text-sm font-bold font-headline">Deep Cleansing Facial</h4>
+<p class="text-[10px] text-on-surface-variant font-medium">Elena R.</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold">$120.00</p>
+<button class="text-[10px] text-error font-bold opacity-0 group-hover:opacity-100 transition-opacity">REMOVE</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Totals -->
+<div class="bg-surface-container-highest p-6 rounded-2xl">
+<div class="space-y-3 mb-6">
+<div class="flex justify-between text-sm font-medium">
+<span class="text-on-surface-variant">Subtotal</span>
+<span>$185.00</span>
+</div>
+<div class="flex justify-between text-sm font-medium">
+<span class="text-on-surface-variant">GST (10%)</span>
+<span>$18.50</span>
+</div>
+<div class="h-[1px] bg-outline-variant/20 my-2"></div>
+<div class="flex justify-between items-end">
+<span class="text-xs uppercase font-bold text-on-surface-variant tracking-wider">Total Due</span>
+<span class="text-3xl font-black font-headline text-primary">$203.50</span>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary-dim text-on-primary py-5 rounded-xl font-extrabold font-headline text-lg transition-all active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-3">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Checkout</span>
+</button>
+</div>
+</aside>
+</main>
+<!-- Modal Mockup: Face Verification (Specialized Component) -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity">
+<div class="absolute inset-0 bg-surface-dim/40 backdrop-blur-sm"></div>
+<div class="relative w-[400px] aspect-square glass-viewfinder rounded-3xl border-4 border-outline p-2 flex flex-col items-center justify-center overflow-hidden">
+<!-- Viewfinder Inner -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-64 h-80 border-2 border-dashed border-primary/40 rounded-[100px]"></div>
+</div>
+<div class="z-10 text-center">
+<span class="material-symbols-outlined text-5xl mb-4 text-primary" data-icon="face_retouching_natural">face_retouching_natural</span>
+<h4 class="font-headline font-bold text-lg">Verify Specialist</h4>
+<p class="text-sm text-on-surface-variant">Looking for Elena Rodriguez...</p>
+</div>
+</div>
+</div>
+</body></html>

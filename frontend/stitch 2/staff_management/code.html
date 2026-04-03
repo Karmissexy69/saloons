@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary": "#5b5d78",
+              "primary-fixed-dim": "#ccd4ee",
+              "primary-fixed": "#dae2fd",
+              "secondary-fixed": "#d3e4fe",
+              "on-primary": "#f7f7ff",
+              "surface-variant": "#d9e4ea",
+              "on-tertiary-fixed": "#393c55",
+              "surface-bright": "#f7f9fb",
+              "error": "#9f403d",
+              "secondary-container": "#d3e4fe",
+              "outline-variant": "#a9b4b9",
+              "surface": "#f7f9fb",
+              "outline": "#717c82",
+              "on-secondary-fixed": "#314055",
+              "surface-container-high": "#e1e9ee",
+              "inverse-surface": "#0b0f10",
+              "error-dim": "#4e0309",
+              "surface-container": "#e8eff3",
+              "on-tertiary": "#fbf8ff",
+              "tertiary-fixed-dim": "#cecfef",
+              "on-surface-variant": "#566166",
+              "primary-container": "#dae2fd",
+              "surface-dim": "#cfdce3",
+              "secondary-dim": "#44546a",
+              "on-surface": "#2a3439",
+              "surface-tint": "#565e74",
+              "on-tertiary-fixed-variant": "#565873",
+              "tertiary-container": "#dcddfe",
+              "tertiary-dim": "#4f516c",
+              "error-container": "#fe8983",
+              "on-secondary": "#f7f9ff",
+              "on-primary-container": "#4a5167",
+              "on-error-container": "#752121",
+              "background": "#f7f9fb",
+              "on-secondary-container": "#435368",
+              "on-tertiary-container": "#4c4e69",
+              "tertiary-fixed": "#dcddfe",
+              "inverse-primary": "#dae2fd",
+              "on-secondary-fixed-variant": "#4d5d73",
+              "surface-container-low": "#f0f4f7",
+              "on-primary-fixed-variant": "#535b71",
+              "primary-dim": "#4a5268",
+              "primary": "#565e74",
+              "on-primary-fixed": "#373f54",
+              "on-error": "#fff7f6",
+              "surface-container-lowest": "#ffffff",
+              "secondary": "#506076",
+              "on-background": "#2a3439",
+              "surface-container-highest": "#d9e4ea",
+              "inverse-on-surface": "#9a9d9f",
+              "secondary-fixed-dim": "#c5d6f0"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #565e74 0%, #4a5268 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body min-h-screen flex">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-slate-100 dark:bg-slate-900 flex flex-col gap-8 p-6 z-50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl primary-gradient flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50 font-headline">Precision Curator</h1>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Skincare Ops</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-4 py-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-4 py-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="fingerprint">fingerprint</span>
+<span class="font-label">Attendance Kiosk</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-4 py-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label">Attendance Logs</span>
+</a>
+<!-- Active Navigation: Staff -->
+<a class="flex items-center gap-3 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white rounded-full px-4 py-2 font-semibold scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label">Staff</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-4 py-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="content_cut">content_cut</span>
+<span class="font-label">Services</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-4 py-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label">Appointments</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-slate-200/50">
+<div class="flex items-center gap-3">
+<img alt="Manager Portrait" class="w-10 h-10 rounded-full object-cover" data-alt="professional male manager in charcoal suit with confident expression and soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRQjZaZRN70-Y5Tpe96boprzPgnyOBJmQvkFin08VF-p7lQJcb9_jUJV9uPeix7jhXKcQO_PSeDqNGVYFnDXrktRAGl2od86cc-1BcwTIY1syG2h85ePkFQskEDMKbOTolG_LQB0pIpjheAsVQqXkEegtCfdHcESUXHZi_JliiBfkt3xOiA5MfWLezRw3VsrOuXBhaf1wjdUvgFFu_UScV58PPTsBGbI6P4NSn3RWquGCa2jba3Ewn7C-rToQYhRAtff5IEgjTvjX_"/>
+<div class="overflow-hidden">
+<p class="text-sm font-bold text-slate-900 truncate">Marcus Chen</p>
+<p class="text-xs text-slate-500 truncate">Branch Manager</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar Component -->
+<header class="h-16 flex justify-between items-center w-full px-10 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200/15">
+<div class="flex items-center gap-4">
+<h2 class="text-lg font-semibold text-slate-900 dark:text-white font-headline">Downtown Branch</h2>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container rounded-full text-sm border-none focus:ring-2 focus:ring-primary/20 w-64 transition-all" placeholder="Search staff records..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<section class="p-10 flex gap-10">
+<!-- Left Side: Table and Filters -->
+<div class="flex-1 space-y-8">
+<div class="flex justify-between items-end">
+<div class="space-y-1">
+<h3 class="text-3xl font-extrabold font-headline tracking-tight text-on-surface">Staff Directory</h3>
+<p class="text-on-surface-variant font-label text-sm">Manage curator roles and biometric enrollment.</p>
+</div>
+<div class="flex gap-2">
+<div class="bg-surface-container px-3 py-2 rounded-lg flex items-center gap-4">
+<div class="flex flex-col">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">Role Type</label>
+<select class="bg-transparent border-none p-0 text-sm font-semibold focus:ring-0 cursor-pointer">
+<option>All Curators</option>
+<option>Senior Esthetician</option>
+<option>Junior Specialist</option>
+<option>Front Desk</option>
+</select>
+</div>
+<div class="w-[1px] h-6 bg-outline-variant/20"></div>
+<div class="flex flex-col">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">Status</label>
+<select class="bg-transparent border-none p-0 text-sm font-semibold focus:ring-0 cursor-pointer">
+<option>Active</option>
+<option>Inactive</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+<!-- Table -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<table class="w-full text-left border-separate border-spacing-0">
+<thead>
+<tr class="bg-surface-container-highest">
+<th class="px-6 py-4 font-headline text-xs font-bold text-on-surface-variant uppercase tracking-widest">Staff Member</th>
+<th class="px-6 py-4 font-headline text-xs font-bold text-on-surface-variant uppercase tracking-widest">Role</th>
+<th class="px-6 py-4 font-headline text-xs font-bold text-on-surface-variant uppercase tracking-widest">Enrollment</th>
+<th class="px-6 py-4 font-headline text-xs font-bold text-on-surface-variant uppercase tracking-widest">Status</th>
+<th class="px-6 py-4 font-headline text-xs font-bold text-on-surface-variant uppercase tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Staff Portrait" class="w-10 h-10 rounded-lg object-cover ring-1 ring-outline-variant/10" data-alt="Close-up portrait of a woman with clean skin and professional attire in a bright wellness clinic setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3VXi8EhSi4VsWV4UUW9RXutkGVtbm9Sl4dLrZoqNqCS4m7dckIIONwpmQND0yVn96HKLmZmOOidryd9Jwc7TZMcGpUYCcuWqggnz3F9MyTuiWE_UKlhAgb5M6P1-B_fzyTdzhLkzxmCmwFA9B4nBe-dyNUbNpo49_0Lv8FwsxRyXCN3jTaXgVynnxC_wROLEXQMReugnkF-bh9OvUgdYrVWu6hSOzBpsaB51y6I7bjrCvA692eyLLDjg0ClJvLDt3EWGVgbR9OIZk"/>
+<div>
+<p class="font-bold text-on-surface">Elena Rodriguez</p>
+<p class="text-xs text-on-surface-variant">elena.r@precision.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm font-medium text-on-surface">Senior Esthetician</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-success-container shadow-[0_0_8px_rgba(34,197,94,0.4)]"></div>
+<span class="text-xs font-semibold text-on-surface">Verified Face ID</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="inline-flex items-center px-2 py-1 rounded bg-secondary-container/30 text-on-secondary-container text-[10px] font-bold border border-on-secondary-container/10">
+                                        ACTIVE
+                                    </div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary font-bold text-xs hover:underline underline-offset-4 decoration-primary/30">
+                                        Re-enroll Face
+                                    </button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Staff Portrait" class="w-10 h-10 rounded-lg object-cover ring-1 ring-outline-variant/10" data-alt="Portrait of a young man with glasses and a friendly smile wearing a professional uniform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjBFX2aona4aeMfGsoZZqf3VSoSKIahwXWd_GW8-i3dNKZbgROJW1ALU35nSdd5YonhG_GB-9WJaGSEOxiB-Pbw9fhU0sye--xsHvoviceURTvaPfEYizyVG2M6tNjrOb8OeHCVRaTEH2Wos10o4fSsVUB0LhBvm8XN_Yvyoue4oX-choTaOtE8OAHWDt7SiwdpZMQaSSZkCiMrhi-4uShl1xymHUPczx1ZlpChW4rSdpe6B7ttb0YtiyGYVn5TOPIvmVKwyWQi75X"/>
+<div>
+<p class="font-bold text-on-surface">Julian Vance</p>
+<p class="text-xs text-on-surface-variant">j.vance@precision.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm font-medium text-on-surface">Junior Specialist</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error ring-2 ring-error/20"></div>
+<span class="text-xs font-semibold text-error">Missing Biometrics</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="inline-flex items-center px-2 py-1 rounded bg-secondary-container/30 text-on-secondary-container text-[10px] font-bold border border-on-secondary-container/10">
+                                        ACTIVE
+                                    </div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary font-bold text-xs hover:underline underline-offset-4">
+                                        Enroll Face
+                                    </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Staff Portrait" class="w-10 h-10 rounded-lg object-cover ring-1 ring-outline-variant/10" data-alt="Middle-aged woman with professional appearance, neutral background, sharp focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVYRb1RxPAHWXxbMWXhhDsRBwpuclLEuZaIPkhxY7h8KBJB1Y8gNFsW09O1rEQ1DUWlfN_DKXUf68B3zwhdu9ORKwnFT4PQMAi4q6x3ocW3PE32GbuzirFjH0uP5dOnW6XS69C1CYml2QOKQYq49_We2gD5zyEQl6KR09sA8c8N_LNa3iCNAxUcoKlXoChE9RvnP8pw8Q8Lp7QNUnHGSbNqrJ7PAhEYkbMmTloC9_RZVaCKL7g1akZiB9JS4pXOukqz7p2RmzAuGrN"/>
+<div>
+<p class="font-bold text-on-surface">Sarah Jenkins</p>
+<p class="text-xs text-on-surface-variant">s.jenkins@precision.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm font-medium text-on-surface">Front Desk</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-success-container shadow-[0_0_8px_rgba(34,197,94,0.4)]"></div>
+<span class="text-xs font-semibold text-on-surface">Verified Face ID</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="inline-flex items-center px-2 py-1 rounded bg-surface-container-high text-on-surface-variant text-[10px] font-bold">
+                                        INACTIVE
+                                    </div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant font-bold text-xs cursor-not-allowed">
+                                        Locked
+                                    </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right Side: Create Staff Form (Side Panel Style) -->
+<aside class="w-96 shrink-0 bg-surface-container-low rounded-2xl p-8 sticky top-24 h-fit">
+<div class="mb-8">
+<h4 class="text-xl font-bold font-headline text-on-surface">Onboard Curator</h4>
+<p class="text-sm text-on-surface-variant mt-1">Register new staff and biometrics.</p>
+</div>
+<form class="space-y-6">
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter ml-1">Display Name</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary/20 text-on-surface font-medium placeholder:text-outline/50" placeholder="e.g. Alexander Pierce" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter ml-1">Role Designation</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="px-3 py-2 bg-primary-container text-on-primary-container text-xs font-bold rounded-lg ring-1 ring-primary/20" type="button">Curator</button>
+<button class="px-3 py-2 bg-surface-container-highest text-on-surface-variant text-xs font-bold rounded-lg hover:bg-surface-variant transition-colors" type="button">Admin</button>
+</div>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter ml-1">Enrollment Photo</label>
+<div class="relative group">
+<div class="aspect-video bg-surface-container-highest rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-outline-variant/30 group-hover:border-primary/30 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-outline-variant group-hover:text-primary transition-all" data-icon="add_a_photo">add_a_photo</span>
+<p class="text-xs font-bold text-on-surface-variant mt-2">Upload or Capture</p>
+</div>
+<input class="absolute inset-0 opacity-0 cursor-pointer" type="file"/>
+</div>
+<p class="text-[10px] text-on-surface-variant italic mt-2">Requires clear facial visibility with neutral background.</p>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-highest rounded-lg">
+<div class="flex flex-col">
+<span class="text-xs font-bold text-on-surface">Active Status</span>
+<span class="text-[10px] text-on-surface-variant">Enable immediate system access</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant/30 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<button class="w-full primary-gradient text-on-primary py-4 rounded-xl font-bold font-headline text-sm tracking-wide shadow-lg shadow-primary/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-transform" type="submit">
+<span class="material-symbols-outlined text-sm" data-icon="person_add">person_add</span>
+                        Create Curator Profile
+                    </button>
+</form>
+<!-- Help/Tip Box -->
+<div class="mt-10 p-4 bg-tertiary-container/30 rounded-xl flex gap-3 border border-tertiary-container/20">
+<span class="material-symbols-outlined text-tertiary" data-icon="lightbulb">lightbulb</span>
+<p class="text-xs text-on-tertiary-container leading-relaxed">
+<strong>Enrollment Tip:</strong> For best results with Face-ID, ensure the subject is 24-36 inches from the camera with overhead lighting.
+                    </p>
+</div>
+</aside>
+</section>
+</main>
+<!-- Contextual FAB (Hidden on this specific management screen as per shell rules, but including structure for global awareness if it were home) -->
+<!-- Suppression rule applied for Details/Management views -->
+</body></html>

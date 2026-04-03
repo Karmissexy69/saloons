@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Digital Receipt | BrowPOS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-background": "#2a3439",
+              "surface-container-lowest": "#ffffff",
+              "secondary": "#506076",
+              "on-error": "#fff7f6",
+              "primary": "#565e74",
+              "on-primary-fixed": "#373f54",
+              "secondary-fixed-dim": "#c5d6f0",
+              "inverse-on-surface": "#9a9d9f",
+              "surface-container-highest": "#d9e4ea",
+              "surface-container-low": "#f0f4f7",
+              "on-secondary-fixed-variant": "#4d5d73",
+              "inverse-primary": "#dae2fd",
+              "primary-dim": "#4a5268",
+              "on-primary-fixed-variant": "#535b71",
+              "on-error-container": "#752121",
+              "on-primary-container": "#4a5167",
+              "tertiary-fixed": "#dcddfe",
+              "on-tertiary-container": "#4c4e69",
+              "on-secondary-container": "#435368",
+              "background": "#f7f9fb",
+              "error-container": "#fe8983",
+              "on-secondary": "#f7f9ff",
+              "on-surface": "#2a3439",
+              "secondary-dim": "#44546a",
+              "surface-dim": "#cfdce3",
+              "tertiary-dim": "#4f516c",
+              "tertiary-container": "#dcddfe",
+              "surface-tint": "#565e74",
+              "on-tertiary-fixed-variant": "#565873",
+              "surface-container": "#e8eff3",
+              "inverse-surface": "#0b0f10",
+              "error-dim": "#4e0309",
+              "primary-container": "#dae2fd",
+              "on-surface-variant": "#566166",
+              "tertiary-fixed-dim": "#cecfef",
+              "on-tertiary": "#fbf8ff",
+              "on-tertiary-fixed": "#393c55",
+              "surface-variant": "#d9e4ea",
+              "surface-container-high": "#e1e9ee",
+              "surface": "#f7f9fb",
+              "outline": "#717c82",
+              "on-secondary-fixed": "#314055",
+              "outline-variant": "#a9b4b9",
+              "secondary-container": "#d3e4fe",
+              "surface-bright": "#f7f9fb",
+              "error": "#9f403d",
+              "primary-fixed": "#dae2fd",
+              "primary-fixed-dim": "#ccd4ee",
+              "tertiary": "#5b5d78",
+              "on-primary": "#f7f7ff",
+              "secondary-fixed": "#d3e4fe"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .receipt-paper {
+            background-color: #ffffff;
+            position: relative;
+            box-shadow: 0 10px 30px -5px rgba(42, 52, 57, 0.1);
+        }
+        .receipt-edge {
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 16px;
+            background-image: radial-gradient(circle, #ffffff 8px, transparent 0);
+            background-size: 16px 16px;
+            background-repeat: repeat-x;
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface flex items-center justify-center min-h-screen p-4 md:p-10">
+<div class="max-w-md w-full flex flex-col items-center">
+<!-- Receipt Container -->
+<div class="receipt-paper w-full p-8 md:p-12 relative">
+<!-- Header Section -->
+<div class="text-center mb-10">
+<h1 class="font-headline font-extrabold text-2xl tracking-tighter text-on-surface mb-2">BrowPOS</h1>
+<div class="flex flex-col gap-1">
+<p class="text-on-surface-variant font-label text-sm uppercase tracking-widest font-semibold">Downtown Branch</p>
+<p class="text-on-surface-variant font-label text-xs">742 Precision Ave, Level 4</p>
+<p class="text-on-surface-variant font-label text-xs">San Francisco, CA 94105</p>
+<p class="text-on-surface-variant font-label text-xs mt-1">+1 (555) 012-3456</p>
+</div>
+</div>
+<!-- Verification / Status Badge (Precision Curator Element) -->
+<div class="flex justify-center mb-8">
+<div class="bg-surface-container-high px-4 py-1.5 rounded-md flex items-center gap-2 border-[0.5px] border-outline-variant/20">
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+<span class="font-label text-[10px] font-bold uppercase tracking-wider text-primary">Verified Transaction</span>
+</div>
+</div>
+<!-- Service Items -->
+<div class="space-y-6 mb-10">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="font-headline font-bold text-on-surface text-base">Signature Brow Sculpt</span>
+<span class="font-label text-xs text-on-surface-variant">Lead Stylist: Maria G.</span>
+</div>
+<span class="font-body font-semibold text-on-surface">$65.00</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="font-headline font-bold text-on-surface text-base">Keratin Lash Lift</span>
+<span class="font-label text-xs text-on-surface-variant">Includes conditioning treatment</span>
+</div>
+<span class="font-body font-semibold text-on-surface">$110.00</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="font-headline font-bold text-on-surface text-base">HD Brow Tint</span>
+<span class="font-label text-xs text-on-surface-variant">Custom cool ash blend</span>
+</div>
+<span class="font-body font-semibold text-on-surface">$35.00</span>
+</div>
+</div>
+<!-- Divider (Ghost Border Rule) -->
+<div class="h-[1px] w-full bg-outline-variant/15 mb-6"></div>
+<!-- Financials Section -->
+<div class="space-y-3 mb-10">
+<div class="flex justify-between text-sm">
+<span class="font-label text-on-surface-variant">Subtotal</span>
+<span class="font-body text-on-surface">$210.00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="font-label text-on-surface-variant">Service Tax (8.5%)</span>
+<span class="font-body text-on-surface">$17.85</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="font-label text-on-surface-variant">Gratuity</span>
+<span class="font-body text-on-surface">$40.00</span>
+</div>
+<div class="pt-4 mt-4 flex justify-between items-baseline">
+<span class="font-headline font-extrabold text-lg text-on-surface uppercase tracking-tight">Total</span>
+<span class="font-headline font-black text-3xl text-primary">$267.85</span>
+</div>
+</div>
+<!-- Payment Details (Tonal Layering Card) -->
+<div class="bg-surface-container-low rounded-xl p-6 mb-10">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-10 h-10 bg-surface-container-lowest rounded-md flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">credit_card</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label text-[10px] uppercase font-bold text-on-surface-variant tracking-widest">Payment Method</span>
+<span class="font-body font-semibold text-on-surface">Visa ending in •••• 8812</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col">
+<span class="font-label text-[10px] uppercase font-bold text-on-surface-variant tracking-widest">Date</span>
+<span class="font-body text-xs text-on-surface">Oct 24, 2023</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="font-label text-[10px] uppercase font-bold text-on-surface-variant tracking-widest">Time</span>
+<span class="font-body text-xs text-on-surface">02:44 PM PST</span>
+</div>
+</div>
+</div>
+<!-- Footer Info -->
+<div class="text-center space-y-4">
+<div class="flex flex-col items-center gap-1">
+<span class="font-label text-[10px] uppercase font-bold text-on-surface-variant tracking-widest">Receipt Number</span>
+<span class="font-body text-xs font-medium text-on-surface tracking-wider">#BRP-001-94852-X</span>
+</div>
+<div class="pt-4">
+<p class="font-headline font-bold text-on-surface italic">Thank You for choosing BrowPOS.</p>
+<p class="font-label text-[11px] text-on-surface-variant mt-1">Visit us again at browpos.com</p>
+</div>
+<!-- QR Code Placeholder (Precision Element) -->
+<div class="mt-8 flex justify-center">
+<div class="p-3 bg-surface-container-lowest border-[0.5px] border-outline-variant/30 rounded-xl">
+<div class="w-24 h-24 bg-gradient-to-br from-primary to-primary-dim opacity-20 flex items-center justify-center rounded-lg relative overflow-hidden">
+<!-- Stylized QR pattern simulation -->
+<div class="absolute inset-2 border-2 border-primary/40 grid grid-cols-4 gap-1">
+<div class="bg-primary/60 rounded-[1px]"></div>
+<div class="bg-primary/20 rounded-[1px]"></div>
+<div class="bg-primary/60 rounded-[1px]"></div>
+<div class="bg-primary/40 rounded-[1px]"></div>
+<div class="bg-primary/20 rounded-[1px]"></div>
+<div class="bg-primary/60 rounded-[1px]"></div>
+<div class="bg-primary/20 rounded-[1px]"></div>
+<div class="bg-primary/60 rounded-[1px]"></div>
+<div class="bg-primary/60 rounded-[1px]"></div>
+<div class="bg-primary/40 rounded-[1px]"></div>
+<div class="bg-primary/60 rounded-[1px]"></div>
+<div class="bg-primary/20 rounded-[1px]"></div>
+<div class="bg-primary/20 rounded-[1px]"></div>
+<div class="bg-primary/60 rounded-[1px]"></div>
+<div class="bg-primary/20 rounded-[1px]"></div>
+<div class="bg-primary/60 rounded-[1px]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Decorative Cut Edge -->
+<div class="receipt-edge"></div>
+</div>
+<!-- Action Controls -->
+<div class="mt-12 flex gap-4 w-full">
+<button class="flex-1 bg-surface-container-highest text-on-surface-variant font-label font-bold text-xs uppercase tracking-widest py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+                Download PDF
+            </button>
+<button class="flex-1 bg-primary text-on-primary font-label font-bold text-xs uppercase tracking-widest py-4 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm">mail</span>
+                Email Receipt
+            </button>
+</div>
+<p class="mt-8 text-on-surface-variant/60 font-label text-[10px] text-center max-w-[280px]">
+            This is a digital record of your transaction. For support regarding this visit, please contact terminal 01-A.
+        </p>
+</div>
+</body></html>

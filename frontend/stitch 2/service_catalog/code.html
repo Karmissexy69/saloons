@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary": "#5b5d78",
+              "primary-fixed-dim": "#ccd4ee",
+              "primary-fixed": "#dae2fd",
+              "secondary-fixed": "#d3e4fe",
+              "on-primary": "#f7f7ff",
+              "surface-variant": "#d9e4ea",
+              "on-tertiary-fixed": "#393c55",
+              "surface-bright": "#f7f9fb",
+              "error": "#9f403d",
+              "secondary-container": "#d3e4fe",
+              "outline-variant": "#a9b4b9",
+              "surface": "#f7f9fb",
+              "outline": "#717c82",
+              "on-secondary-fixed": "#314055",
+              "surface-container-high": "#e1e9ee",
+              "inverse-surface": "#0b0f10",
+              "error-dim": "#4e0309",
+              "surface-container": "#e8eff3",
+              "on-tertiary": "#fbf8ff",
+              "tertiary-fixed-dim": "#cecfef",
+              "on-surface-variant": "#566166",
+              "primary-container": "#dae2fd",
+              "surface-dim": "#cfdce3",
+              "secondary-dim": "#44546a",
+              "on-surface": "#2a3439",
+              "surface-tint": "#565e74",
+              "on-tertiary-fixed-variant": "#565873",
+              "tertiary-container": "#dcddfe",
+              "tertiary-dim": "#4f516c",
+              "error-container": "#fe8983",
+              "on-secondary": "#f7f9ff",
+              "on-primary-container": "#4a5167",
+              "on-error-container": "#752121",
+              "background": "#f7f9fb",
+              "on-secondary-container": "#435368",
+              "on-tertiary-container": "#4c4e69",
+              "tertiary-fixed": "#dcddfe",
+              "inverse-primary": "#dae2fd",
+              "on-secondary-fixed-variant": "#4d5d73",
+              "surface-container-low": "#f0f4f7",
+              "on-primary-fixed-variant": "#535b71",
+              "primary-dim": "#4a5268",
+              "primary": "#565e74",
+              "on-primary-fixed": "#373f54",
+              "on-error": "#fff7f6",
+              "surface-container-lowest": "#ffffff",
+              "secondary": "#506076",
+              "on-background": "#2a3439",
+              "surface-container-highest": "#d9e4ea",
+              "inverse-on-surface": "#9a9d9f",
+              "secondary-fixed-dim": "#c5d6f0"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f7f9fb;
+        color: #2a3439;
+      }
+      h1, h2, h3 {
+        font-family: 'Manrope', sans-serif;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #d9e4ea;
+        border-radius: 10px;
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-slate-100 flex flex-col gap-8 p-6 z-50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary shadow-lg">
+<span class="material-symbols-outlined" data-icon="architecture">architecture</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xl font-bold tracking-tight text-slate-900">Precision Curator</span>
+<span class="text-[10px] uppercase tracking-widest font-bold text-slate-500">Skincare Ops</span>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 text-slate-600 px-4 py-2 hover:bg-slate-200/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 px-4 py-2 hover:bg-slate-200/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="fingerprint">fingerprint</span>
+<span class="font-medium">Attendance Kiosk</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 px-4 py-2 hover:bg-slate-200/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-medium">Attendance Logs</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 px-4 py-2 hover:bg-slate-200/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-medium">Staff</span>
+</a>
+<a class="flex items-center gap-3 bg-slate-200 text-slate-900 rounded-full px-4 py-2 font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="content_cut">content_cut</span>
+<span class="font-medium">Services</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 px-4 py-2 hover:bg-slate-200/50 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-medium">Appointments</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 flex items-center gap-3 border-t border-slate-200/50">
+<img alt="Business Logo" class="w-10 h-10 rounded-full object-crop" data-alt="professional headshot of a boutique clinic manager with a clean minimalist background and soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChe59GCie5FgIur0NqOooA9WIiJzjEN4agbPHaUg1af6pZZ8yq-fkQeb0zKJ7Ogt4xkehErng_Rr7cUcG5ct87RgFnchbUq6u8IDvgpEh39-PnY0FP-IL2c-l5zOnMJvraz6k7V4_DsIDde3WzknvTB1VpWrfO6xV149FhQmvaOmVn-We9FBl7RdIlp5-S6Or04MRYNy16U4Ku8z5f_bFYKuNlDJyMLRK8n2Oc-m9fkt0ldM69aRfeGaCWg7ppFrNYE15UOGPaS6nT"/>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-900">Downtown Branch</span>
+<span class="text-xs text-slate-500">Active Session</span>
+</div>
+</div>
+</aside>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-white/80 backdrop-blur-md z-40 border-b border-slate-200/15 flex justify-between items-center px-8">
+<div class="flex items-center gap-4 bg-surface-container rounded-full px-4 py-1.5 w-96">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-body placeholder:text-outline" placeholder="Search catalog..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="relative text-slate-700 hover:text-slate-900 transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="text-slate-700 hover:text-slate-900 transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-slate-200/50"></div>
+<div class="flex items-center gap-3">
+<span class="text-sm font-semibold font-headline">Admin Control</span>
+<div class="w-8 h-8 rounded-full bg-slate-200"></div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 px-10 pb-12">
+<div class="flex items-end justify-between mb-10">
+<div>
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2 font-headline">Service Catalog</h1>
+<p class="text-on-surface-variant font-body">Refine and manage your professional skincare and clinical treatments.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-6 py-2.5 bg-surface-container-highest text-on-surface font-semibold rounded-md hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="file_download">file_download</span>
+                    Export CSV
+                </button>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-br from-primary to-primary-dim text-on-primary font-semibold rounded-md shadow-lg shadow-primary/20 hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+                    Add Service
+                </button>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-8">
+<!-- Service Listing Table Section (Left Side) -->
+<div class="col-span-12 xl:col-span-8 flex flex-col gap-4">
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="px-6 py-4 bg-surface-container-highest flex items-center justify-between">
+<h2 class="text-lg font-bold font-headline text-on-surface">Active Services</h2>
+<div class="flex gap-2">
+<span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-xs font-bold">12 Total</span>
+</div>
+</div>
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-separate border-spacing-0">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant text-[11px] font-bold uppercase tracking-wider">
+<th class="px-6 py-4">Service Details</th>
+<th class="px-6 py-4">Category</th>
+<th class="px-6 py-4">Duration</th>
+<th class="px-6 py-4 text-right">Base Price</th>
+<th class="px-6 py-4">Commission</th>
+<th class="px-6 py-4 text-center">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors h-[3.5rem] cursor-pointer">
+<td class="px-6 py-4">
+<div class="font-bold text-on-surface font-headline">Deep Tissue HydraFacial</div>
+<div class="text-[10px] text-on-surface-variant font-label">ID: SF-9021</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs font-medium text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">Skincare</span>
+</td>
+<td class="px-6 py-4 font-body text-sm">60 min</td>
+<td class="px-6 py-4 text-right font-bold text-on-surface">$185.00</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1">
+<span class="text-sm font-semibold">15%</span>
+<span class="text-[10px] text-on-surface-variant">Standard</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-success_container text-green-700 border border-green-700/20">
+                                            ACTIVE
+                                        </span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors h-[3.5rem] cursor-pointer">
+<td class="px-6 py-4">
+<div class="font-bold text-on-surface font-headline">Laser Hair Removal (Small Area)</div>
+<div class="text-[10px] text-on-surface-variant font-label">ID: LR-1144</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs font-medium text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">Laser</span>
+</td>
+<td class="px-6 py-4 font-body text-sm">30 min</td>
+<td class="px-6 py-4 text-right font-bold text-on-surface">$120.00</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1">
+<span class="text-sm font-semibold">10%</span>
+<span class="text-[10px] text-on-surface-variant">Base</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-success_container text-green-700 border border-green-700/20">
+                                            ACTIVE
+                                        </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors h-[3.5rem] cursor-pointer">
+<td class="px-6 py-4">
+<div class="font-bold text-on-surface font-headline">Chemical Peel - Grade III</div>
+<div class="text-[10px] text-on-surface-variant font-label">ID: CP-4422</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs font-medium text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">Chemical</span>
+</td>
+<td class="px-6 py-4 font-body text-sm">45 min</td>
+<td class="px-6 py-4 text-right font-bold text-on-surface">$250.00</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1">
+<span class="text-sm font-semibold">20%</span>
+<span class="text-[10px] text-on-surface-variant">High Tier</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-error-container text-on-error-container border border-error-container/20">
+                                            ARCHIVED
+                                        </span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors h-[3.5rem] cursor-pointer">
+<td class="px-6 py-4">
+<div class="font-bold text-on-surface font-headline">Vitamin C Brightening Facial</div>
+<div class="text-[10px] text-on-surface-variant font-label">ID: SF-7712</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs font-medium text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">Skincare</span>
+</td>
+<td class="px-6 py-4 font-body text-sm">75 min</td>
+<td class="px-6 py-4 text-right font-bold text-on-surface">$165.00</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1">
+<span class="text-sm font-semibold">15%</span>
+<span class="text-[10px] text-on-surface-variant">Standard</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-success_container text-green-700 border border-green-700/20">
+                                            ACTIVE
+                                        </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Insights Bento Card -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-tertiary-container/30 p-6 rounded-xl border border-tertiary-fixed-dim/20">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-on-tertiary-container" data-icon="trending_up">trending_up</span>
+<h3 class="text-sm font-bold text-on-tertiary-container font-headline">Avg. Ticket Value</h3>
+</div>
+<div class="text-3xl font-extrabold text-on-tertiary-container">$172.50</div>
+<p class="text-[11px] text-on-tertiary-fixed-variant mt-1">+12% from last month</p>
+</div>
+<div class="bg-secondary-container/30 p-6 rounded-xl border border-secondary-fixed-dim/20">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="avg_pace">avg_pace</span>
+<h3 class="text-sm font-bold text-on-secondary-container font-headline">Avg. Service Time</h3>
+</div>
+<div class="text-3xl font-extrabold text-on-secondary-container">52m</div>
+<p class="text-[11px] text-on-secondary-fixed-variant mt-1">Optimal scheduling range</p>
+</div>
+</div>
+</div>
+<!-- Create Service Form (Right Side) -->
+<div class="col-span-12 xl:col-span-4">
+<div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant/10 sticky top-24">
+<div class="mb-8">
+<h2 class="text-xl font-extrabold font-headline text-on-surface mb-1">Create Service</h2>
+<p class="text-xs text-on-surface-variant font-body">Define pricing, timeframes, and staff payouts.</p>
+</div>
+<form class="space-y-6">
+<div class="space-y-1">
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-label ml-1">Service Name</label>
+<input class="w-full bg-surface-container-highest border-none rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-body" placeholder="e.g. Microneedling Therapy" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-label ml-1">Category</label>
+<select class="w-full bg-surface-container-highest border-none rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-body">
+<option>Skincare</option>
+<option>Laser</option>
+<option>Chemical</option>
+<option>Injectable</option>
+</select>
+</div>
+<div class="space-y-1">
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-label ml-1">Duration (Min)</label>
+<input class="w-full bg-surface-container-highest border-none rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-body" type="number" value="30"/>
+<p class="text-[10px] text-on-tertiary-fixed-variant mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="info">info</span>
+                                    Must be &gt; 0
+                                </p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-label ml-1">Base Price ($)</label>
+<div class="relative">
+<span class="absolute left-4 top-3.5 text-on-surface-variant text-sm">$</span>
+<input class="w-full bg-surface-container-highest border-none rounded-md pl-8 pr-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-body" type="number" value="0.00"/>
+</div>
+<p class="text-[10px] text-error mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="warning">warning</span>
+                                    Price must be &gt; 0
+                                </p>
+</div>
+<div class="space-y-1">
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-wider font-label ml-1">Commission (%)</label>
+<input class="w-full bg-surface-container-highest border-none rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-body" type="number" value="15"/>
+</div>
+</div>
+<div class="pt-4">
+<button class="w-full bg-primary text-on-primary py-4 rounded-md font-bold text-sm tracking-wide shadow-lg shadow-primary/25 hover:bg-primary-dim transition-all flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined text-[18px]" data-icon="save">save</span>
+                                Save Service Entry
+                            </button>
+<button class="w-full mt-3 bg-transparent text-on-surface-variant py-3 rounded-md font-semibold text-xs tracking-wide hover:text-on-surface transition-all" type="button">
+                                Cancel &amp; Discard
+                            </button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Hidden on this transactional detail-heavy page as per instructions, but kept for logic if navigation changed) -->
+<!-- Suppression logic applied: Focused Task / Detail Screen -->
+</body></html>

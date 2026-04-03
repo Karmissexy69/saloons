@@ -1,0 +1,11 @@
+.DS_Store
+
+backend/target/
+backend/.idea/
+backend/*.iml
+backend/src/main/java/com/salonpos/config/CorsConfig.java
+
+.env
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
