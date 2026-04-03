@@ -1,9 +1,11 @@
 import type {
   ApiErrorBody,
+  AppSettingResponse,
   AppointmentResponse,
   AttendanceLogResponse,
   AttendanceReportItemResponse,
   AuthLoginResponse,
+  BranchResponse,
   CommissionStatementResponse,
   ConvertAppointmentToBillRequest,
   CreateAppointmentRequest,
@@ -96,6 +98,51 @@ export async function login(username: string, password: string): Promise<AuthLog
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
+  });
+}
+
+export async function listBranches(token: string): Promise<BranchResponse[]> {
+  return requestJson<BranchResponse[]>("/api/branches", {
+    method: "GET",
+    headers: authHeaders(token),
+  });
+}
+
+export async function createBranch(
+  token: string,
+  payload: { name: string; address?: string; active?: boolean }
+): Promise<BranchResponse> {
+  return requestJson<BranchResponse>("/api/branches", {
+    method: "POST",
+    headers: authHeaders(token, { "Content-Type": "application/json" }),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateBranch(
+  token: string,
+  branchId: number,
+  payload: { name: string; address?: string; active?: boolean }
+): Promise<BranchResponse> {
+  return requestJson<BranchResponse>(`/api/branches/${branchId}`, {
+    method: "PATCH",
+    headers: authHeaders(token, { "Content-Type": "application/json" }),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function listSettings(token: string): Promise<AppSettingResponse[]> {
+  return requestJson<AppSettingResponse[]>("/api/settings", {
+    method: "GET",
+    headers: authHeaders(token),
+  });
+}
+
+export async function updateSetting(token: string, key: string, value: string): Promise<AppSettingResponse> {
+  return requestJson<AppSettingResponse>(`/api/settings/${encodeURIComponent(key)}`, {
+    method: "PUT",
+    headers: authHeaders(token, { "Content-Type": "application/json" }),
+    body: JSON.stringify({ value }),
   });
 }
 

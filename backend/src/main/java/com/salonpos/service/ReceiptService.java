@@ -22,10 +22,12 @@ public class ReceiptService {
     private static final OffsetDateTime LATEST_TIMESTAMP = OffsetDateTime.of(9999, 12, 31, 23, 59, 59, 999_999_999, ZoneOffset.UTC);
 
     private final ReceiptRepository receiptRepository;
+    private final BranchService branchService;
     private final AuditLogService auditLogService;
 
-    public ReceiptService(ReceiptRepository receiptRepository, AuditLogService auditLogService) {
+    public ReceiptService(ReceiptRepository receiptRepository, BranchService branchService, AuditLogService auditLogService) {
         this.receiptRepository = receiptRepository;
+        this.branchService = branchService;
         this.auditLogService = auditLogService;
     }
 
@@ -50,6 +52,10 @@ public class ReceiptService {
         int page,
         int size
     ) {
+        if (branchId != null) {
+            branchService.requireBranch(branchId);
+        }
+
         String receiptNoFilter = receiptNo == null ? "" : receiptNo.trim();
         OffsetDateTime fromAt = from == null ? EARLIEST_TIMESTAMP : from.atStartOfDay().atOffset(ZoneOffset.UTC);
         OffsetDateTime toAt = to == null ? LATEST_TIMESTAMP : to.plusDays(1).atStartOfDay().atOffset(ZoneOffset.UTC).minusNanos(1);
@@ -77,6 +83,10 @@ public class ReceiptService {
         LocalDate from,
         LocalDate to
     ) {
+        if (branchId != null) {
+            branchService.requireBranch(branchId);
+        }
+
         String receiptNoFilter = receiptNo == null ? "" : receiptNo.trim();
         OffsetDateTime fromAt = from == null ? EARLIEST_TIMESTAMP : from.atStartOfDay().atOffset(ZoneOffset.UTC);
         OffsetDateTime toAt = to == null ? LATEST_TIMESTAMP : to.plusDays(1).atStartOfDay().atOffset(ZoneOffset.UTC).minusNanos(1);

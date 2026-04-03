@@ -5,6 +5,7 @@ import com.salonpos.domain.Role;
 import com.salonpos.repository.AppUserRepository;
 import com.salonpos.repository.RoleRepository;
 import java.time.OffsetDateTime;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,19 +18,20 @@ import org.springframework.stereotype.Component;
 public class AttendanceTerminalBootstrap implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(AttendanceTerminalBootstrap.class);
-    private static final String ROLE_ATTENDANCE_TERMINAL = "ATTENDANCE_TERMINAL";
+    private static final String ROLE_TERMINAL = "TERMINAL";
+    private static final List<String> LEGACY_SHARED_USERNAMES = List.of("terminal", "attendance", "attendance_terminal");
 
     private final AppUserRepository appUserRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${app.attendance-terminal.enabled:true}")
+    @Value("${app.terminal.enabled:true}")
     private boolean enabled;
 
-    @Value("${app.attendance-terminal.username:attendance_terminal}")
+    @Value("${app.terminal.username:terminal}")
     private String username;
 
-    @Value("${app.attendance-terminal.password:}")
+    @Value("${app.terminal.password:}")
     private String password;
 
     public AttendanceTerminalBootstrap(
@@ -45,25 +47,25 @@ public class AttendanceTerminalBootstrap implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         if (!enabled) {
-            log.info("Attendance terminal bootstrap disabled.");
+            log.info("Shared terminal bootstrap disabled.");
             return;
         }
 
         String normalizedUsername = normalize(username);
         if (normalizedUsername.isBlank()) {
-            log.warn("Attendance terminal bootstrap skipped: username is blank.");
+            log.warn("Shared terminal bootstrap skipped: username is blank.");
             return;
         }
 
         if (password == null || password.isBlank()) {
-            log.warn("Attendance terminal bootstrap skipped: app.attendance-terminal.password is empty.");
+            log.warn("Shared terminal bootstrap skipped: app.terminal.password is empty.");
             return;
         }
 
-        Role terminalRole = roleRepository.findByName(ROLE_ATTENDANCE_TERMINAL)
+        Role terminalRole = roleRepository.findByName(ROLE_TERMINAL)
             .orElseGet(() -> {
                 Role role = new Role();
-                role.setName(ROLE_ATTENDANCE_TERMINAL);
+                role.setName(ROLE_TERMINAL);
                 return roleRepository.save(role);
             });
 
@@ -100,13 +102,31 @@ public class AttendanceTerminalBootstrap implements ApplicationRunner {
 
         if (changed) {
             appUserRepository.save(terminalUser);
-            log.info("Attendance terminal user '{}' is ready.", normalizedUsername);
+            log.info("Shared terminal user '{}' is ready.", normalizedUsername);
         } else {
-            log.info("Attendance terminal user '{}' already up to date.", normalizedUsername);
+            log.info("Shared terminal user '{}' already up to date.", normalizedUsername);
         }
+
+        deactivateLegacySharedUsers(normalizedUsername);
     }
 
     private String normalize(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private void deactivateLegacySharedUsers(String activeUsername) {
+        for (String candidate : LEGACY_SHARED_USERNAMES) {
+            if (candidate.equalsIgnoreCase(activeUsername)) {
+                continue;
+            }
+
+            appUserRepository.findByUsername(candidate).ifPresent(user -> {
+                if (!"INACTIVE".equalsIgnoreCase(user.getStatus())) {
+                    user.setStatus("INACTIVE");
+                    appUserRepository.save(user);
+                    log.info("Legacy shared terminal user '{}' disabled in favor of '{}'.", candidate, activeUsername);
+                }
+            });
+        }
     }
 }

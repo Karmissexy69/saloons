@@ -2,26 +2,23 @@ import type { NavKey } from "../layouts/AppShell";
 
 type Role =
   | "OWNER"
-  | "ADMIN"
-  | "MANAGER"
-  | "CASHIER"
-  | "STYLIST"
   | "IT_ADMIN"
-  | "ATTENDANCE_TERMINAL";
+  | "TERMINAL";
 
 const NAV_ROLE_MAP: Record<NavKey, Role[]> = {
-  dashboard: ["OWNER", "ADMIN", "MANAGER"],
-  "attendance-kiosk": ["ADMIN", "MANAGER", "CASHIER", "STYLIST", "ATTENDANCE_TERMINAL"],
-  "attendance-logs": ["OWNER", "ADMIN", "MANAGER", "CASHIER", "STYLIST", "ATTENDANCE_TERMINAL"],
-  staff: ["ADMIN", "MANAGER", "CASHIER", "IT_ADMIN"],
-  services: ["ADMIN", "MANAGER", "CASHIER"],
-  appointments: ["ADMIN", "MANAGER", "CASHIER", "STYLIST"],
-  "pos-terminal": ["ADMIN", "MANAGER", "CASHIER"],
-  receipts: ["ADMIN", "MANAGER", "CASHIER"],
-  refunds: ["ADMIN", "MANAGER"],
-  commission: ["OWNER", "ADMIN", "MANAGER", "STYLIST"],
-  sales: ["OWNER", "ADMIN", "MANAGER"],
-  "audit-logs": ["OWNER", "ADMIN", "MANAGER"],
+  dashboard: ["OWNER"],
+  "attendance-kiosk": ["TERMINAL"],
+  "attendance-logs": ["OWNER"],
+  staff: ["IT_ADMIN"],
+  services: ["IT_ADMIN"],
+  settings: ["IT_ADMIN"],
+  appointments: ["TERMINAL"],
+  "pos-terminal": ["TERMINAL"],
+  receipts: ["TERMINAL"],
+  refunds: ["IT_ADMIN"],
+  commission: ["OWNER"],
+  sales: ["OWNER"],
+  "audit-logs": ["OWNER"],
 };
 
 export function isNavAllowedForRole(nav: NavKey, role: string): boolean {

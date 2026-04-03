@@ -3,9 +3,13 @@ import { Page } from "../components/common/Page";
 import { getAttendanceReport, listStaff } from "../lib/api";
 import type { AttendanceReportItemResponse, StaffProfileResponse } from "../lib/types";
 
-type Props = { token: string };
+type Props = {
+  token: string;
+  selectedBranchId: number | null;
+  selectedBranchName: string;
+};
 
-export function AttendanceLogsPage({ token }: Props) {
+export function AttendanceLogsPage({ token, selectedBranchId, selectedBranchName }: Props) {
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   const [staff, setStaff] = useState<StaffProfileResponse[]>([]);
@@ -31,12 +35,17 @@ export function AttendanceLogsPage({ token }: Props) {
   }, [token]);
 
   async function runReport() {
+    if (selectedBranchId === null) {
+      setError("Select a branch in the header before loading attendance.");
+      return;
+    }
+
     setLoading(true);
     setError("");
     try {
       const data = await getAttendanceReport(token, {
         staffId: selectedStaff ? Number(selectedStaff) : undefined,
-        branchId: 1,
+        branchId: selectedBranchId,
         from,
         to,
         page: 0,
@@ -103,7 +112,7 @@ export function AttendanceLogsPage({ token }: Props) {
                   <tr key={item.id}>
                     <td>#{item.id}</td>
                     <td>{item.staffName}</td>
-                    <td>{item.branchId}</td>
+                    <td>{item.branchId === selectedBranchId && selectedBranchName ? selectedBranchName : `Branch ${item.branchId}`}</td>
                     <td>{new Date(item.clockInAt).toLocaleString()}</td>
                     <td>{item.clockOutAt ? new Date(item.clockOutAt).toLocaleString() : "-"}</td>
                     <td>{item.breakMinutes ? `${item.breakMinutes} min` : "0 min"}</td>

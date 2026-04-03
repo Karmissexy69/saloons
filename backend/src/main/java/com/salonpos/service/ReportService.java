@@ -18,16 +18,23 @@ public class ReportService {
 
     private final SalesTransactionRepository salesTransactionRepository;
     private final RefundRepository refundRepository;
+    private final BranchService branchService;
 
     public ReportService(
         SalesTransactionRepository salesTransactionRepository,
-        RefundRepository refundRepository
+        RefundRepository refundRepository,
+        BranchService branchService
     ) {
         this.salesTransactionRepository = salesTransactionRepository;
         this.refundRepository = refundRepository;
+        this.branchService = branchService;
     }
 
     public SalesSummaryResponse salesSummary(LocalDate from, LocalDate to, Long branchId) {
+        if (branchId != null) {
+            branchService.requireBranch(branchId);
+        }
+
         OffsetDateTime start = from.atStartOfDay().atOffset(ZoneOffset.UTC);
         OffsetDateTime end = to.plusDays(1).atStartOfDay().atOffset(ZoneOffset.UTC).minusNanos(1);
 

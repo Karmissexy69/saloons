@@ -1,8 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createTransaction, listServices, listStaff } from "../lib/api";
+import { formatCurrency } from "../lib/currency";
 import type { PaymentMethod, ServiceItemResponse, StaffProfileResponse } from "../lib/types";
 
-type Props = { token: string };
+type Props = {
+  token: string;
+  selectedBranchId: number | null;
+  onViewReceipt: (receiptNo: string) => void;
+};
 
 type CartLine = {
   serviceId: number;
@@ -12,9 +17,9 @@ type CartLine = {
   assignedStaffId?: number;
 };
 
-const PAYMENT_OPTIONS: PaymentMethod[] = ["CASH", "CARD", "BANK_TRANSFER", "QR"];
+const PAYMENT_OPTIONS: PaymentMethod[] = ["CASH", "CARD", "QR", "BANK_TRANSFER"];
 
-export function PosTerminalPage({ token }: Props) {
+export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Props) {
   const [services, setServices] = useState<ServiceItemResponse[]>([]);
   const [staff, setStaff] = useState<StaffProfileResponse[]>([]);
 
@@ -26,12 +31,22 @@ export function PosTerminalPage({ token }: Props) {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [discountTotal, setDiscountTotal] = useState("0");
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("CARD");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("CASH");
   const [paymentReference, setPaymentReference] = useState("");
+  const [paymentProofBlob, setPaymentProofBlob] = useState<Blob | null>(null);
+  const [paymentProofPreviewUrl, setPaymentProofPreviewUrl] = useState("");
+  const [paymentProofModalOpen, setPaymentProofModalOpen] = useState(false);
+  const [paymentProofCameraReady, setPaymentProofCameraReady] = useState(false);
+  const [paymentProofError, setPaymentProofError] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState("Select services to begin a new transaction.");
   const [error, setError] = useState("");
+  const [completedReceiptNo, setCompletedReceiptNo] = useState("");
+
+  const paymentProofVideoRef = useRef<HTMLVideoElement>(null);
+  const paymentProofCanvasRef = useRef<HTMLCanvasElement>(null);
+  const paymentProofStreamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -57,8 +72,46 @@ export function PosTerminalPage({ token }: Props) {
       }
     }
 
-    loadData();
+    void loadData();
   }, [token]);
+
+  useEffect(() => {
+    if (!completedReceiptNo) {
+      return;
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setCompletedReceiptNo("");
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [completedReceiptNo]);
+
+  useEffect(() => {
+    if (!paymentProofModalOpen) {
+      stopPaymentProofCamera();
+      return;
+    }
+    if (paymentProofPreviewUrl) {
+      return;
+    }
+
+    void startPaymentProofCamera();
+
+    return () => stopPaymentProofCamera();
+  }, [paymentProofModalOpen, paymentProofPreviewUrl]);
+
+  useEffect(() => {
+    return () => {
+      stopPaymentProofCamera();
+      if (paymentProofPreviewUrl) {
+        URL.revokeObjectURL(paymentProofPreviewUrl);
+      }
+    };
+  }, [paymentProofPreviewUrl]);
 
   const categories = useMemo(() => {
     const all = Array.from(new Set(services.map((item) => item.categoryName))).sort();
@@ -74,14 +127,18 @@ export function PosTerminalPage({ token }: Props) {
   }, [services, categoryFilter, search]);
 
   const subtotal = useMemo(() => cart.reduce((sum, item) => sum + item.unitPrice * item.qty, 0), [cart]);
-
-  const netBeforeTax = useMemo(() => {
-    const total = subtotal - Number(discountTotal || 0);
+  const discountValue = useMemo(() => {
+    const parsed = Number(discountTotal);
+    if (!Number.isFinite(parsed) || parsed < 0) {
+      return 0;
+    }
+    return parsed;
+  }, [discountTotal]);
+  const finalTotal = useMemo(() => {
+    const total = subtotal - discountValue;
     return total > 0 ? total : 0;
-  }, [subtotal, discountTotal]);
-
-  const gstAmount = useMemo(() => netBeforeTax * 0.1, [netBeforeTax]);
-  const finalTotal = useMemo(() => netBeforeTax + gstAmount, [netBeforeTax, gstAmount]);
+  }, [subtotal, discountValue]);
+  const paymentProofRequired = requiresPaymentProof(paymentMethod);
 
   function addService(service: ServiceItemResponse) {
     setCart((current) => {
@@ -139,7 +196,40 @@ export function PosTerminalPage({ token }: Props) {
     return "content_cut";
   }
 
+  function handleCloseReceiptModal() {
+    setCompletedReceiptNo("");
+  }
+
+  function handleViewReceipt() {
+    if (!completedReceiptNo) {
+      return;
+    }
+    const receiptNo = completedReceiptNo;
+    setCompletedReceiptNo("");
+    onViewReceipt(receiptNo);
+  }
+
+  function handlePaymentMethodChange(nextMethod: PaymentMethod) {
+    setPaymentMethod(nextMethod);
+    setError("");
+    setPaymentProofError("");
+
+    if (requiresPaymentProof(nextMethod)) {
+      clearPaymentProof();
+      setPaymentProofModalOpen(true);
+      return;
+    }
+
+    clearPaymentProof();
+    setPaymentProofModalOpen(false);
+  }
+
   async function handleCheckout() {
+    if (selectedBranchId === null) {
+      setError("Select a branch in the header before checkout.");
+      return;
+    }
+
     if (cart.length === 0) {
       setError("Add at least one service to cart.");
       return;
@@ -150,14 +240,26 @@ export function PosTerminalPage({ token }: Props) {
       return;
     }
 
+    if (discountValue > subtotal) {
+      setError("Discount cannot exceed subtotal.");
+      return;
+    }
+
+    if (paymentProofRequired && paymentProofBlob === null) {
+      setError("Take a photo of the payment receipt before checkout.");
+      setPaymentProofModalOpen(true);
+      return;
+    }
+
     setSubmitting(true);
     setError("");
 
     try {
+      const proofImageBase64 = paymentProofBlob ? await blobToBase64(paymentProofBlob) : undefined;
       const response = await createTransaction(token, {
-        branchId: 1,
+        branchId: selectedBranchId,
         cashierId: Number(cashierId),
-        discountTotal: Number(discountTotal || 0),
+        discountTotal: discountValue,
         lines: cart.map((line) => ({
           serviceId: line.serviceId,
           qty: line.qty,
@@ -169,19 +271,140 @@ export function PosTerminalPage({ token }: Props) {
             method: paymentMethod,
             amount: finalTotal,
             referenceNo: paymentReference.trim() || undefined,
+            proofImageBase64,
+            proofImageContentType: paymentProofBlob?.type || undefined,
           },
         ],
       });
 
-      setNotice(`Transaction complete. Receipt ${response.receiptNo} generated.`);
+      setNotice("Ready for the next transaction.");
+      setCompletedReceiptNo(response.receiptNo);
       setCart([]);
       setPaymentReference("");
       setDiscountTotal("0");
+      setPaymentMethod("CASH");
+      clearPaymentProof();
+      setPaymentProofModalOpen(false);
+      setPaymentProofError("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to submit transaction");
     } finally {
       setSubmitting(false);
     }
+  }
+
+  async function startPaymentProofCamera() {
+    setPaymentProofError("");
+    try {
+      stopPaymentProofCamera();
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: "environment" },
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
+        audio: false,
+      });
+
+      paymentProofStreamRef.current = stream;
+      if (paymentProofVideoRef.current) {
+        paymentProofVideoRef.current.srcObject = stream;
+      }
+      setPaymentProofCameraReady(true);
+    } catch (err) {
+      setPaymentProofCameraReady(false);
+      setPaymentProofError(err instanceof Error ? err.message : "Unable to start back camera");
+    }
+  }
+
+  function stopPaymentProofCamera() {
+    if (paymentProofStreamRef.current === null) {
+      return;
+    }
+
+    for (const track of paymentProofStreamRef.current.getTracks()) {
+      track.stop();
+    }
+    paymentProofStreamRef.current = null;
+
+    if (paymentProofVideoRef.current) {
+      paymentProofVideoRef.current.srcObject = null;
+    }
+
+    setPaymentProofCameraReady(false);
+  }
+
+  function capturePaymentProof() {
+    const video = paymentProofVideoRef.current;
+    const canvas = paymentProofCanvasRef.current;
+
+    if (video === null || canvas === null || paymentProofStreamRef.current === null) {
+      setPaymentProofError("Back camera is not ready.");
+      return;
+    }
+
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+    const context = canvas.getContext("2d");
+    if (context === null) {
+      setPaymentProofError("Could not capture payment receipt.");
+      return;
+    }
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(
+      (blob) => {
+        if (blob === null) {
+          setPaymentProofError("Could not capture payment receipt.");
+          return;
+        }
+        applyPaymentProof(blob);
+        stopPaymentProofCamera();
+      },
+      "image/jpeg",
+      0.92
+    );
+  }
+
+  function applyPaymentProof(blob: Blob) {
+    setPaymentProofBlob(blob);
+    setPaymentProofError("");
+
+    const url = URL.createObjectURL(blob);
+    setPaymentProofPreviewUrl((current) => {
+      if (current) {
+        URL.revokeObjectURL(current);
+      }
+      return url;
+    });
+  }
+
+  function clearPaymentProof() {
+    setPaymentProofBlob(null);
+    setPaymentProofPreviewUrl((current) => {
+      if (current) {
+        URL.revokeObjectURL(current);
+      }
+      return "";
+    });
+  }
+
+  function handleUsePaymentProof() {
+    if (paymentProofBlob === null) {
+      return;
+    }
+    setPaymentProofModalOpen(false);
+    setPaymentProofError("");
+  }
+
+  function handleRetakePaymentProof() {
+    clearPaymentProof();
+    setPaymentProofModalOpen(true);
+  }
+
+  function handleClosePaymentProofModal() {
+    setPaymentProofModalOpen(false);
+    stopPaymentProofCamera();
   }
 
   return (
@@ -233,7 +456,7 @@ export function PosTerminalPage({ token }: Props) {
                     <span className="material-symbols-outlined">schedule</span>
                     {service.durationMinutes} min
                   </span>
-                  <strong>${service.price.toFixed(2)}</strong>
+                  <strong>{formatCurrency(service.price)}</strong>
                 </div>
               </button>
             ))}
@@ -284,9 +507,16 @@ export function PosTerminalPage({ token }: Props) {
                     </div>
                   </div>
                   <div className="st-pos-line-right">
-                    <strong>${(line.qty * line.unitPrice).toFixed(2)}</strong>
-                    <button type="button" onClick={() => removeLine(line.serviceId)}>
-                      Remove
+                    <strong>{formatCurrency(line.qty * line.unitPrice)}</strong>
+                    <button
+                      type="button"
+                      className="st-pos-remove-btn"
+                      onClick={() => removeLine(line.serviceId)}
+                      aria-label={`Remove ${line.serviceName}`}
+                    >
+                      <span className="material-symbols-outlined" aria-hidden="true">
+                        delete
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -297,16 +527,12 @@ export function PosTerminalPage({ token }: Props) {
           <div className="st-pos-total-card">
             <div className="st-pos-total-row">
               <span>Subtotal</span>
-              <span>${netBeforeTax.toFixed(2)}</span>
+              <span>{formatCurrency(subtotal)}</span>
             </div>
-            <div className="st-pos-total-row">
-              <span>GST (10%)</span>
-              <span>${gstAmount.toFixed(2)}</span>
-            </div>
-            {Number(discountTotal) > 0 ? (
+            {discountValue > 0 ? (
               <div className="st-pos-total-row">
                 <span>Discount</span>
-                <span>-${Number(discountTotal).toFixed(2)}</span>
+                <span>-{formatCurrency(discountValue)}</span>
               </div>
             ) : null}
 
@@ -314,7 +540,7 @@ export function PosTerminalPage({ token }: Props) {
 
             <div className="st-pos-total-due">
               <small>Total Due</small>
-              <strong>${finalTotal.toFixed(2)}</strong>
+              <strong>{formatCurrency(finalTotal)}</strong>
             </div>
 
             <button type="button" className="st-pos-checkout" onClick={handleCheckout} disabled={submitting || cart.length === 0}>
@@ -336,7 +562,7 @@ export function PosTerminalPage({ token }: Props) {
               </label>
               <label>
                 Payment
-                <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}>
+                <select value={paymentMethod} onChange={(e) => handlePaymentMethodChange(e.target.value as PaymentMethod)}>
                   {PAYMENT_OPTIONS.map((method) => (
                     <option key={method} value={method}>
                       {method.replaceAll("_", " ")}
@@ -350,14 +576,129 @@ export function PosTerminalPage({ token }: Props) {
               </label>
               <label>
                 Discount
-                <input type="number" step="0.01" value={discountTotal} onChange={(e) => setDiscountTotal(e.target.value)} />
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={discountTotal}
+                  onChange={(e) => setDiscountTotal(e.target.value)}
+                />
               </label>
+
+              {paymentProofRequired ? (
+                <div className="st-pos-proof-summary">
+                  <div>
+                    <p className="st-pos-proof-summary-title">Payment Proof</p>
+                    <p className="st-pos-proof-summary-text">
+                      {paymentProofBlob ? "Receipt photo captured and ready." : "Take a photo of the customer receipt before checkout."}
+                    </p>
+                  </div>
+                  <button type="button" className="st-pos-proof-trigger" onClick={() => setPaymentProofModalOpen(true)}>
+                    {paymentProofBlob ? "Retake Photo" : "Capture Photo"}
+                  </button>
+                  {paymentProofPreviewUrl ? <img src={paymentProofPreviewUrl} alt="Payment proof preview" className="st-pos-proof-thumb" /> : null}
+                </div>
+              ) : null}
             </div>
           </div>
         </aside>
       </div>
 
+      {paymentProofModalOpen ? (
+        <div className="st-modal-backdrop" role="presentation">
+          <div className="st-pos-proof-modal" role="dialog" aria-modal="true" aria-labelledby="st-pos-proof-title">
+            <p className="st-pos-proof-title" id="st-pos-proof-title">
+              Take Picture of Receipt
+            </p>
+            <p className="st-pos-proof-subtitle">
+              Use the back camera to capture the customer payment receipt. This proof is required for {paymentMethod.replaceAll("_", " ")} payments.
+            </p>
+
+            <div className="st-pos-proof-camera">
+              {paymentProofPreviewUrl ? (
+                <img src={paymentProofPreviewUrl} alt="Payment receipt proof" />
+              ) : (
+                <video ref={paymentProofVideoRef} autoPlay playsInline muted />
+              )}
+              <canvas ref={paymentProofCanvasRef} className="st-hidden" />
+            </div>
+
+            {paymentProofError ? <p className="st-error">{paymentProofError}</p> : null}
+
+            <div className="st-pos-proof-actions">
+              <button type="button" className="st-pos-modal-btn secondary" onClick={handleClosePaymentProofModal}>
+                Cancel
+              </button>
+              {paymentProofPreviewUrl ? (
+                <>
+                  <button type="button" className="st-pos-modal-btn secondary" onClick={handleRetakePaymentProof}>
+                    Retake
+                  </button>
+                  <button type="button" className="st-pos-modal-btn primary" onClick={handleUsePaymentProof}>
+                    Use Photo
+                  </button>
+                </>
+              ) : (
+                <button type="button" className="st-pos-modal-btn primary" onClick={capturePaymentProof} disabled={!paymentProofCameraReady}>
+                  Capture
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {completedReceiptNo ? (
+        <div className="st-modal-backdrop" role="presentation">
+          <div
+            className="st-pos-success-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="st-pos-success-title"
+          >
+            <p className="st-pos-success-title" id="st-pos-success-title">
+              Transaction Complete
+            </p>
+            <div className="st-pos-success-check" aria-hidden="true">
+              <span className="material-symbols-outlined" aria-hidden="true">
+                check
+              </span>
+            </div>
+            <p className="st-pos-success-receipt">{completedReceiptNo}</p>
+            <div className="st-pos-success-actions">
+              <button type="button" className="st-pos-modal-btn secondary" onClick={handleCloseReceiptModal}>
+                Cancel
+              </button>
+              <button type="button" className="st-pos-modal-btn primary" onClick={handleViewReceipt}>
+                View Receipt
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       {error ? <p className="st-error">{error}</p> : <p className="st-pos-notice">{notice}</p>}
     </section>
   );
+}
+
+function requiresPaymentProof(method: PaymentMethod): boolean {
+  return method === "CARD" || method === "QR";
+}
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result;
+      if (typeof result !== "string") {
+        reject(new Error("Failed to encode payment proof."));
+        return;
+      }
+      const [, base64 = ""] = result.split(",", 2);
+      resolve(base64);
+    };
+    reader.onerror = () => reject(new Error("Failed to encode payment proof."));
+    reader.readAsDataURL(blob);
+  });
 }

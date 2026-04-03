@@ -57,6 +57,7 @@ public class AttendanceService {
     private final FaceRecognitionService faceRecognitionService;
     private final FaceVerificationTokenService faceVerificationTokenService;
     private final BiometricProperties biometricProperties;
+    private final BranchService branchService;
     private final AuditLogService auditLogService;
 
     public AttendanceService(
@@ -70,6 +71,7 @@ public class AttendanceService {
         FaceRecognitionService faceRecognitionService,
         FaceVerificationTokenService faceVerificationTokenService,
         BiometricProperties biometricProperties,
+        BranchService branchService,
         AuditLogService auditLogService
     ) {
         this.attendanceLogRepository = attendanceLogRepository;
@@ -82,6 +84,7 @@ public class AttendanceService {
         this.faceRecognitionService = faceRecognitionService;
         this.faceVerificationTokenService = faceVerificationTokenService;
         this.biometricProperties = biometricProperties;
+        this.branchService = branchService;
         this.auditLogService = auditLogService;
     }
 
@@ -239,6 +242,10 @@ public class AttendanceService {
         int page,
         int size
     ) {
+        if (branchId != null) {
+            branchService.requireBranch(branchId);
+        }
+
         OffsetDateTime fromAt = from == null
             ? OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)
             : from.atStartOfDay().atOffset(ZoneOffset.UTC);
@@ -305,13 +312,10 @@ public class AttendanceService {
                 throw new BadRequestException("Staff is already clocked in.");
             });
 
-        if (branchId == null) {
-            throw new BadRequestException("branchId is required for clock-in.");
-        }
-
+        Long resolvedBranchId = branchService.requireBranch(branchId).getId();
         AttendanceLog log = new AttendanceLog();
         log.setStaff(staff);
-        log.setBranchId(branchId);
+        log.setBranchId(resolvedBranchId);
         log.setClockInAt(OffsetDateTime.now());
         log.setAttendanceStatus(AttendanceStatus.CLOCKED_IN);
         log.setBreakMinutes(0);
@@ -335,7 +339,7 @@ public class AttendanceService {
 
         boolean attendanceTerminal = authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
-            .anyMatch("ROLE_ATTENDANCE_TERMINAL"::equals);
+            .anyMatch("ROLE_TERMINAL"::equals);
         if (attendanceTerminal) {
             return;
         }

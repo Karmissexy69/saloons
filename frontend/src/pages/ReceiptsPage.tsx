@@ -1,13 +1,22 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Page } from "../components/common/Page";
-import { exportReceiptHistoryCsv, getReceipt, getReceiptHistory } from "../lib/api";
-import type { ReceiptHistoryItemResponse, TransactionStatus } from "../lib/types";
+import { exportReceiptHistoryCsv, getReceipt, getReceiptHistory, listStaff } from "../lib/api";
+import { formatCurrency } from "../lib/currency";
+import type { ReceiptHistoryItemResponse, StaffProfileResponse, TransactionStatus } from "../lib/types";
 
-type Props = { token: string };
+type Props = {
+  token: string;
+  selectedBranchId: number | null;
+  selectedBranchName: string;
+};
 
 type ReceiptPayload = {
+  businessName?: string;
   branchId?: number;
+  branchName?: string;
+  branchAddress?: string;
   cashierId?: number;
+  cashierName?: string;
   soldAt?: string;
   receiptNo?: string;
   subtotal?: number;
@@ -27,7 +36,7 @@ function parseReceiptPayload(raw: string): ReceiptPayload | null {
   }
 }
 
-export function ReceiptsPage({ token }: Props) {
+export function ReceiptsPage({ token, selectedBranchId, selectedBranchName }: Props) {
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   const [receiptNo, setReceiptNo] = useState("");
@@ -38,6 +47,7 @@ export function ReceiptsPage({ token }: Props) {
   const [history, setHistory] = useState<ReceiptHistoryItemResponse[]>([]);
   const [selectedReceiptNo, setSelectedReceiptNo] = useState("");
   const [receiptContent, setReceiptContent] = useState("Select a receipt to preview.");
+  const [staff, setStaff] = useState<StaffProfileResponse[]>([]);
 
   const [notice, setNotice] = useState("Use filters to review transaction receipts.");
   const [error, setError] = useState("");
@@ -46,12 +56,98 @@ export function ReceiptsPage({ token }: Props) {
   const soldAtDate = parsedReceipt?.soldAt ? new Date(parsedReceipt.soldAt) : null;
   const soldAtDay = soldAtDate ? soldAtDate.toLocaleDateString() : "-";
   const soldAtTime = soldAtDate ? soldAtDate.toLocaleTimeString() : "-";
+  const receiptBusinessName = parsedReceipt?.businessName || "BrowPOS";
+  const receiptBranchName =
+    parsedReceipt?.branchName ||
+    selectedBranchName ||
+    (parsedReceipt?.branchId ? `Branch ${parsedReceipt.branchId}` : "Branch not set");
+  const receiptBranchAddress = parsedReceipt?.branchAddress?.trim() || "";
+  const receiptCashierName =
+    parsedReceipt?.cashierName ||
+    staff.find((member) => member.id === parsedReceipt?.cashierId)?.displayName ||
+    parsedReceipt?.cashierId ||
+    "-";
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadStaff() {
+      try {
+        const data = await listStaff(token);
+        if (!cancelled) {
+          setStaff(data);
+        }
+      } catch {
+        if (!cancelled) {
+          setStaff([]);
+        }
+      }
+    }
+
+    void loadStaff();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+
+  useEffect(() => {
+    const receiptFromQuery = new URLSearchParams(window.location.search).get("receiptNo")?.trim() ?? "";
+    if (!receiptFromQuery) {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadReceiptFromQuery() {
+      setError("");
+      setReceiptNo(receiptFromQuery);
+
+      try {
+        const [receiptData, historyData] = await Promise.all([
+          getReceipt(token, receiptFromQuery),
+          getReceiptHistory(token, {
+            receiptNo: receiptFromQuery,
+            branchId: selectedBranchId ?? undefined,
+            page: 0,
+            size: 50,
+          }),
+        ]);
+
+        if (cancelled) {
+          return;
+        }
+
+        setSelectedReceiptNo(receiptFromQuery);
+        setReceiptContent(receiptData.receiptJson);
+        setHistory(historyData.items);
+        setNotice(`Loaded receipt ${receiptFromQuery}.`);
+      } catch (err) {
+        if (cancelled) {
+          return;
+        }
+        setError(err instanceof Error ? err.message : "Failed to fetch receipt details");
+      }
+    }
+
+    loadReceiptFromQuery();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [token, selectedBranchId]);
 
   async function handleLoadHistory() {
+    if (selectedBranchId === null) {
+      setError("Select a branch in the header before loading receipts.");
+      return;
+    }
+
     setError("");
     try {
       const data = await getReceiptHistory(token, {
         receiptNo: receiptNo.trim() || undefined,
+        branchId: selectedBranchId,
         status: status === "ALL" ? undefined : status,
         from,
         to,
@@ -82,10 +178,16 @@ export function ReceiptsPage({ token }: Props) {
   }
 
   async function handleExportCsv() {
+    if (selectedBranchId === null) {
+      setError("Select a branch in the header before exporting receipts.");
+      return;
+    }
+
     setError("");
     try {
       const csv = await exportReceiptHistoryCsv(token, {
         receiptNo: receiptNo.trim() || undefined,
+        branchId: selectedBranchId,
         status: status === "ALL" ? undefined : status,
         from,
         to,
@@ -167,7 +269,7 @@ export function ReceiptsPage({ token }: Props) {
                     <td>{item.receiptNo}</td>
                     <td>{new Date(item.generatedAt).toLocaleString()}</td>
                     <td>{item.transactionStatus}</td>
-                    <td>${item.total.toFixed(2)}</td>
+                    <td>{formatCurrency(item.total)}</td>
                     <td>
                       <button className="st-link-btn" onClick={() => handlePreview(item.receiptNo)}>
                         Preview
@@ -185,11 +287,12 @@ export function ReceiptsPage({ token }: Props) {
         <div className="st-receipt-vertical-frame">
           <article className="st-receipt-vertical-paper">
             <header className="st-receipt-v-head">
-              <h4>BrowPOS</h4>
-              <p>Downtown Branch</p>
-              <small>742 Precision Ave, Level 4</small>
-              <small>San Francisco, CA 94105</small>
-              <small>+1 (555) 012-3456</small>
+              <h4>{receiptBusinessName}</h4>
+              <p>{receiptBranchName}</p>
+              {receiptBranchAddress ? <small className="st-receipt-v-address">{receiptBranchAddress}</small> : null}
+              <small>Branch Receipt</small>
+              <small>Generated from POS Terminal</small>
+              <small>Internal Operations Copy</small>
             </header>
 
             <div className="st-receipt-v-badge">
@@ -207,7 +310,7 @@ export function ReceiptsPage({ token }: Props) {
                       <strong>{item.serviceName || "Service"}</strong>
                       <small>Qty: {item.qty ?? 1}</small>
                     </div>
-                    <span>${(((item.unitPrice || 0) * (item.qty || 1)) - (item.discountAmount || 0)).toFixed(2)}</span>
+                    <span>{formatCurrency(((item.unitPrice || 0) * (item.qty || 1)) - (item.discountAmount || 0))}</span>
                   </div>
                 ))
               )}
@@ -218,15 +321,15 @@ export function ReceiptsPage({ token }: Props) {
             <section className="st-receipt-v-totals">
               <div>
                 <span>Subtotal</span>
-                <span>${(parsedReceipt?.subtotal || 0).toFixed(2)}</span>
+                <span>{formatCurrency(parsedReceipt?.subtotal || 0)}</span>
               </div>
               <div>
                 <span>Discount</span>
-                <span>${(parsedReceipt?.discountTotal || 0).toFixed(2)}</span>
+                <span>{formatCurrency(parsedReceipt?.discountTotal || 0)}</span>
               </div>
               <div className="st-receipt-v-grand">
                 <strong>Total</strong>
-                <strong>${(parsedReceipt?.total || 0).toFixed(2)}</strong>
+                <strong>{formatCurrency(parsedReceipt?.total || 0)}</strong>
               </div>
             </section>
 
@@ -258,10 +361,10 @@ export function ReceiptsPage({ token }: Props) {
               <div>
                 <small>Branch / Cashier</small>
                 <p>
-                  {parsedReceipt?.branchId ?? "-"} / {parsedReceipt?.cashierId ?? "-"}
+                  {receiptBranchName} / {receiptCashierName}
                 </p>
               </div>
-              <h5>Thank you for choosing BrowPOS.</h5>
+              <h5>Thank you for choosing {receiptBusinessName}.</h5>
             </footer>
 
             <div className="st-receipt-v-edge" />

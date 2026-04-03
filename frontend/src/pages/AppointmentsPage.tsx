@@ -10,11 +10,15 @@ import {
 } from "../lib/api";
 import type { AppointmentResponse, AppointmentStatus, PaymentMethod, ServiceItemResponse, StaffProfileResponse } from "../lib/types";
 
-type Props = { token: string };
+type Props = {
+  token: string;
+  selectedBranchId: number | null;
+  selectedBranchName: string;
+};
 
 const STATUSES: AppointmentStatus[] = ["BOOKED", "CHECKED_IN", "IN_SERVICE", "COMPLETED", "CANCELLED", "NO_SHOW"];
 
-export function AppointmentsPage({ token }: Props) {
+export function AppointmentsPage({ token, selectedBranchId, selectedBranchName }: Props) {
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   const [services, setServices] = useState<ServiceItemResponse[]>([]);
@@ -34,7 +38,7 @@ export function AppointmentsPage({ token }: Props) {
   const [filterFrom, setFilterFrom] = useState(today);
   const [filterTo, setFilterTo] = useState(today);
 
-  const [convertPaymentMethod, setConvertPaymentMethod] = useState<PaymentMethod>("CARD");
+  const [convertPaymentMethod, setConvertPaymentMethod] = useState<PaymentMethod>("CASH");
   const [convertPaymentReference, setConvertPaymentReference] = useState("");
 
   const [notice, setNotice] = useState("Schedule and manage appointments.");
@@ -63,12 +67,18 @@ export function AppointmentsPage({ token }: Props) {
   }, [token]);
 
   async function loadAppointments() {
+    if (selectedBranchId === null) {
+      setError("Select a branch in the header before loading appointments.");
+      return;
+    }
+
     setLoadingList(true);
     setError("");
     try {
       const data = await listAppointments(token, {
-        from: filterFrom,
-        to: filterTo,
+        from: toDayStartIso(filterFrom),
+        to: toDayEndIso(filterTo),
+        branchId: selectedBranchId,
         status: filterStatus === "ALL" ? undefined : filterStatus,
       });
       setAppointments(data);
@@ -81,6 +91,11 @@ export function AppointmentsPage({ token }: Props) {
   }
 
   async function handleCreate() {
+    if (selectedBranchId === null) {
+      setError("Select a branch in the header before booking an appointment.");
+      return;
+    }
+
     if (selectedServiceId.trim().length === 0 || selectedStaffId.trim().length === 0) {
       setError("Please choose service and staff member.");
       return;
@@ -90,7 +105,7 @@ export function AppointmentsPage({ token }: Props) {
     try {
       const startAt = new Date(`${scheduledDate}T${scheduledTime}:00`).toISOString();
       const created = await createAppointment(token, {
-        branchId: 1,
+        branchId: selectedBranchId,
         serviceId: Number(selectedServiceId),
         staffId: Number(selectedStaffId),
         startAt,
@@ -120,6 +135,10 @@ export function AppointmentsPage({ token }: Props) {
   async function handleConvertToBill(appointment: AppointmentResponse) {
     if (appointment.status !== "COMPLETED") {
       setError("Only completed appointments can be converted to a bill.");
+      return;
+    }
+    if (convertPaymentMethod === "CARD" || convertPaymentMethod === "QR") {
+      setError("Card and QR appointment billing must be completed from POS Terminal so payment proof can be captured.");
       return;
     }
 
@@ -180,9 +199,16 @@ export function AppointmentsPage({ token }: Props) {
 
           <div className="st-grid two">
             <label>
+              Current Branch
+              <input value={selectedBranchName || "No branch selected"} disabled />
+            </label>
+            <label>
               Deposit
               <input type="number" step="0.01" value={depositAmount} onChange={(e) => setDepositAmount(e.target.value)} />
             </label>
+          </div>
+
+          <div className="st-grid two">
             <label>
               Notes
               <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional appointment note" />
@@ -287,4 +313,12 @@ export function AppointmentsPage({ token }: Props) {
       {error ? <p className="st-error">{error}</p> : <p>{notice}</p>}
     </Page>
   );
+}
+
+function toDayStartIso(value: string): string {
+  return new Date(`${value}T00:00:00`).toISOString();
+}
+
+function toDayEndIso(value: string): string {
+  return new Date(`${value}T23:59:59`).toISOString();
 }

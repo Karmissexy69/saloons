@@ -38,4 +38,7 @@ public class Payment {
 
     @Column(name = "reference_no")
     private String referenceNo;
+
+    @Column(name = "proof_image_key")
+    private String proofImageKey;
 }

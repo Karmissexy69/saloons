@@ -1,11 +1,16 @@
 import { useMemo, useState } from "react";
 import { Page } from "../components/common/Page";
 import { getAttendanceReport, getReceiptHistory, getSalesSummary } from "../lib/api";
+import { formatCurrency } from "../lib/currency";
 import type { AttendanceReportItemResponse, ReceiptHistoryItemResponse, SalesSummaryResponse } from "../lib/types";
 
-type Props = { token: string };
+type Props = {
+  token: string;
+  role: string;
+  selectedBranchId: number | null;
+};
 
-export function DashboardPage({ token, role }: Props & { role: string }) {
+export function DashboardPage({ token, role, selectedBranchId }: Props) {
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
   const [from, setFrom] = useState(today);
   const [to, setTo] = useState(today);
@@ -18,11 +23,16 @@ export function DashboardPage({ token, role }: Props & { role: string }) {
   const [error, setError] = useState("");
 
   async function refresh() {
+    if (selectedBranchId === null) {
+      setError("Select a branch in the header before loading the dashboard.");
+      return;
+    }
+
     setLoading(true);
     setError("");
     try {
       const normalizedRole = role.trim().toUpperCase();
-      const salesSummary = await getSalesSummary(token, from, to, 1);
+      const salesSummary = await getSalesSummary(token, from, to, selectedBranchId);
       setSales(salesSummary);
 
       if (normalizedRole === "OWNER") {
@@ -32,8 +42,8 @@ export function DashboardPage({ token, role }: Props & { role: string }) {
       }
 
       const [receipts, attendanceSnapshot] = await Promise.all([
-        getReceiptHistory(token, { from, to, branchId: 1, page: 0, size: 5 }),
-        getAttendanceReport(token, { from, to, branchId: 1, page: 0, size: 5 }),
+        getReceiptHistory(token, { from, to, branchId: selectedBranchId, page: 0, size: 5 }),
+        getAttendanceReport(token, { from, to, branchId: selectedBranchId, page: 0, size: 5 }),
       ]);
 
       setRecentReceipts(receipts.items);
@@ -70,11 +80,11 @@ export function DashboardPage({ token, role }: Props & { role: string }) {
       <section className="st-dashboard-kpi-grid">
         <article className="st-dashboard-kpi st-dashboard-kpi-primary">
           <p>Gross Sales</p>
-          <h3>{sales ? `$${sales.grossSales.toFixed(2)}` : "-"}</h3>
+          <h3>{sales ? formatCurrency(sales.grossSales) : "-"}</h3>
         </article>
         <article className="st-dashboard-kpi">
           <p>Net Sales</p>
-          <h3>{sales ? `$${sales.netSales.toFixed(2)}` : "-"}</h3>
+          <h3>{sales ? formatCurrency(sales.netSales) : "-"}</h3>
         </article>
         <article className="st-dashboard-kpi">
           <p>Transaction Count</p>
@@ -82,7 +92,7 @@ export function DashboardPage({ token, role }: Props & { role: string }) {
         </article>
         <article className="st-dashboard-kpi">
           <p>Refund Total</p>
-          <h3>{sales ? `$${sales.refundTotal.toFixed(2)}` : "-"}</h3>
+          <h3>{sales ? formatCurrency(sales.refundTotal) : "-"}</h3>
         </article>
       </section>
 
@@ -122,7 +132,7 @@ export function DashboardPage({ token, role }: Props & { role: string }) {
                         <td>{item.receiptNo}</td>
                         <td>{new Date(item.generatedAt).toLocaleString()}</td>
                         <td>{item.transactionStatus}</td>
-                        <td>${item.total.toFixed(2)}</td>
+                        <td>{formatCurrency(item.total)}</td>
                       </tr>
                     ))
                   )}

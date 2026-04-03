@@ -1,13 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Page } from "../components/common/Page";
 import { clockIn, clockOut, listStaff, verifyFace } from "../lib/api";
-import type { StaffProfileResponse } from "../lib/types";
+import type { AttendanceLogResponse, StaffProfileResponse } from "../lib/types";
 
-type Props = { token: string };
+type Props = {
+  token: string;
+  selectedBranchId: number | null;
+  selectedBranchName: string;
+};
+type AttendanceTimes = {
+  clockInAt: string | null;
+  clockOutAt: string | null;
+};
 
-export function AttendanceKioskPage({ token }: Props) {
+export function AttendanceKioskPage({ token, selectedBranchId, selectedBranchName }: Props) {
   const [staff, setStaff] = useState<StaffProfileResponse[]>([]);
   const [selectedStaffId, setSelectedStaffId] = useState("");
+  const [attendanceTimesByStaffId, setAttendanceTimesByStaffId] = useState<Record<number, AttendanceTimes>>({});
 
   const [selfieBlob, setSelfieBlob] = useState<Blob | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
@@ -44,6 +53,7 @@ export function AttendanceKioskPage({ token }: Props) {
     }
 
     loadStaff();
+    void startCamera();
 
     return () => {
       stopCamera();
@@ -168,12 +178,17 @@ export function AttendanceKioskPage({ token }: Props) {
     if (selectedStaff === null || verificationToken === null) {
       return;
     }
+    if (selectedBranchId === null) {
+      setError("Select a branch in the header before clocking in.");
+      return;
+    }
 
     setError("");
     try {
-      await clockIn(token, selectedStaff.id, 1, verificationToken);
+      const response = await clockIn(token, selectedStaff.id, selectedBranchId, verificationToken);
+      storeAttendanceTimes(selectedStaff.id, response);
       setVerificationToken(null);
-      setStatusText(`${selectedStaff.displayName} has clocked in successfully.`);
+      setStatusText(`${selectedStaff.displayName} clocked in at ${formatAttendanceTime(response.clockInAt)}.`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Clock in failed");
     }
@@ -186,9 +201,10 @@ export function AttendanceKioskPage({ token }: Props) {
 
     setError("");
     try {
-      await clockOut(token, selectedStaff.id, verificationToken);
+      const response = await clockOut(token, selectedStaff.id, verificationToken);
+      storeAttendanceTimes(selectedStaff.id, response);
       setVerificationToken(null);
-      setStatusText(`${selectedStaff.displayName} has clocked out successfully.`);
+      setStatusText(`${selectedStaff.displayName} clocked out at ${formatAttendanceTime(response.clockOutAt)}.`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Clock out failed");
     }
@@ -196,6 +212,19 @@ export function AttendanceKioskPage({ token }: Props) {
 
   const verificationLabel = similarity === null ? "Waiting for Input" : `Match ${similarity.toFixed(2)}%`;
   const selectedStaffName = selectedStaff?.displayName ?? "Select your name";
+  const selectedAttendanceTimes = selectedStaff ? attendanceTimesByStaffId[selectedStaff.id] : undefined;
+  const clockInTimeLabel = formatAttendanceTime(selectedAttendanceTimes?.clockInAt ?? null);
+  const clockOutTimeLabel = formatAttendanceTime(selectedAttendanceTimes?.clockOutAt ?? null);
+
+  function storeAttendanceTimes(staffId: number, response: AttendanceLogResponse) {
+    setAttendanceTimesByStaffId((current) => ({
+      ...current,
+      [staffId]: {
+        clockInAt: response.clockInAt,
+        clockOutAt: response.clockOutAt,
+      },
+    }));
+  }
 
   return (
     <Page title="Staff Attendance Terminal" subtitle="Please select your name and align your face with the viewfinder.">
@@ -264,17 +293,17 @@ export function AttendanceKioskPage({ token }: Props) {
               </label>
               <label>
                 Branch
-                <input value="Downtown Branch" disabled />
+                <input value={selectedBranchName || "No branch selected"} disabled />
               </label>
             </div>
             <div className="st-kiosk-shifts">
               <div>
-                <span>Shift Start</span>
-                <strong>08:00 AM</strong>
+                <span>Clock In Time</span>
+                <strong>{clockInTimeLabel}</strong>
               </div>
               <div>
-                <span>Shift End</span>
-                <strong>05:00 PM</strong>
+                <span>Clock Out Time</span>
+                <strong>{clockOutTimeLabel}</strong>
               </div>
             </div>
           </section>
@@ -282,26 +311,9 @@ export function AttendanceKioskPage({ token }: Props) {
           <section className="st-kiosk-side-panel">
             <h3 className="st-kiosk-panel-title">Camera Controls</h3>
             <div className="st-actions">
-              <button className="st-btn" onClick={startCamera}>
-                Start Camera
-              </button>
               <button className="st-btn st-btn-secondary" onClick={capture} disabled={!cameraReady}>
                 Capture
               </button>
-              <label className="st-upload">
-                Upload Instead
-                <input
-                  type="file"
-                  accept="image/*"
-                  capture="user"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setSelfie(file);
-                    }
-                  }}
-                />
-              </label>
             </div>
           </section>
 
@@ -326,4 +338,20 @@ export function AttendanceKioskPage({ token }: Props) {
       </div>
     </Page>
   );
+}
+
+function formatAttendanceTime(value: string | null): string {
+  if (!value) {
+    return "--:--";
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return "--:--";
+  }
+
+  return parsed.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }

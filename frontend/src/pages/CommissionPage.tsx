@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Card, Page } from "../components/common/Page";
 import { getCommissionStatement, listStaff } from "../lib/api";
+import { formatCurrency } from "../lib/currency";
 import type { CommissionStatementResponse, StaffProfileResponse } from "../lib/types";
 
 type Props = { token: string };
@@ -81,13 +82,13 @@ export function CommissionPage({ token }: Props) {
 
       <div className="st-cards-grid">
         <Card title="Earned">
-          <h2>{statement ? `$${statement.earned.toFixed(2)}` : "-"}</h2>
+          <h2>{statement ? formatCurrency(statement.earned) : "-"}</h2>
         </Card>
         <Card title="Reversal">
-          <h2>{statement ? `$${statement.reversal.toFixed(2)}` : "-"}</h2>
+          <h2>{statement ? formatCurrency(statement.reversal) : "-"}</h2>
         </Card>
         <Card title="Net">
-          <h2>{statement ? `$${statement.net.toFixed(2)}` : "-"}</h2>
+          <h2>{statement ? formatCurrency(statement.net) : "-"}</h2>
         </Card>
       </div>
 

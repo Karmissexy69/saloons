@@ -33,6 +33,7 @@ public class AppointmentService {
     private final ServiceItemRepository serviceItemRepository;
     private final SalesTransactionRepository salesTransactionRepository;
     private final TransactionService transactionService;
+    private final BranchService branchService;
     private final AuditLogService auditLogService;
 
     public AppointmentService(
@@ -42,6 +43,7 @@ public class AppointmentService {
         ServiceItemRepository serviceItemRepository,
         SalesTransactionRepository salesTransactionRepository,
         TransactionService transactionService,
+        BranchService branchService,
         AuditLogService auditLogService
     ) {
         this.appointmentRepository = appointmentRepository;
@@ -50,16 +52,18 @@ public class AppointmentService {
         this.serviceItemRepository = serviceItemRepository;
         this.salesTransactionRepository = salesTransactionRepository;
         this.transactionService = transactionService;
+        this.branchService = branchService;
         this.auditLogService = auditLogService;
     }
 
     @Transactional
     public AppointmentResponse create(CreateAppointmentRequest request) {
+        Long branchId = branchService.requireBranch(request.branchId()).getId();
         Appointment appointment = new Appointment();
         appointment.setCustomer(resolveCustomer(request.customerId()));
         appointment.setStaff(resolveStaff(request.staffId()));
         appointment.setService(resolveService(request.serviceId()));
-        appointment.setBranchId(request.branchId());
+        appointment.setBranchId(branchId);
         appointment.setStartAt(request.startAt());
         appointment.setEndAt(request.endAt());
         appointment.setStatus(request.status() == null ? AppointmentStatus.BOOKED : request.status());
@@ -73,17 +77,14 @@ public class AppointmentService {
     }
 
     public List<AppointmentResponse> list(OffsetDateTime from, OffsetDateTime to, Long branchId, AppointmentStatus status) {
-        List<Appointment> appointments;
-        if (status != null) {
-            appointments = appointmentRepository.findByStatusOrderByStartAtAsc(status);
-        } else if (from != null && to != null) {
-            appointments = branchId == null
-                ? appointmentRepository.findByStartAtBetweenOrderByStartAtAsc(from, to)
-                : appointmentRepository.findByBranchIdAndStartAtBetweenOrderByStartAtAsc(branchId, from, to);
-        } else {
-            appointments = appointmentRepository.findAll();
+        if (branchId != null) {
+            branchService.requireBranch(branchId);
+        }
+        if (from != null && to != null && to.isBefore(from)) {
+            throw new BadRequestException("Invalid appointment range: 'to' must be on or after 'from'.");
         }
 
+        List<Appointment> appointments = appointmentRepository.search(from, to, branchId, status);
         return appointments.stream().map(this::toResponse).toList();
     }
 
@@ -120,7 +121,7 @@ public class AppointmentService {
         );
 
         List<CreateTransactionRequest.PaymentRequest> payments = request.payments().stream()
-            .map(p -> new CreateTransactionRequest.PaymentRequest(p.method(), p.amount(), p.referenceNo()))
+            .map(p -> new CreateTransactionRequest.PaymentRequest(p.method(), p.amount(), p.referenceNo(), null, null))
             .toList();
 
         CreateTransactionRequest txnRequest = new CreateTransactionRequest(

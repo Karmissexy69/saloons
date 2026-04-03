@@ -30,7 +30,9 @@ public record CreateTransactionRequest(
     public record PaymentRequest(
         @NotNull PaymentMethod method,
         @NotNull @DecimalMin("0.01") BigDecimal amount,
-        String referenceNo
+        String referenceNo,
+        String proofImageBase64,
+        String proofImageContentType
     ) {
     }
 }

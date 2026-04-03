@@ -1,5 +1,6 @@
 package com.salonpos.config;
 
+import com.salonpos.ratelimit.RateLimitFilter;
 import com.salonpos.security.AppUserDetailsService;
 import com.salonpos.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,7 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(
         HttpSecurity http,
         JwtAuthenticationFilter jwtAuthenticationFilter,
+        RateLimitFilter rateLimitFilter,
         DaoAuthenticationProvider authenticationProvider,
         CorsConfigurationSource corsConfigurationSource
     ) throws Exception {
@@ -35,23 +37,30 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(rateLimitFilter, JwtAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/staff/*/face/re-enroll").hasRole("IT_ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/staff").hasAnyRole("ADMIN", "IT_ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/staff").hasAnyRole("OWNER", "ADMIN", "MANAGER", "CASHIER", "IT_ADMIN", "ATTENDANCE_TERMINAL")
-                .requestMatchers(HttpMethod.GET, "/api/attendance/report").hasAnyRole("OWNER", "ADMIN", "MANAGER", "CASHIER", "STYLIST", "ATTENDANCE_TERMINAL", "IT_ADMIN")
-                .requestMatchers("/api/reports/**").hasAnyRole("OWNER", "ADMIN", "MANAGER", "IT_ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/audit-logs", "/api/audit-logs/**").hasAnyRole("OWNER", "ADMIN", "MANAGER", "IT_ADMIN")
-                .requestMatchers("/api/refunds/**").hasAnyRole("ADMIN", "MANAGER", "IT_ADMIN")
-                .requestMatchers("/api/appointments/**").hasAnyRole("ADMIN", "MANAGER", "CASHIER", "STYLIST", "IT_ADMIN")
-                .requestMatchers("/api/services/**").hasAnyRole("ADMIN", "MANAGER", "CASHIER", "IT_ADMIN")
-                .requestMatchers("/api/transactions/**", "/api/receipts/**").hasAnyRole("ADMIN", "MANAGER", "CASHIER", "IT_ADMIN")
-                .requestMatchers("/api/attendance/**").hasAnyRole("ADMIN", "MANAGER", "CASHIER", "STYLIST", "ATTENDANCE_TERMINAL", "IT_ADMIN")
-                .requestMatchers("/api/commission/**").hasAnyRole("OWNER", "ADMIN", "MANAGER", "STYLIST", "IT_ADMIN")
-                .requestMatchers("/api/staff/**").hasAnyRole("ADMIN", "MANAGER", "CASHIER", "IT_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/staff").hasRole("IT_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/settings/**").hasRole("IT_ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/settings", "/api/settings/**").hasRole("IT_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/branches/**").hasRole("IT_ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/branches/**").hasRole("IT_ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/branches", "/api/branches/**").hasAnyRole("OWNER", "TERMINAL", "IT_ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/staff", "/api/staff/**").hasAnyRole("TERMINAL", "IT_ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/attendance/report").hasAnyRole("OWNER", "IT_ADMIN")
+                .requestMatchers("/api/reports/**").hasAnyRole("OWNER", "IT_ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/audit-logs", "/api/audit-logs/**").hasAnyRole("OWNER", "IT_ADMIN")
+                .requestMatchers("/api/refunds/**").hasRole("IT_ADMIN")
+                .requestMatchers("/api/appointments/**").hasAnyRole("TERMINAL", "IT_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/services/**").hasRole("IT_ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/services/**").hasAnyRole("TERMINAL", "IT_ADMIN")
+                .requestMatchers("/api/transactions/**", "/api/receipts/**").hasAnyRole("TERMINAL", "IT_ADMIN")
+                .requestMatchers("/api/attendance/**").hasAnyRole("TERMINAL", "IT_ADMIN")
+                .requestMatchers("/api/commission/**").hasAnyRole("OWNER", "IT_ADMIN")
+                .requestMatchers("/api/staff/**").hasRole("IT_ADMIN")
                 .anyRequest().authenticated());
 
         return http.build();

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Page } from "../components/common/Page";
 import { createService, listServices } from "../lib/api";
+import { formatCurrency } from "../lib/currency";
 import type { CommissionRuleType, ServiceItemResponse } from "../lib/types";
 
 type Props = { token: string };
@@ -97,11 +98,11 @@ export function ServiceCatalogPage({ token }: Props) {
                       <td>{service.name}</td>
                       <td>{service.categoryName}</td>
                       <td>{service.durationMinutes} min</td>
-                      <td>${service.price.toFixed(2)}</td>
+                      <td>{formatCurrency(service.price)}</td>
                       <td>
                         {service.commissionType === "PERCENTAGE"
                           ? `${service.commissionValue}%`
-                          : `$${service.commissionValue.toFixed(2)}`}
+                          : formatCurrency(service.commissionValue)}
                       </td>
                       <td>
                         <span className="st-badge st-badge-success">ACTIVE</span>

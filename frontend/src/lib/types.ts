@@ -13,6 +13,18 @@ export type AuthLoginResponse = {
   role: string;
 };
 
+export type BranchResponse = {
+  id: number;
+  name: string;
+  address: string | null;
+  active: boolean;
+};
+
+export type AppSettingResponse = {
+  key: string;
+  value: string;
+};
+
 export type CommissionRuleType = "PERCENTAGE" | "FIXED";
 export type PaymentMethod = "CASH" | "CARD" | "BANK_TRANSFER" | "QR" | "SPLIT";
 export type TransactionStatus = "PAID" | "REFUNDED" | "VOIDED";
@@ -119,6 +131,8 @@ export type CreateTransactionRequest = {
     method: PaymentMethod;
     amount: number;
     referenceNo?: string;
+    proofImageBase64?: string;
+    proofImageContentType?: string;
   }>;
 };
 

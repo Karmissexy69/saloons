@@ -6,6 +6,7 @@ import { AttendanceKioskPage } from "./pages/AttendanceKioskPage";
 import { AttendanceLogsPage } from "./pages/AttendanceLogsPage";
 import { StaffManagementPage } from "./pages/StaffManagementPage";
 import { ServiceCatalogPage } from "./pages/ServiceCatalogPage";
+import { SettingsPage } from "./pages/SettingsPage";
 import { AppointmentsPage } from "./pages/AppointmentsPage";
 import { PosTerminalPage } from "./pages/PosTerminalPage";
 import { ReceiptsPage } from "./pages/ReceiptsPage";
@@ -13,12 +14,14 @@ import { RefundsPage } from "./pages/RefundsPage";
 import { CommissionPage } from "./pages/CommissionPage";
 import { SalesReportPage } from "./pages/SalesReportPage";
 import { AuditLogsPage } from "./pages/AuditLogsPage";
-import type { AuthLoginResponse } from "./lib/types";
+import { listBranches } from "./lib/api";
+import type { AuthLoginResponse, BranchResponse } from "./lib/types";
 import { getAllowedNavKeysForRole, isNavAllowedForRole } from "./lib/permissions";
 
 const TOKEN_KEY = "browpos_token";
 const USERNAME_KEY = "browpos_username";
 const ROLE_KEY = "browpos_role";
+const BRANCH_ID_KEY = "browpos_branch_id";
 
 const DEFAULT_TAB: NavKey = "dashboard";
 const LOGIN_PATH = "/login";
@@ -31,6 +34,7 @@ function parsePathToNavKey(pathname: string): NavKey {
     "attendance-logs",
     "staff",
     "services",
+    "settings",
     "appointments",
     "pos-terminal",
     "receipts",
@@ -44,7 +48,8 @@ function parsePathToNavKey(pathname: string): NavKey {
 }
 
 function setPath(path: string) {
-  if (window.location.pathname !== path) {
+  const currentPath = `${window.location.pathname}${window.location.search}`;
+  if (currentPath !== path) {
     window.history.pushState({}, "", path);
   }
 }
@@ -54,7 +59,12 @@ export default function App() {
   const [username, setUsername] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<NavKey>(DEFAULT_TAB);
+  const [branches, setBranches] = useState<BranchResponse[]>([]);
+  const [selectedBranchId, setSelectedBranchId] = useState<number | null>(null);
+  const [branchError, setBranchError] = useState("");
+  const [branchReloadToken, setBranchReloadToken] = useState(0);
   const isAuthenticated = !!token && !!username && !!role;
+  const selectedBranch = branches.find((branch) => branch.id === selectedBranchId) ?? null;
 
   function resolveAllowedTab(current: NavKey, roleName: string): NavKey {
     const allowed = getAllowedNavKeysForRole(roleName, NAV_ORDER);
@@ -129,6 +139,11 @@ export default function App() {
     setPath(`/${tab}`);
   }
 
+  function handleOpenReceipt(receiptNo: string) {
+    setActiveTab("receipts");
+    setPath(`/receipts?receiptNo=${encodeURIComponent(receiptNo)}`);
+  }
+
   useEffect(() => {
     if (!isAuthenticated && window.location.pathname !== LOGIN_PATH) {
       setPath(LOGIN_PATH);
@@ -146,23 +161,103 @@ export default function App() {
     }
   }, [isAuthenticated, activeTab, role]);
 
+  useEffect(() => {
+    if (!token) {
+      setBranches([]);
+      setSelectedBranchId(null);
+      setBranchError("");
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadBranches() {
+      setBranchError("");
+      try {
+        const data = await listBranches(token);
+        if (cancelled) {
+          return;
+        }
+
+        setBranches(data);
+        if (data.length === 0) {
+          setSelectedBranchId(null);
+          localStorage.removeItem(BRANCH_ID_KEY);
+          return;
+        }
+
+        const storedBranchId = Number(localStorage.getItem(BRANCH_ID_KEY));
+        const fallbackBranch =
+          data.find((branch) => branch.id === storedBranchId) ?? data.find((branch) => branch.active) ?? data[0];
+
+        setSelectedBranchId(fallbackBranch.id);
+        localStorage.setItem(BRANCH_ID_KEY, String(fallbackBranch.id));
+      } catch (err) {
+        if (cancelled) {
+          return;
+        }
+        setBranches([]);
+        setSelectedBranchId(null);
+        setBranchError(err instanceof Error ? err.message : "Failed to load branches");
+      }
+    }
+
+    void loadBranches();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [token, branchReloadToken]);
+
+  function handleBranchChange(branchId: number) {
+    setSelectedBranchId(branchId);
+    localStorage.setItem(BRANCH_ID_KEY, String(branchId));
+  }
+
+  function handleBranchesChanged() {
+    setBranchReloadToken((current) => current + 1);
+  }
+
   if (!isAuthenticated) {
     return <LoginPage onLogin={handleLogin} />;
   }
 
   return (
-    <AppShell username={username} role={role} active={activeTab} onNavigate={handleNavigate} onLogout={handleLogout}>
-      {activeTab === "dashboard" ? <DashboardPage token={token} role={role} /> : null}
-      {activeTab === "attendance-kiosk" ? <AttendanceKioskPage token={token} /> : null}
-      {activeTab === "attendance-logs" ? <AttendanceLogsPage token={token} /> : null}
+    <AppShell
+      username={username}
+      role={role}
+      active={activeTab}
+      branches={branches}
+      selectedBranchId={selectedBranchId}
+      branchError={branchError}
+      onBranchChange={handleBranchChange}
+      onNavigate={handleNavigate}
+      onLogout={handleLogout}
+    >
+      {activeTab === "dashboard" ? <DashboardPage token={token} role={role} selectedBranchId={selectedBranchId} /> : null}
+      {activeTab === "attendance-kiosk" ? (
+        <AttendanceKioskPage token={token} selectedBranchId={selectedBranchId} selectedBranchName={selectedBranch?.name ?? ""} />
+      ) : null}
+      {activeTab === "attendance-logs" ? (
+        <AttendanceLogsPage token={token} selectedBranchId={selectedBranchId} selectedBranchName={selectedBranch?.name ?? ""} />
+      ) : null}
       {activeTab === "staff" ? <StaffManagementPage token={token} /> : null}
       {activeTab === "services" ? <ServiceCatalogPage token={token} /> : null}
-      {activeTab === "appointments" ? <AppointmentsPage token={token} /> : null}
-      {activeTab === "pos-terminal" ? <PosTerminalPage token={token} /> : null}
-      {activeTab === "receipts" ? <ReceiptsPage token={token} /> : null}
+      {activeTab === "settings" ? (
+        <SettingsPage token={token} branches={branches} onBranchesChanged={handleBranchesChanged} />
+      ) : null}
+      {activeTab === "appointments" ? (
+        <AppointmentsPage token={token} selectedBranchId={selectedBranchId} selectedBranchName={selectedBranch?.name ?? ""} />
+      ) : null}
+      {activeTab === "pos-terminal" ? (
+        <PosTerminalPage token={token} selectedBranchId={selectedBranchId} onViewReceipt={handleOpenReceipt} />
+      ) : null}
+      {activeTab === "receipts" ? (
+        <ReceiptsPage token={token} selectedBranchId={selectedBranchId} selectedBranchName={selectedBranch?.name ?? ""} />
+      ) : null}
       {activeTab === "refunds" ? <RefundsPage token={token} /> : null}
       {activeTab === "commission" ? <CommissionPage token={token} /> : null}
-      {activeTab === "sales" ? <SalesReportPage token={token} /> : null}
+      {activeTab === "sales" ? <SalesReportPage token={token} selectedBranchId={selectedBranchId} /> : null}
       {activeTab === "audit-logs" ? <AuditLogsPage token={token} /> : null}
     </AppShell>
   );

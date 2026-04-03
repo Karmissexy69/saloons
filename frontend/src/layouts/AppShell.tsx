@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { getAllowedNavKeysForRole } from "../lib/permissions";
+import type { BranchResponse } from "../lib/types";
 
 export type NavKey =
   | "dashboard"
@@ -7,6 +8,7 @@ export type NavKey =
   | "attendance-logs"
   | "staff"
   | "services"
+  | "settings"
   | "appointments"
   | "pos-terminal"
   | "receipts"
@@ -28,6 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { key: "attendance-logs", label: "Attendance Logs", icon: "history", group: "ops" },
   { key: "staff", label: "Staff", icon: "group", group: "ops" },
   { key: "services", label: "Services", icon: "content_cut", group: "ops" },
+  { key: "settings", label: "Settings", icon: "settings", group: "management" },
   { key: "appointments", label: "Appointments", icon: "calendar_today", group: "ops" },
   { key: "pos-terminal", label: "POS Terminal", icon: "point_of_sale", group: "commerce" },
   { key: "receipts", label: "Receipts", icon: "receipt_long", group: "commerce" },
@@ -49,13 +52,31 @@ type Props = {
   username: string;
   role: string;
   active: NavKey;
+  branches: BranchResponse[];
+  selectedBranchId: number | null;
+  branchError: string;
+  onBranchChange: (branchId: number) => void;
   onNavigate: (key: NavKey) => void;
   onLogout: () => void;
   children: ReactNode;
 };
 
-export function AppShell({ username, role, active, onNavigate, onLogout, children }: Props) {
+export function AppShell({
+  username,
+  role,
+  active,
+  branches,
+  selectedBranchId,
+  branchError,
+  onBranchChange,
+  onNavigate,
+  onLogout,
+  children,
+}: Props) {
   const allowedKeys = getAllowedNavKeysForRole(role, NAV_ORDER);
+  const selectedBranch = branches.find((branch) => branch.id === selectedBranchId) ?? null;
+  const branchSelectValue = selectedBranchId === null ? "" : String(selectedBranchId);
+  const branchStatusLabel = selectedBranch?.active ? "Open" : "Inactive";
 
   return (
     <div className="st-app">
@@ -101,8 +122,37 @@ export function AppShell({ username, role, active, onNavigate, onLogout, childre
 
       <header className="st-topbar">
         <div className="st-topbar-left">
-          <p className="st-topbar-branch">Downtown Branch</p>
-          <span className="st-topbar-pill">Open</span>
+          <div className="st-topbar-branch-picker">
+            <span className="material-symbols-outlined" aria-hidden="true">
+              storefront
+            </span>
+            <select
+              aria-label="Current branch"
+              className="st-topbar-branch-select"
+              value={branchSelectValue}
+              onChange={(event) => {
+                const nextBranchId = Number(event.target.value);
+                if (Number.isFinite(nextBranchId) && nextBranchId > 0) {
+                  onBranchChange(nextBranchId);
+                }
+              }}
+              disabled={branches.length === 0}
+            >
+              {branches.length === 0 ? (
+                <option value="">{branchError || "No branches available"}</option>
+              ) : null}
+              {branches.map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          {selectedBranch ? (
+            <span className={selectedBranch.active ? "st-topbar-pill" : "st-topbar-pill st-topbar-pill-muted"}>
+              {branchStatusLabel}
+            </span>
+          ) : null}
         </div>
         <div className="st-topbar-right">
           <div className="st-topbar-search">

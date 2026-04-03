@@ -211,7 +211,7 @@ Request:
 
 ```json
 {
-  "username": "manager",
+  "username": "terminal",
   "password": "password"
 }
 ```
@@ -223,28 +223,30 @@ Response:
   "accessToken": "<jwt>",
   "tokenType": "Bearer",
   "expiresInSeconds": 3600,
-  "username": "manager",
-  "role": "MANAGER"
+  "username": "terminal",
+  "role": "TERMINAL"
 }
 ```
 
 ### Seeded Users
 
 - `owner / password`
-- `admin / password`
-- `manager / password`
-- `cashier / password`
-- `stylist / password`
 - `itadmin / password`
+- `terminal / password`
 
-### System Attendance Terminal User (Startup Bootstrap)
+### Shared Terminal User (Startup Bootstrap)
 
 This user is created/updated at application startup (not via Flyway migration):
 
-- role: `ATTENDANCE_TERMINAL`
-- username: from `APP_ATTENDANCE_TERMINAL_USERNAME`
-- password: from `APP_ATTENDANCE_TERMINAL_PASSWORD`
-- enabled toggle: `APP_ATTENDANCE_TERMINAL_ENABLED` (default `true`)
+- role: `TERMINAL`
+- username: from `APP_TERMINAL_USERNAME`
+- password: from `APP_TERMINAL_PASSWORD`
+- enabled toggle: `APP_TERMINAL_ENABLED` (default `true`)
+
+Backward-compatible env fallbacks:
+- `APP_ATTENDANCE_TERMINAL_USERNAME`
+- `APP_ATTENDANCE_TERMINAL_PASSWORD`
+- `APP_ATTENDANCE_TERMINAL_ENABLED`
 
 If terminal password is blank, bootstrap is skipped and a warning is logged.
 
@@ -259,6 +261,7 @@ Use header:
 - `V3__auth_rbac.sql`
 - `V4__appointments_and_audit.sql`
 - `V5__biometric_attendance.sql`
+- `V6__terminal_role_consolidation.sql`
 
 ## API Reference
 
@@ -266,11 +269,11 @@ Use header:
 
 #### `GET /api/services`
 List active services.
-Roles: `OWNER`, `ADMIN`, `MANAGER`, `CASHIER`
+Roles: `TERMINAL`, `IT_ADMIN`
 
 #### `POST /api/services`
 Create service.
-Roles: `OWNER`, `ADMIN`, `MANAGER`, `CASHIER`
+Roles: `IT_ADMIN`
 
 Request:
 
@@ -297,11 +300,11 @@ Rules:
 
 #### `GET /api/staff`
 List staff profiles.
-Roles: `OWNER`, `ADMIN`, `MANAGER`, `CASHIER`, `IT_ADMIN`
+Roles: `TERMINAL`, `IT_ADMIN`
 
 #### `POST /api/staff` (multipart/form-data)
 Create staff and enroll face (required).
-Roles: `OWNER`, `ADMIN`, `IT_ADMIN`
+Roles: `IT_ADMIN`
 
 Parts:
 - `profile` (JSON)
@@ -350,7 +353,7 @@ Response:
 
 #### `POST /api/transactions`
 Creates transaction + lines + payments + receipt + commission entries.
-Roles: `OWNER`, `ADMIN`, `MANAGER`, `CASHIER`
+Roles: `TERMINAL`, `IT_ADMIN`
 
 Request:
 
@@ -378,11 +381,11 @@ Validation:
 
 #### `GET /api/receipts/{receiptNo}`
 Fetch stored receipt payload and status.
-Roles: `OWNER`, `ADMIN`, `MANAGER`, `CASHIER`
+Roles: `TERMINAL`, `IT_ADMIN`
 
 #### `GET /api/receipts/history`
 Filterable receipt history with pagination.
-Roles: `OWNER`, `ADMIN`, `MANAGER`, `CASHIER`
+Roles: `TERMINAL`, `IT_ADMIN`
 
 Query params:
 - `receiptNo` (optional, partial)
@@ -396,12 +399,13 @@ Query params:
 
 #### `GET /api/receipts/history/export`
 Export filtered receipt history as CSV.
-Roles: `OWNER`, `ADMIN`, `MANAGER`, `CASHIER`
+Roles: `TERMINAL`, `IT_ADMIN`
 
 ### 5) Attendance
 
 #### `GET /api/attendance/report`
 Attendance report with filters + pagination.
+Roles: `OWNER`, `IT_ADMIN`
 
 Query params:
 - `staffId` (optional)
@@ -413,7 +417,7 @@ Query params:
 
 #### `POST /api/attendance/verify-face` (multipart/form-data)
 Step 1 of clock-in: verify selfie and return short-lived token when pass.
-Roles: `OWNER`, `ADMIN`, `MANAGER`, `CASHIER`, `STYLIST`, `ATTENDANCE_TERMINAL`
+Roles: `TERMINAL`, `IT_ADMIN`
 
 Fields:
 - `staffId` (request param)
@@ -480,7 +484,7 @@ Behavior:
 - Prevents duplicate open clock-in
 - Tracks break minutes
 - Auto-closes active break on clock-out
-- For `ATTENDANCE_TERMINAL`, attendance actions can be done for any `staffId`
+- For `TERMINAL`, attendance actions can be done for any `staffId`
 - For non-terminal roles, self-service rule is enforced (`staffId` must match authenticated user’s linked staff profile)
 - Clock-out uses the same verification token pattern as clock-in
 - Face match threshold default is `80`
@@ -489,7 +493,7 @@ Behavior:
 
 #### `POST /api/refunds`
 Refund by `transactionId` or `receiptNo`.
-Roles: `OWNER`, `ADMIN`, `MANAGER`
+Roles: `IT_ADMIN`
 
 Request:
 
@@ -516,7 +520,7 @@ Returns:
 - `reversal`
 - `net`
 
-Roles: `OWNER`, `ADMIN`, `MANAGER`, `STYLIST`
+Roles: `OWNER`, `IT_ADMIN`
 
 ### 8) Reports
 
@@ -531,13 +535,13 @@ Returns:
 - `averageBill`
 - `transactionCount`
 
-Roles: `OWNER`, `ADMIN`, `MANAGER`
+Roles: `OWNER`, `IT_ADMIN`
 
 ### 9) Appointments
 
 #### `POST /api/appointments`
 Create appointment.
-Roles: `OWNER`, `ADMIN`, `MANAGER`, `CASHIER`, `STYLIST`
+Roles: `TERMINAL`, `IT_ADMIN`
 
 ```json
 {
@@ -554,12 +558,15 @@ Roles: `OWNER`, `ADMIN`, `MANAGER`, `CASHIER`, `STYLIST`
 
 #### `GET /api/appointments`
 List by `status`, or by `from` + `to` (optional `branchId`).
+Roles: `TERMINAL`, `IT_ADMIN`
 
 #### `PATCH /api/appointments/{id}/status`
 Update status (`BOOKED`, `CHECKED_IN`, `IN_SERVICE`, `COMPLETED`, `CANCELLED`, `NO_SHOW`).
+Roles: `TERMINAL`, `IT_ADMIN`
 
 #### `POST /api/appointments/{id}/convert-to-bill`
 Convert appointment to POS transaction.
+Roles: `TERMINAL`, `IT_ADMIN`
 
 ```json
 {
@@ -575,7 +582,7 @@ Convert appointment to POS transaction.
 
 #### `GET /api/audit-logs`
 Review audit trail with pagination.
-Roles: `OWNER`, `ADMIN`, `MANAGER`
+Roles: `OWNER`, `IT_ADMIN`
 
 Query params:
 - `entityType` (optional)

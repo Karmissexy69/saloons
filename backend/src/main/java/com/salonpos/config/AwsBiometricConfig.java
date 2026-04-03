@@ -12,7 +12,7 @@ import software.amazon.awssdk.services.rekognition.RekognitionClient;
 import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
-@EnableConfigurationProperties(BiometricProperties.class)
+@EnableConfigurationProperties({BiometricProperties.class, PaymentProofProperties.class})
 public class AwsBiometricConfig {
 
     @Bean
