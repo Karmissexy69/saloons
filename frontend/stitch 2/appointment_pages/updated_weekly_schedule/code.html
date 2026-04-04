@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Weekly Schedule - Precision Curator Ops</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#a9b4b9",
+                      "tertiary-dim": "#4f516c",
+                      "secondary-container": "#d3e4fe",
+                      "primary-fixed-dim": "#ccd4ee",
+                      "on-primary-fixed-variant": "#535b71",
+                      "error-container": "#fe8983",
+                      "on-background": "#2a3439",
+                      "on-tertiary": "#fbf8ff",
+                      "on-error": "#fff7f6",
+                      "inverse-surface": "#0b0f10",
+                      "surface-container-highest": "#d9e4ea",
+                      "on-tertiary-fixed": "#393c55",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#9f403d",
+                      "background": "#f7f9fb",
+                      "on-error-container": "#752121",
+                      "tertiary-container": "#dcddfe",
+                      "primary-dim": "#4a5268",
+                      "on-tertiary-fixed-variant": "#565873",
+                      "on-secondary-fixed": "#314055",
+                      "on-surface-variant": "#566166",
+                      "primary": "#565e74",
+                      "error-dim": "#4e0309",
+                      "on-tertiary-container": "#4c4e69",
+                      "surface-dim": "#cfdce3",
+                      "surface": "#f7f9fb",
+                      "tertiary-fixed-dim": "#cecfef",
+                      "secondary-fixed": "#d3e4fe",
+                      "outline": "#717c82",
+                      "on-secondary-container": "#435368",
+                      "surface-container": "#e8eff3",
+                      "on-secondary": "#f7f9ff",
+                      "surface-tint": "#565e74",
+                      "on-secondary-fixed-variant": "#4d5d73",
+                      "secondary-fixed-dim": "#c5d6f0",
+                      "surface-variant": "#d9e4ea",
+                      "surface-container-low": "#f0f4f7",
+                      "on-primary": "#f7f7ff",
+                      "surface-bright": "#f7f9fb",
+                      "on-surface": "#2a3439",
+                      "on-primary-fixed": "#373f54",
+                      "inverse-on-surface": "#9a9d9f",
+                      "inverse-primary": "#dae2fd",
+                      "tertiary": "#5b5d78",
+                      "primary-container": "#dae2fd",
+                      "primary-fixed": "#dae2fd",
+                      "on-primary-container": "#4a5167",
+                      "tertiary-fixed": "#dcddfe",
+                      "secondary-dim": "#44546a",
+                      "secondary": "#506076",
+                      "surface-container-high": "#e1e9ee"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "fontFamily": {
+                      "headline": ["Manrope"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-primary-gradient {
+            background: linear-gradient(135deg, #565e74 0%, #4a5268 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full py-8 bg-slate-100 dark:bg-slate-900 h-screen w-64 fixed left-0 top-0 z-50 font-inter text-sm text-slate-700 dark:text-slate-300">
+<div class="px-8 mb-10">
+<div class="flex items-center gap-3">
+<img alt="Branch Logo" class="w-10 h-10 rounded-xl" data-alt="Abstract geometric logo with sharp angles and professional slate gray tones on a light background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGHSrVSrZaitrj2HzBIq7Bw3fWPdgM4GMTVR6Rx1BRL3HZlkkFNxMLc40tFG8LMGOQvYgnYCQUzX-ubCl8B9EEWu7hFNIwJePdxqANVRgWZoO8iZdc_FiB8MbmZnZFVHIuq04zg6szTV1KEeXnx9S1TCSqJAMe8sC9Mho7JVqQtrlm5nLberVFTcjG_EmGPc9E6fz7FgQSLW-1W65wpZEebwsZl-4lBB6_ruKgdlCI46iMCxY0IgCPavfr82NmDsfB-wC8i-D8d8ZS"/>
+<div>
+<h2 class="font-headline font-bold text-slate-900 dark:text-slate-100">Main Branch</h2>
+<p class="text-xs text-on-surface-variant opacity-70">Operational Center</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-slate-600 dark:text-slate-400 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-600 dark:text-slate-400 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="calendar_today">calendar_today</span>
+<span>Daily Calendar</span>
+</a>
+<a class="flex items-center px-6 py-3 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white rounded-full mx-2 font-bold transition-all" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="calendar_view_week">calendar_view_week</span>
+<span>Weekly View</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-600 dark:text-slate-400 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="event_note">event_note</span>
+<span>Appointments</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-600 dark:text-slate-400 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="store">store</span>
+<span>Branch Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-1">
+<a class="flex items-center px-6 py-3 text-slate-600 dark:text-slate-400 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="help_outline">help_outline</span>
+<span>Support</span>
+</a>
+<a class="flex items-center px-6 py-3 text-slate-600 dark:text-slate-400 mx-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<main class="md:ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-8 w-full h-16 bg-slate-50 dark:bg-slate-950 border-b border-slate-200/50 dark:border-slate-800/50 z-40 sticky top-0">
+<div class="flex items-center">
+<h1 class="text-xl font-headline font-bold text-slate-900 dark:text-slate-100 tracking-tight">Precision Curator Ops</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-1.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 border-none text-xs focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Search operations..." type="text"/>
+</div>
+<div class="flex items-center gap-4 text-slate-600 dark:text-slate-400">
+<button class="hover:bg-slate-200/50 dark:hover:bg-slate-800/50 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="hover:bg-slate-200/50 dark:hover:bg-slate-800/50 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<img alt="User profile" class="w-8 h-8 rounded-full ring-2 ring-surface-container-highest" data-alt="Minimalist professional avatar of a workspace operator with clean lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6idMaZ8TGjo0vW8Rrj3im9iW7D4eqoKEEG-IunKQLq5pkASH7VoeVQfw8wUNwd-S4gVDUGansHHezIYbSN3Mbk8wMMUsqWvpQHczaqznZwclHzSLRCW6UCP2FagMK4U83XAgVNanUATrc15GzqHtufxXCnoHSV3ni6hv2UGOv2VbVTa7B1I547_bhjL8htEDSgvIfN5Qx0doPqxPWmDs9uL_4Q-VTS5txTRZM9MmBlzbrtHSiGS0rTIKooNna7GEaLlfl5qxio9j8"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<section class="p-8 flex-1 flex flex-col">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+<div>
+<nav class="flex items-center gap-2 text-xs font-medium text-on-surface-variant mb-2">
+<span>Calendar</span>
+<span class="material-symbols-outlined text-[10px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-on-surface">Weekly View</span>
+</nav>
+<h2 class="text-4xl font-headline font-extrabold text-on-surface tracking-tight">Weekly Schedule</h2>
+<p class="text-on-surface-variant mt-1 text-sm">October 23 – October 29, 2023</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface px-5 py-2.5 rounded-md text-sm font-medium transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+                        Filter Views
+                    </button>
+<button class="bg-primary-gradient text-on-primary hover:opacity-90 px-6 py-2.5 rounded-md text-sm font-semibold transition-all shadow-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="add_task">add_task</span>
+                        New Booking
+                    </button>
+</div>
+</div>
+<!-- Weekly 7-Column Layout: Expanded for full focus -->
+<div class="flex-1 grid grid-cols-1 lg:grid-cols-7 gap-6 min-h-[600px]">
+<!-- Day Column: Mon -->
+<div class="flex flex-col gap-4">
+<div class="bg-surface-container-high py-5 px-6 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Monday</p>
+<p class="text-2xl font-headline font-extrabold">23</p>
+</div>
+<div class="text-right">
+<p class="text-xs font-medium text-on-surface-variant">42 Bookings</p>
+<p class="text-xs font-bold text-primary">75% Load</p>
+</div>
+</div>
+<div class="flex-1 space-y-4">
+<div class="bg-surface-container-lowest p-5 rounded-xl ring-1 ring-black/[0.03] hover:ring-primary/40 shadow-sm transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<p class="text-[10px] font-bold text-on-surface-variant">09:00 — 12:00</p>
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="corporate_fare">corporate_fare</span>
+</div>
+<p class="text-base font-bold leading-tight">Corporate Verification Batch</p>
+<div class="mt-4 flex items-center gap-2">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-primary-container text-[10px] flex items-center justify-center font-bold ring-2 ring-white">JS</div>
+<div class="w-6 h-6 rounded-full bg-secondary-container text-[10px] flex items-center justify-center font-bold ring-2 ring-white">AL</div>
+</div>
+<p class="text-[11px] text-on-surface-variant">18 Appointments</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-xl ring-1 ring-black/[0.03] hover:ring-primary/40 shadow-sm transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<p class="text-[10px] font-bold text-on-surface-variant">13:30 — 16:00</p>
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="bolt">bolt</span>
+</div>
+<p class="text-base font-bold leading-tight">Priority Express Queue</p>
+<div class="mt-4 flex items-center gap-2">
+<p class="text-[11px] text-on-surface-variant">12 Appointments • Station A-04</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Day Column: Tue -->
+<div class="flex flex-col gap-4">
+<div class="bg-surface-container-high py-5 px-6 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Tuesday</p>
+<p class="text-2xl font-headline font-extrabold">24</p>
+</div>
+<div class="text-right">
+<p class="text-xs font-medium text-on-surface-variant">58 Bookings</p>
+<p class="text-xs font-bold text-error">94% Load</p>
+</div>
+</div>
+<div class="flex-1 space-y-4">
+<div class="bg-primary-container p-5 rounded-xl ring-1 ring-primary/20 hover:ring-primary shadow-sm transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<p class="text-[10px] font-bold text-primary">ALL DAY</p>
+<span class="material-symbols-outlined text-sm text-primary" data-icon="assignment_turned_in">assignment_turned_in</span>
+</div>
+<p class="text-base font-bold leading-tight text-on-primary-container">Quarterly Audit Review</p>
+<p class="text-[11px] text-on-primary-container opacity-80 mt-3">Full Capacity Block: Internal operations only.</p>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-xl ring-1 ring-black/[0.03] hover:ring-primary/40 shadow-sm transition-all cursor-pointer opacity-60">
+<div class="flex justify-between items-start mb-2">
+<p class="text-[10px] font-bold text-on-surface-variant">16:30 — 18:00</p>
+</div>
+<p class="text-base font-bold leading-tight">Evening Overflow</p>
+<p class="text-[11px] text-on-surface-variant mt-2">8 Slots Available</p>
+</div>
+</div>
+</div>
+<!-- Day Column: Wed -->
+<div class="flex flex-col gap-4">
+<div class="bg-surface-container-high py-5 px-6 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Wednesday</p>
+<p class="text-2xl font-headline font-extrabold">25</p>
+</div>
+<div class="text-right">
+<p class="text-xs font-medium text-on-surface-variant">49 Bookings</p>
+<p class="text-xs font-bold text-primary">82% Load</p>
+</div>
+</div>
+<div class="flex-1 space-y-4">
+<div class="bg-surface-container-lowest p-5 rounded-xl ring-1 ring-black/[0.03] hover:ring-primary/40 shadow-sm transition-all cursor-pointer">
+<p class="text-[10px] font-bold text-on-surface-variant mb-2">08:00 — 11:00</p>
+<p class="text-base font-bold leading-tight">Morning Shift Prep</p>
+<p class="text-[11px] text-on-surface-variant mt-3">6 Curators Active • Briefing in Room 2</p>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-xl ring-1 ring-black/[0.03] hover:ring-primary/40 shadow-sm transition-all cursor-pointer">
+<p class="text-[10px] font-bold text-on-surface-variant mb-2">11:00 — 17:00</p>
+<p class="text-base font-bold leading-tight">Standard Walk-ins</p>
+<p class="text-[11px] text-on-surface-variant mt-3">32 Appointments • Main Lobby</p>
+</div>
+</div>
+</div>
+<!-- Day Column: Thu (Today) -->
+<div class="flex flex-col gap-4">
+<div class="bg-surface-container-high py-5 px-6 rounded-xl flex items-center justify-between ring-2 ring-primary relative overflow-hidden">
+<div class="relative z-10">
+<p class="text-[10px] font-bold text-primary uppercase tracking-widest">Today</p>
+<p class="text-2xl font-headline font-extrabold">26</p>
+</div>
+<div class="text-right relative z-10">
+<p class="text-xs font-medium text-on-surface-variant">64 Bookings</p>
+<p class="text-xs font-bold text-error">98% Load</p>
+</div>
+<div class="absolute inset-0 bg-primary/5"></div>
+</div>
+<div class="flex-1 space-y-4">
+<div class="glass-panel p-5 rounded-xl ring-1 ring-primary shadow-md border-l-4 border-error">
+<div class="flex justify-between items-start mb-2">
+<p class="text-[10px] font-bold text-error uppercase tracking-tighter">Now Active</p>
+<span class="w-2.5 h-2.5 rounded-full bg-error animate-pulse"></span>
+</div>
+<p class="text-base font-bold leading-tight">Peak Demand Window</p>
+<div class="mt-4 flex items-center justify-between">
+<p class="text-[11px] text-on-surface-variant">Verification Queue Full</p>
+<span class="text-[10px] font-bold text-primary underline">Assign Staff</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-xl ring-1 ring-black/[0.03] hover:ring-primary/40 shadow-sm transition-all cursor-pointer">
+<p class="text-[10px] font-bold text-on-surface-variant mb-2">14:00 — 18:00</p>
+<p class="text-base font-bold leading-tight">Tier 1 Partners</p>
+<p class="text-[11px] text-on-surface-variant mt-3">22 Appointments • Priority Lounge</p>
+</div>
+</div>
+</div>
+<!-- Day Column: Fri -->
+<div class="flex flex-col gap-4">
+<div class="bg-surface-container-high py-5 px-6 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Friday</p>
+<p class="text-2xl font-headline font-extrabold">27</p>
+</div>
+<div class="text-right">
+<p class="text-xs font-medium text-on-surface-variant">51 Bookings</p>
+<p class="text-xs font-bold text-primary">85% Load</p>
+</div>
+</div>
+<div class="flex-1 space-y-4">
+<div class="bg-surface-container-lowest p-5 rounded-xl ring-1 ring-black/[0.03] hover:ring-primary/40 shadow-sm transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<p class="text-[10px] font-bold text-on-surface-variant">10:00 — 15:00</p>
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="fingerprint">fingerprint</span>
+</div>
+<p class="text-base font-bold leading-tight">Biometric Capture</p>
+<p class="text-[11px] text-on-surface-variant mt-3">28 Appointments • Specialized Lab</p>
+</div>
+</div>
+</div>
+<!-- Day Column: Sat -->
+<div class="flex flex-col gap-4">
+<div class="bg-surface-container py-5 px-6 rounded-xl flex items-center justify-between opacity-60">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Saturday</p>
+<p class="text-2xl font-headline font-extrabold">28</p>
+</div>
+<div class="text-right">
+<p class="text-xs font-medium text-on-surface-variant">12 Bookings</p>
+<p class="text-xs font-bold text-on-surface-variant">20% Load</p>
+</div>
+</div>
+<div class="flex-1 space-y-4">
+<div class="bg-surface-container-lowest p-5 rounded-xl ring-1 ring-black/[0.03] hover:ring-primary/40 shadow-sm transition-all cursor-pointer border-l-4 border-slate-300">
+<p class="text-[10px] font-bold text-on-surface-variant mb-2">09:00 — 12:00</p>
+<p class="text-base font-bold leading-tight text-on-surface-variant">Weekend Skeleton Crew</p>
+<p class="text-[11px] text-on-surface-variant mt-3">Limited Station Access</p>
+</div>
+</div>
+</div>
+<!-- Day Column: Sun -->
+<div class="flex flex-col gap-4">
+<div class="bg-surface-container py-5 px-6 rounded-xl flex items-center justify-between opacity-60">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Sunday</p>
+<p class="text-2xl font-headline font-extrabold">29</p>
+</div>
+<div class="text-right">
+<p class="text-xs font-medium text-on-surface-variant">0 Bookings</p>
+<p class="text-xs font-bold text-on-surface-variant">Closed</p>
+</div>
+</div>
+<div class="flex-1 border-2 border-dashed border-outline-variant/30 rounded-xl flex flex-col items-center justify-center p-8 text-center bg-slate-50/30">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant/20 mb-3" data-icon="event_busy">event_busy</span>
+<p class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-widest">Branch Facility Closed</p>
+<p class="text-[11px] text-on-surface-variant/30 mt-2">Maintenance Window</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Metric Bar -->
+<footer class="h-12 border-t border-outline-variant/10 bg-surface-container-low px-8 flex items-center justify-between text-[10px] font-bold text-on-surface-variant tracking-widest uppercase">
+<div class="flex gap-8">
+<span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> System Online</span>
+<span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-error"></span> 2 High Priority Issues</span>
+</div>
+<div>
+                Precision Curator v2.4.0 • Main Branch Instance
+            </div>
+</footer>
+</main>
+</body></html>

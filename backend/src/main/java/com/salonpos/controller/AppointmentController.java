@@ -2,9 +2,11 @@ package com.salonpos.controller;
 
 import com.salonpos.domain.AppointmentStatus;
 import com.salonpos.dto.AppointmentResponse;
+import com.salonpos.dto.CancelAppointmentRequest;
 import com.salonpos.dto.ConvertAppointmentToBillRequest;
 import com.salonpos.dto.CreateAppointmentRequest;
 import com.salonpos.dto.CreateTransactionResponse;
+import com.salonpos.dto.UpdateAppointmentRequest;
 import com.salonpos.dto.UpdateAppointmentStatusRequest;
 import com.salonpos.service.AppointmentService;
 import jakarta.validation.Valid;
@@ -40,14 +42,25 @@ public class AppointmentController {
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime from,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime to,
         @RequestParam(required = false) Long branchId,
-        @RequestParam(required = false) AppointmentStatus status
+        @RequestParam(required = false) AppointmentStatus status,
+        @RequestParam(required = false) String q
     ) {
-        return appointmentService.list(from, to, branchId, status);
+        return appointmentService.list(from, to, branchId, status, q);
+    }
+
+    @PatchMapping("/{id}")
+    public AppointmentResponse update(@PathVariable Long id, @Valid @RequestBody UpdateAppointmentRequest request) {
+        return appointmentService.update(id, request);
     }
 
     @PatchMapping("/{id}/status")
     public AppointmentResponse updateStatus(@PathVariable Long id, @Valid @RequestBody UpdateAppointmentStatusRequest request) {
         return appointmentService.updateStatus(id, request);
+    }
+
+    @PostMapping("/{id}/cancel")
+    public AppointmentResponse cancel(@PathVariable Long id, @Valid @RequestBody CancelAppointmentRequest request) {
+        return appointmentService.cancelInternal(id, request);
     }
 
     @PostMapping("/{id}/convert-to-bill")

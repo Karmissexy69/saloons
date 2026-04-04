@@ -1404,6 +1404,37 @@ label {
   margin: 0 0 16px;
 }
 
+.st-pos-appointment-banner {
+  margin-bottom: 14px;
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(216, 225, 250, 0.9), rgba(238, 242, 251, 0.92));
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.st-pos-appointment-banner p {
+  margin: 0 0 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.st-pos-appointment-banner strong,
+.st-pos-appointment-banner span {
+  display: block;
+}
+
+.st-pos-appointment-banner span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .st-pos-assignment {
   display: grid;
   gap: 8px;

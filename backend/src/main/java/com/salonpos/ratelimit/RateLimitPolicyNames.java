@@ -12,6 +12,11 @@ public final class RateLimitPolicyNames {
     public static final String STAFF_REENROLL_TARGET = "staff-reenroll-target";
     public static final String TRANSACTIONS_CREATE = "transactions-create";
     public static final String APPOINTMENT_CONVERT = "appointment-convert";
+    public static final String CUSTOMER_OTP_REQUEST_IP = "customer-otp-request-ip";
+    public static final String CUSTOMER_OTP_REQUEST_EMAIL = "customer-otp-request-email";
+    public static final String CUSTOMER_OTP_VERIFY_EMAIL = "customer-otp-verify-email";
+    public static final String PUBLIC_APPOINTMENT_CREATE = "public-appointment-create";
+    public static final String PUBLIC_APPOINTMENT_CANCEL = "public-appointment-cancel";
     public static final String REFUNDS_CREATE = "refunds-create";
     public static final String RECEIPTS_EXPORT = "receipts-export";
     public static final String REPORTS_SALES_SUMMARY = "reports-sales-summary";

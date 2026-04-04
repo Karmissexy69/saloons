@@ -40,6 +40,18 @@ app:
   payment-proof:
     s3-bucket: ${APP_PAYMENT_PROOF_S3_BUCKET:${APP_BIOMETRIC_S3_BUCKET:files.workerflow.io}}
     key-prefix: ${APP_PAYMENT_PROOF_KEY_PREFIX:payment-proofs}
+  notifications:
+    aws-region: ${APP_NOTIFICATIONS_AWS_REGION:${APP_BIOMETRIC_AWS_REGION:ap-southeast-1}}
+    aws-access-key-id: ${APP_NOTIFICATIONS_AWS_ACCESS_KEY_ID:${AWS_ACCESS_KEY_ID:}}
+    aws-secret-access-key: ${APP_NOTIFICATIONS_AWS_SECRET_ACCESS_KEY:${AWS_SECRET_ACCESS_KEY:}}
+    email-provider: ${APP_NOTIFICATIONS_EMAIL_PROVIDER:SES}
+    otp-from-email: ${APP_NOTIFICATIONS_OTP_FROM_EMAIL:${APP_NOTIFICATIONS_APPOINTMENT_FROM_EMAIL:appointments@saloonpos.my}}
+    otp-sender-name: ${APP_NOTIFICATIONS_OTP_SENDER_NAME:Brow Waxing and Threading Studio Login}
+    appointment-from-email: ${APP_NOTIFICATIONS_APPOINTMENT_FROM_EMAIL:appointments@saloonpos.my}
+    appointment-sender-name: ${APP_NOTIFICATIONS_APPOINTMENT_SENDER_NAME:Brow Waxing and Threading Studio Appointments}
+    otp-ttl-seconds: ${APP_NOTIFICATIONS_OTP_TTL_SECONDS:300}
+    customer-refresh-ttl-seconds: ${APP_NOTIFICATIONS_CUSTOMER_REFRESH_TTL_SECONDS:2592000}
+    reminder-check-interval-ms: ${APP_NOTIFICATIONS_REMINDER_CHECK_INTERVAL_MS:300000}
   rate-limit:
     enabled: ${APP_RATE_LIMIT_ENABLED:true}
     trust-forward-headers: ${APP_RATE_LIMIT_TRUST_FORWARD_HEADERS:false}
@@ -135,6 +147,51 @@ app:
             refill-period: 5m
           - capacity: 60
             refill-tokens: 60
+            refill-period: 1h
+      customer-otp-request-ip:
+        rejection-message: Too many OTP requests from this network. Please try again later.
+        limits:
+          - capacity: 8
+            refill-tokens: 8
+            refill-period: 10m
+          - capacity: 30
+            refill-tokens: 30
+            refill-period: 1h
+      customer-otp-request-email:
+        rejection-message: Too many OTP requests for this email. Please try again later.
+        limits:
+          - capacity: 4
+            refill-tokens: 4
+            refill-period: 10m
+          - capacity: 12
+            refill-tokens: 12
+            refill-period: 1h
+      customer-otp-verify-email:
+        rejection-message: Too many OTP verification attempts for this email. Please try again later.
+        limits:
+          - capacity: 6
+            refill-tokens: 6
+            refill-period: 10m
+          - capacity: 20
+            refill-tokens: 20
+            refill-period: 1h
+      public-appointment-create:
+        rejection-message: Too many appointment requests from this device. Please try again later.
+        limits:
+          - capacity: 6
+            refill-tokens: 6
+            refill-period: 15m
+          - capacity: 20
+            refill-tokens: 20
+            refill-period: 1h
+      public-appointment-cancel:
+        rejection-message: Too many appointment cancellation attempts. Please try again later.
+        limits:
+          - capacity: 6
+            refill-tokens: 6
+            refill-period: 15m
+          - capacity: 20
+            refill-tokens: 20
             refill-period: 1h
       refunds-create:
         rejection-message: Too many refund attempts. Please wait and try again.

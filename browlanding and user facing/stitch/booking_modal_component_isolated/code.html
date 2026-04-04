@@ -1,0 +1,151 @@
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@200;400;600;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e3e2e6",
+                    "surface-tint": "#774a9c",
+                    "surface-container": "#efedf1",
+                    "on-primary-fixed-variant": "#5e3282",
+                    "tertiary-fixed": "#e6e0ec",
+                    "on-tertiary-fixed-variant": "#48454f",
+                    "tertiary-container": "#36333c",
+                    "surface-container-low": "#f5f3f7",
+                    "on-error-container": "#93000a",
+                    "on-error": "#ffffff",
+                    "background": "#f5f3f7",
+                    "primary": "#330056",
+                    "outline-variant": "#cec3d1",
+                    "primary-fixed-dim": "#e0b6ff",
+                    "on-primary-container": "#b989e0",
+                    "tertiary": "#201e27",
+                    "on-surface": "#1b1b1e",
+                    "on-tertiary-container": "#a09ba6",
+                    "on-secondary-fixed": "#26113c",
+                    "inverse-on-surface": "#f2f0f4",
+                    "on-surface-variant": "#4c4450",
+                    "on-secondary-fixed-variant": "#533d6b",
+                    "outline": "#7d7481",
+                    "surface-bright": "#faf9fc",
+                    "primary-container": "#4a1d6e",
+                    "primary-fixed": "#f2daff",
+                    "secondary-fixed-dim": "#d7bcf2",
+                    "on-tertiary-fixed": "#1c1a23",
+                    "inverse-primary": "#e0b6ff",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e3e2e6",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#efdbff",
+                    "on-background": "#1b1b1e",
+                    "error": "#ba1a1a",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#e9e7eb",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#e3c7fe",
+                    "secondary": "#6b5584",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed-dim": "#cac4d0",
+                    "on-secondary-container": "#67507f",
+                    "on-primary-fixed": "#2e004e",
+                    "inverse-surface": "#303033",
+                    "surface": "#faf9fc",
+                    "surface-dim": "#dbd9dd"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1rem",
+                    "3xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": [
+                            "Noto Serif"
+                    ],
+                    "body": [
+                            "Manrope"
+                    ],
+                    "label": [
+                            "Manrope"
+                    ]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+</head>
+<body class="bg-surface-container-low text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen flex items-center justify-center p-4">
+<!-- Centered Modal Component -->
+<div class="relative w-full max-w-lg bg-surface-container-lowest rounded-2xl shadow-[0_32px_64px_-12px_rgba(46,0,78,0.15)] overflow-hidden">
+<!-- Modal Header -->
+<div class="p-8 pb-0 flex justify-between items-start">
+<div>
+<h2 class="font-headline text-3xl sm:text-4xl text-primary tracking-tight">Reserve Your Session</h2>
+<p class="font-body text-sm text-on-surface-variant mt-2">Secure your appointment at The Velvet Editorial.</p>
+</div>
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined text-outline text-xl">close</span>
+</button>
+</div>
+<!-- Modal Form -->
+<form class="p-8 pt-6 space-y-6">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="font-label text-[10px] font-bold text-primary tracking-widest uppercase">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline/60 text-xl">mail</span>
+<input class="w-full bg-surface-container border-0 rounded-lg py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline/40 shadow-sm transition-all" placeholder="claire@editorial.com" type="email"/>
+</div>
+</div>
+<!-- Services Dropdown -->
+<div class="space-y-2">
+<label class="font-label text-[10px] font-bold text-primary tracking-widest uppercase">Select Service</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline/60 text-xl">content_cut</span>
+<select class="w-full appearance-none bg-surface-container border-0 rounded-lg py-4 pl-12 pr-10 focus:ring-2 focus:ring-primary/20 text-on-surface shadow-sm transition-all">
+<option>Signature Brow Threading</option>
+<option>Lip &amp; Chin Precision Wax</option>
+<option>Full Editorial Face Wax</option>
+<option>Brow Tinting &amp; Lamination</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline/60 pointer-events-none text-xl">expand_more</span>
+</div>
+</div>
+<!-- Branch Dropdown -->
+<div class="space-y-2">
+<label class="font-label text-[10px] font-bold text-primary tracking-widest uppercase">Preferred Branch</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline/60 text-xl">location_on</span>
+<select class="w-full appearance-none bg-surface-container border-0 rounded-lg py-4 pl-12 pr-10 focus:ring-2 focus:ring-primary/20 text-on-surface shadow-sm transition-all">
+<option>Mayfair Editorial Studio</option>
+<option>Chelsea Heights Atelier</option>
+<option>Soho Precision Boutique</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline/60 pointer-events-none text-xl">expand_more</span>
+</div>
+</div>
+<!-- Submit Button -->
+<div class="pt-2">
+<button class="w-full bg-primary text-on-primary rounded-full py-5 font-bold text-base shadow-lg shadow-primary/20 hover:bg-[#2a0046] active:scale-95 transition-all duration-300" type="submit">
+                    Book Appointment
+                </button>
+</div>
+<p class="text-center text-[10px] font-label text-outline/60 leading-relaxed px-4">
+                By booking, you agree to our 24-hour cancellation policy and editorial service terms.
+            </p>
+</form>
+</div>
+</body></html>

@@ -4,6 +4,7 @@ import com.salonpos.domain.ServiceCategory;
 import com.salonpos.domain.CommissionRuleType;
 import com.salonpos.domain.ServiceItem;
 import com.salonpos.dto.CreateServiceRequest;
+import com.salonpos.dto.PublicServiceResponse;
 import com.salonpos.dto.ServiceItemResponse;
 import com.salonpos.exception.BadRequestException;
 import com.salonpos.exception.NotFoundException;
@@ -35,15 +36,20 @@ public class ServiceCatalogService {
     public List<ServiceItemResponse> getActiveServices() {
         return serviceItemRepository.findByActiveTrueOrderByCategorySortOrderAscNameAsc()
             .stream()
-            .map(item -> new ServiceItemResponse(
+            .map(this::toResponse)
+            .toList();
+    }
+
+    public List<PublicServiceResponse> getPublicServices() {
+        return serviceItemRepository.findByActiveTrueOrderByCategorySortOrderAscNameAsc()
+            .stream()
+            .map(item -> new PublicServiceResponse(
                 item.getId(),
                 item.getCategory().getId(),
                 item.getCategory().getName(),
                 item.getName(),
                 item.getPrice(),
-                item.getDurationMinutes(),
-                item.getCommissionType(),
-                item.getCommissionValue()))
+                item.getDurationMinutes()))
             .toList();
     }
 
@@ -66,17 +72,22 @@ public class ServiceCatalogService {
 
         ServiceItem saved = serviceItemRepository.save(item);
 
-        ServiceItemResponse response = new ServiceItemResponse(
-            saved.getId(),
-            saved.getCategory().getId(),
-            saved.getCategory().getName(),
-            saved.getName(),
-            saved.getPrice(),
-            saved.getDurationMinutes(),
-            saved.getCommissionType(),
-            saved.getCommissionValue());
+        ServiceItemResponse response = toResponse(saved);
         auditLogService.log("SERVICE_CREATED", "service", saved.getId(), null, response);
         return response;
+    }
+
+    private ServiceItemResponse toResponse(ServiceItem item) {
+        return new ServiceItemResponse(
+            item.getId(),
+            item.getCategory().getId(),
+            item.getCategory().getName(),
+            item.getName(),
+            item.getPrice(),
+            item.getDurationMinutes(),
+            item.getCommissionType(),
+            item.getCommissionValue()
+        );
     }
 
     private ServiceCategory resolveCategory(CreateServiceRequest request) {

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@200;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#cec3d1",
+                    "tertiary-fixed": "#e6e0ec",
+                    "primary": "#330056",
+                    "primary-fixed-dim": "#e0b6ff",
+                    "on-primary-container": "#b989e0",
+                    "inverse-primary": "#e0b6ff",
+                    "primary-container": "#4a1d6e",
+                    "secondary-container": "#e3c7fe",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#faf9fc",
+                    "inverse-surface": "#303033",
+                    "background": "#faf9fc",
+                    "surface-container-highest": "#e3e2e6",
+                    "error": "#ba1a1a",
+                    "outline": "#7d7481",
+                    "surface": "#faf9fc",
+                    "surface-variant": "#e3e2e6",
+                    "on-surface": "#1b1b1e",
+                    "secondary": "#6b5584",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#201e27",
+                    "on-tertiary-container": "#a09ba6",
+                    "on-tertiary-fixed": "#1c1a23",
+                    "primary-fixed": "#f2daff",
+                    "on-secondary-fixed-variant": "#533d6b",
+                    "on-secondary-fixed": "#26113c",
+                    "on-primary-fixed-variant": "#5e3282",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#67507f",
+                    "surface-container": "#efedf1",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#f2f0f4",
+                    "secondary-fixed": "#efdbff",
+                    "on-surface-variant": "#4c4450",
+                    "on-primary-fixed": "#2e004e",
+                    "surface-dim": "#dbd9dd",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#774a9c",
+                    "tertiary-container": "#36333c",
+                    "on-background": "#1b1b1e",
+                    "surface-container-high": "#e9e7eb",
+                    "tertiary-fixed-dim": "#cac4d0",
+                    "on-tertiary-fixed-variant": "#48454f",
+                    "surface-container-low": "#f5f3f7",
+                    "secondary-fixed-dim": "#d7bcf2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #faf9fc; }
+        .font-serif { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- TopNavBar Shell -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-purple-950/80 backdrop-blur-xl shadow-sm dark:shadow-purple-900/20">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-8 h-20">
+<div class="font-['Noto_Serif'] text-2xl font-bold tracking-tighter text-purple-950 dark:text-white italic">
+                The Velvet Editorial
+            </div>
+<div class="hidden md:flex items-center gap-10">
+<a class="font-['Noto_Serif'] text-lg font-medium tracking-tight text-purple-600 dark:text-purple-300 hover:text-purple-900 dark:hover:text-white transition-colors hover:scale-105 transition-transform duration-300" href="#">Home</a>
+<a class="font-['Noto_Serif'] text-lg font-medium tracking-tight text-purple-900 dark:text-white border-b-2 border-purple-900 dark:border-purple-300 pb-1 hover:scale-105 transition-transform duration-300" href="#">Services</a>
+<a class="font-['Noto_Serif'] text-lg font-medium tracking-tight text-purple-600 dark:text-purple-300 hover:text-purple-900 dark:hover:text-white transition-colors hover:scale-105 transition-transform duration-300" href="#">About</a>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-full font-label font-bold text-sm hover:scale-105 transition-transform duration-300 shadow-lg shadow-primary/20">
+                    Book Now
+                </button>
+</div>
+<!-- Mobile Menu Toggle -->
+<div class="md:hidden">
+<span class="material-symbols-outlined text-primary text-3xl">menu</span>
+</div>
+</div>
+</nav>
+<main class="pt-32 pb-24">
+<!-- Hero Section: Asymmetric & Editorial -->
+<section class="max-w-7xl mx-auto px-8 mb-24 flex flex-col md:flex-row gap-16 items-center">
+<div class="md:w-1/2">
+<h1 class="font-serif text-6xl md:text-8xl text-primary leading-tight mb-8">Curated <br/><span class="italic font-normal">Precision</span></h1>
+<p class="font-body text-lg text-on-surface-variant max-w-md leading-relaxed">
+                    Elevate your natural beauty with our signature techniques. From delicate threading to luxurious waxing, every service is a masterpiece of precision and care.
+                </p>
+</div>
+<div class="md:w-1/2 relative">
+<div class="aspect-[4/5] bg-surface-container-high rounded-xl overflow-hidden shadow-2xl">
+<img class="w-full h-full object-cover" data-alt="Close-up of professional aesthetician carefully threading eyebrows in a bright minimalist studio with soft lavender lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl6BTXwbOaz50-iJ_hPcCeQbwwWCUjtt6xIQqJmpKZGnHZIpjrSHyuhEu1OX2D0FHCFJY-51dSgU4J544UhGm7x0Tb4imzvH7u9-PepxrxZW9RmEdHFID1bkK8_3HSYYHz-2WLPcSos0CTg5jomj4P3f4DraOG3oSY9aH2Qisxc8ii_rFbkyOPMfLYOUB-VAxpALsXVmDrgoiH_jCGbDJbpFRTpND9RzwHGEeL9Xk4u4PPKNQrGxRy3EVTCGRkhDCZIt5hBtkfD5E"/>
+</div>
+<!-- Floating Decorative Card -->
+<div class="absolute -bottom-10 -left-10 bg-surface-container-lowest p-8 rounded-xl shadow-xl hidden lg:block border border-outline-variant/10">
+<p class="font-serif text-2xl italic text-primary">"The Brow Authority"</p>
+<p class="font-label text-xs uppercase tracking-widest text-on-surface-variant mt-2">Vogue Recommended 2024</p>
+</div>
+</div>
+</section>
+<!-- Service Categories Bento Grid -->
+<section class="max-w-7xl mx-auto px-8 space-y-24">
+<!-- Category: Waxing -->
+<div class="space-y-12">
+<div class="flex items-baseline gap-6">
+<h2 class="font-serif text-4xl text-primary">Waxing</h2>
+<div class="h-px flex-grow bg-outline-variant/20"></div>
+<span class="font-label text-sm uppercase tracking-widest text-on-surface-variant">01 — Silk Texture</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Waxing Item 1 -->
+<div class="group bg-surface-container-lowest p-8 rounded-xl hover:bg-secondary-container transition-colors duration-500">
+<div class="flex justify-between items-start mb-12">
+<span class="material-symbols-outlined text-primary text-3xl">face_3</span>
+<span class="font-serif text-2xl">$25</span>
+</div>
+<h3 class="font-serif text-2xl mb-4 group-hover:text-primary transition-colors">Brow Sculpt</h3>
+<p class="font-body text-sm text-on-surface-variant leading-relaxed">Detailed shaping using our signature botanical wax designed for sensitive skin.</p>
+</div>
+<!-- Waxing Item 2 -->
+<div class="group bg-surface-container-low p-8 rounded-xl hover:bg-secondary-container transition-colors duration-500">
+<div class="flex justify-between items-start mb-12">
+<span class="material-symbols-outlined text-primary text-3xl">spa</span>
+<span class="font-serif text-2xl">$45</span>
+</div>
+<h3 class="font-serif text-2xl mb-4 group-hover:text-primary transition-colors">Full Face</h3>
+<p class="font-body text-sm text-on-surface-variant leading-relaxed">A comprehensive treatment including lip, chin, and cheeks for a luminous finish.</p>
+</div>
+<!-- Waxing Item 3 -->
+<div class="group bg-surface-container-lowest p-8 rounded-xl hover:bg-secondary-container transition-colors duration-500">
+<div class="flex justify-between items-start mb-12">
+<span class="material-symbols-outlined text-primary text-3xl">front_hand</span>
+<span class="font-serif text-2xl">$55</span>
+</div>
+<h3 class="font-serif text-2xl mb-4 group-hover:text-primary transition-colors">Full Arms</h3>
+<p class="font-body text-sm text-on-surface-variant leading-relaxed">Total arm grooming from wrist to shoulder with post-wax calming serum.</p>
+</div>
+</div>
+</div>
+<!-- Category: Threading (Glassmorphism Accent) -->
+<div class="bg-primary-container p-12 md:p-20 rounded-3xl relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<img class="w-full h-full object-cover" data-alt="Macro background texture of fine purple silk fibers weaving together with soft focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzS7VqL8tegVVOpGQCKAagY_h2n6A9OR6R-QhIYwE5EvM_WY6U5wOJxEw7zghmBFf-rMJ6dYlepJGfaGhMg1ey9EaG41gfLMa_dhnTE1Y9GDFXgOkCPABeLGuCGGkVyWhczFKDIY-oeMCoCMADa9QHjg23OkRkUleEGKmJ3Ufx73Lg44tQBpTtngPP28N_xhzb3aC34ApYDLCnODn41FKtB5xZliymIS3eTx8-DoXhvi_5qHiJf9QqaLP1DiLb4tw7VtfmaK_CD1Q"/>
+</div>
+<div class="relative z-10">
+<div class="flex items-baseline gap-6 mb-16">
+<h2 class="font-serif text-4xl text-on-primary">Threading</h2>
+<div class="h-px flex-grow bg-on-primary/10"></div>
+<span class="font-label text-sm uppercase tracking-widest text-on-primary-container">02 — Ancient Art</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<div class="bg-white/10 backdrop-blur-xl p-10 rounded-2xl border border-white/10 group hover:bg-white/20 transition-all">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-serif text-3xl text-white">Brow Definition</h3>
+<span class="font-serif text-2xl text-on-primary-container">$20</span>
+</div>
+<p class="font-body text-on-primary/70 leading-relaxed mb-8">Chemical-free precision shaping using organic cotton thread. Ideal for extremely sensitive skin.</p>
+<button class="font-label text-sm text-white uppercase tracking-widest border-b border-white/30 pb-1 group-hover:border-white transition-all">Book Service</button>
+</div>
+<div class="bg-white/10 backdrop-blur-xl p-10 rounded-2xl border border-white/10 group hover:bg-white/20 transition-all">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-serif text-3xl text-white">Upper Lip</h3>
+<span class="font-serif text-2xl text-on-primary-container">$15</span>
+</div>
+<p class="font-body text-on-primary/70 leading-relaxed mb-8">Swift and clean hair removal that is gentle on the delicate facial area. Results last 4-6 weeks.</p>
+<button class="font-label text-sm text-white uppercase tracking-widest border-b border-white/30 pb-1 group-hover:border-white transition-all">Book Service</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Category: Add-ons (Vertical List Layout) -->
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-16">
+<div class="lg:col-span-2">
+<h2 class="font-serif text-4xl text-primary mb-6">The Ritual Add-ons</h2>
+<p class="font-body text-on-surface-variant leading-relaxed mb-8">Complete your transformation with our specialized enhancements designed to prolong and perfect your results.</p>
+<div class="aspect-video rounded-xl overflow-hidden shadow-lg">
+<img class="w-full h-full object-cover" data-alt="Close up of a small bottle of golden facial oil and dried lavender on a white ceramic tray" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_y5R_fxIH-wx4KjRE3Vkd_-iOjdGPjasvNdMHzvpj15b6Uu9whBWF4LCm-UY1HNNXOP8F1V4JEH_nmyzGn77ts0Hyjdpx6slLnDi-_Rm6cC--kslPUdzW-e79u0olhOC227OFPfhd9p_O29jX3G0XgPCrsWTKj8M0V5xldltffl9hzYg0hfQkdda4i4yARrJuz08ZfQDQixJbVcPSu8slq1aYTdBpnHZRfA5n6oKfkqQNRGXz3P20z0AqFjij-UtfcUIsrcfENfM"/>
+</div>
+</div>
+<div class="lg:col-span-3 space-y-4">
+<!-- Add-on 1 -->
+<div class="flex justify-between items-center p-8 bg-surface-container-low rounded-xl group hover:translate-x-4 transition-transform duration-400">
+<div>
+<h4 class="font-serif text-xl text-primary">Henna Tinting</h4>
+<p class="font-body text-xs text-on-surface-variant uppercase tracking-widest mt-1">20 Minutes</p>
+</div>
+<span class="font-serif text-xl text-primary">$35</span>
+</div>
+<!-- Add-on 2 -->
+<div class="flex justify-between items-center p-8 bg-surface-container-low rounded-xl group hover:translate-x-4 transition-transform duration-400">
+<div>
+<h4 class="font-serif text-xl text-primary">Cooling Hydrogel Mask</h4>
+<p class="font-body text-xs text-on-surface-variant uppercase tracking-widest mt-1">15 Minutes</p>
+</div>
+<span class="font-serif text-xl text-primary">$15</span>
+</div>
+<!-- Add-on 3 -->
+<div class="flex justify-between items-center p-8 bg-surface-container-low rounded-xl group hover:translate-x-4 transition-transform duration-400">
+<div>
+<h4 class="font-serif text-xl text-primary">Brow Lamination</h4>
+<p class="font-body text-xs text-on-surface-variant uppercase tracking-widest mt-1">45 Minutes</p>
+</div>
+<span class="font-serif text-xl text-primary">$75</span>
+</div>
+<!-- Add-on 4 -->
+<div class="flex justify-between items-center p-8 bg-surface-container-low rounded-xl group hover:translate-x-4 transition-transform duration-400">
+<div>
+<h4 class="font-serif text-xl text-primary">Essential Oil Soothe</h4>
+<p class="font-body text-xs text-on-surface-variant uppercase tracking-widest mt-1">5 Minutes</p>
+</div>
+<span class="font-serif text-xl text-primary">$10</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Signature Experience Banner -->
+<section class="mt-32 max-w-7xl mx-auto px-8">
+<div class="bg-surface-container-high rounded-[3rem] p-12 md:p-24 text-center">
+<span class="font-label text-sm uppercase tracking-[0.3em] text-primary mb-8 block">Experience the velvet touch</span>
+<h2 class="font-serif text-5xl md:text-7xl text-primary mb-12 max-w-3xl mx-auto leading-tight">Your finest features, <br/><span class="italic font-normal">reimagined.</span></h2>
+<button class="bg-primary text-on-primary px-12 py-5 rounded-full font-serif text-xl hover:scale-105 transition-transform duration-300 shadow-2xl shadow-primary/40">
+                    Reserve Appointment
+                </button>
+</div>
+</section>
+</main>
+<!-- Footer Shell -->
+<footer class="bg-purple-50 dark:bg-purple-950 w-full py-16 px-8 mt-24">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-7xl mx-auto border-t border-purple-100/15 pt-12">
+<div>
+<div class="font-['Noto_Serif'] text-xl font-bold text-purple-950 dark:text-white mb-6">
+                    The Velvet Editorial
+                </div>
+<p class="font-['Manrope'] text-sm tracking-wide text-purple-600 dark:text-purple-400 max-w-xs">
+                    Redefining the studio experience through art, precision, and the luxury of silence.
+                </p>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-['Noto_Serif'] font-bold text-purple-900 dark:text-white">Studio</h4>
+<a class="font-['Manrope'] text-sm tracking-wide text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200 transition-colors" href="#">Instagram</a>
+<a class="font-['Manrope'] text-sm tracking-wide text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200 transition-colors" href="#">Facebook</a>
+<a class="font-['Manrope'] text-sm tracking-wide text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200 transition-colors" href="#">Contact Us</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-['Noto_Serif'] font-bold text-purple-900 dark:text-white">Legal</h4>
+<a class="font-['Manrope'] text-sm tracking-wide text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200 transition-colors" href="#">Privacy Policy</a>
+<p class="font-['Manrope'] text-sm tracking-wide text-purple-600 dark:text-purple-400 mt-4">
+                    © 2024 Brow Waxing and Threading Studio. All rights reserved.
+                </p>
+</div>
+</div>
+</footer>
+</body></html>

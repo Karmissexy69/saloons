@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login | The Velvet Editorial</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#48454f",
+                    "inverse-surface": "#303033",
+                    "primary": "#330056",
+                    "inverse-primary": "#e0b6ff",
+                    "surface": "#faf9fc",
+                    "on-secondary-fixed-variant": "#533d6b",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f5f3f7",
+                    "surface-dim": "#dbd9dd",
+                    "on-tertiary-fixed": "#1c1a23",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#e6e0ec",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#faf9fc",
+                    "primary-fixed": "#f2daff",
+                    "on-surface-variant": "#4c4450",
+                    "primary-fixed-dim": "#e0b6ff",
+                    "surface-container": "#efedf1",
+                    "on-primary-fixed-variant": "#5e3282",
+                    "on-secondary-fixed": "#26113c",
+                    "on-primary-container": "#b989e0",
+                    "surface-tint": "#774a9c",
+                    "background": "#faf9fc",
+                    "tertiary-fixed-dim": "#cac4d0",
+                    "tertiary-container": "#36333c",
+                    "outline": "#7d7481",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#d7bcf2",
+                    "on-tertiary-container": "#a09ba6",
+                    "primary-container": "#4a1d6e",
+                    "surface-container-highest": "#e3e2e6",
+                    "secondary-container": "#e3c7fe",
+                    "secondary": "#6b5584",
+                    "on-primary-fixed": "#2e004e",
+                    "on-background": "#1b1b1e",
+                    "surface-variant": "#e3e2e6",
+                    "on-error": "#ffffff",
+                    "surface-container-high": "#e9e7eb",
+                    "on-secondary-container": "#67507f",
+                    "secondary-fixed": "#efdbff",
+                    "inverse-on-surface": "#f2f0f4",
+                    "tertiary": "#201e27",
+                    "on-surface": "#1b1b1e",
+                    "outline-variant": "#cec3d1",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .silk-transition {
+            transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased min-h-screen flex items-center justify-center overflow-hidden">
+<!-- Background Layer -->
+<div class="fixed inset-0 z-0">
+<div class="absolute inset-0 bg-[url('image-login-bg')] bg-cover bg-center opacity-20 mix-blend-overlay" data-alt="ultra-minimalist high-key studio interior with soft lavender silk curtains and ethereal morning light casting gentle shadows"></div>
+<div class="absolute inset-0 bg-gradient-to-br from-surface via-surface-container-low to-secondary-fixed/30"></div>
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-10 w-full max-w-7xl px-8 flex flex-col md:flex-row items-center justify-center gap-16">
+<!-- Brand Narrative Side (Visible on MD+) -->
+<div class="hidden md:flex flex-col max-w-md">
+<h1 class="font-headline text-5xl font-bold tracking-tighter text-primary italic mb-6 leading-tight">
+                The Velvet Editorial
+            </h1>
+<p class="font-body text-lg text-secondary leading-relaxed mb-8">
+                Refining the art of the gaze. Enter your private sanctuary to manage your sessions and loyalty rewards.
+            </p>
+<div class="flex items-center gap-4">
+<div class="h-[1px] w-12 bg-outline-variant/30"></div>
+<span class="font-label text-xs uppercase tracking-widest text-outline">Est. 2024</span>
+</div>
+</div>
+<!-- Login Card Section -->
+<section class="w-full max-w-[480px]">
+<div class="bg-surface-container-lowest/80 backdrop-blur-2xl rounded-xl shadow-[0_32px_64px_-16px_rgba(46,0,78,0.08)] p-10 md:p-14 border border-white/40">
+<!-- Mobile Logo -->
+<div class="md:hidden mb-10 text-center">
+<h2 class="font-headline text-3xl font-bold italic text-primary">The Velvet Editorial</h2>
+</div>
+<header class="mb-10">
+<h2 class="font-headline text-3xl font-medium text-on-surface mb-2 tracking-tight">Sign In</h2>
+<p class="text-on-surface-variant font-medium">Welcome back to precision beauty.</p>
+</header>
+<form class="space-y-6">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="block font-label text-sm font-semibold text-primary ml-1" for="email">Email Address</label>
+<div class="relative">
+<input class="w-full px-5 py-4 bg-surface-container-low rounded-xl border-none focus:ring-2 focus:ring-primary-fixed focus:bg-primary-fixed/20 transition-all duration-300 text-on-surface placeholder:text-outline/50" id="email" name="email" placeholder="name@example.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-center ml-1">
+<label class="block font-label text-sm font-semibold text-primary" for="password">Password</label>
+<a class="text-xs font-semibold text-secondary hover:text-primary silk-transition" href="#">Forgot Password?</a>
+</div>
+<div class="relative">
+<input class="w-full px-5 py-4 bg-surface-container-low rounded-xl border-none focus:ring-2 focus:ring-primary-fixed focus:bg-primary-fixed/20 transition-all duration-300 text-on-surface placeholder:text-outline/50" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+<!-- Remember Me & Logic -->
+<div class="flex items-center space-x-3 ml-1">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-fixed/50 transition-all" id="remember" name="remember" type="checkbox"/>
+<label class="text-sm font-medium text-on-surface-variant select-none" for="remember">Remember this device</label>
+</div>
+<!-- Primary Action -->
+<button class="w-full bg-primary text-on-primary py-4 rounded-full font-semibold tracking-wide shadow-lg shadow-primary/10 hover:scale-[1.02] hover:bg-primary-container transition-all duration-400 active:scale-95 flex justify-center items-center gap-2" type="submit">
+<span>Sign In</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</form>
+<!-- Divider -->
+<div class="relative my-10">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant/15"></div>
+</div>
+<div class="relative flex justify-center text-sm">
+<span class="px-4 bg-transparent text-outline font-label text-xs uppercase tracking-widest">New to the studio?</span>
+</div>
+</div>
+<!-- Secondary Action -->
+<a class="block w-full text-center py-4 rounded-full font-semibold text-primary bg-surface-container-highest/50 hover:bg-surface-container-highest silk-transition" href="#">
+                    Register Account
+                </a>
+</div>
+<!-- Contextual Footer -->
+<footer class="mt-8 text-center">
+<p class="text-xs text-outline font-medium tracking-wide">
+                    © 2024 Brow Waxing and Threading Studio. All rights reserved.
+                </p>
+<div class="mt-4 flex justify-center gap-6">
+<a class="text-xs text-on-surface-variant hover:text-primary silk-transition" href="#">Privacy Policy</a>
+<a class="text-xs text-on-surface-variant hover:text-primary silk-transition" href="#">Terms of Service</a>
+</div>
+</footer>
+</section>
+</main>
+<!-- Aesthetic Decorative Element -->
+<div class="fixed -bottom-24 -right-24 w-96 h-96 bg-primary-container/10 blur-[120px] rounded-full pointer-events-none"></div>
+<div class="fixed -top-24 -left-24 w-96 h-96 bg-secondary-container/20 blur-[120px] rounded-full pointer-events-none"></div>
+</body></html>

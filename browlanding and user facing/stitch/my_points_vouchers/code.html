@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#48454f",
+                        "inverse-surface": "#303033",
+                        "primary": "#330056",
+                        "inverse-primary": "#e0b6ff",
+                        "surface": "#faf9fc",
+                        "on-secondary-fixed-variant": "#533d6b",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f5f3f7",
+                        "surface-dim": "#dbd9dd",
+                        "on-tertiary-fixed": "#1c1a23",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#e6e0ec",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#faf9fc",
+                        "primary-fixed": "#f2daff",
+                        "on-surface-variant": "#4c4450",
+                        "primary-fixed-dim": "#e0b6ff",
+                        "surface-container": "#efedf1",
+                        "on-primary-fixed-variant": "#5e3282",
+                        "on-secondary-fixed": "#26113c",
+                        "on-primary-container": "#b989e0",
+                        "surface-tint": "#774a9c",
+                        "background": "#faf9fc",
+                        "tertiary-fixed-dim": "#cac4d0",
+                        "tertiary-container": "#36333c",
+                        "outline": "#7d7481",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#d7bcf2",
+                        "on-tertiary-container": "#a09ba6",
+                        "primary-container": "#4a1d6e",
+                        "surface-container-highest": "#e3e2e6",
+                        "secondary-container": "#e3c7fe",
+                        "secondary": "#6b5584",
+                        "on-primary-fixed": "#2e004e",
+                        "on-background": "#1b1b1e",
+                        "surface-variant": "#e3e2e6",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e9e7eb",
+                        "on-secondary-container": "#67507f",
+                        "secondary-fixed": "#efdbff",
+                        "inverse-on-surface": "#f2f0f4",
+                        "tertiary": "#201e27",
+                        "on-surface": "#1b1b1e",
+                        "outline-variant": "#cec3d1",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Noto Serif"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-gradient {
+            background: linear-gradient(135deg, #330056 0%, #4a1d6e 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(24px);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased no-scrollbar">
+<!-- SideNavBar Anchor -->
+<aside class="h-full w-72 fixed left-0 top-0 border-r border-purple-100/10 bg-purple-50/50 dark:bg-purple-950/50 backdrop-blur-md flex flex-col py-24 gap-8 z-40">
+<div class="px-8 mb-4">
+<h1 class="font-headline text-xl font-bold text-purple-950 dark:text-white">Your Sanctuary</h1>
+</div>
+<div class="px-8 flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-fixed">
+<img alt="User's elegant profile portrait" class="w-full h-full object-cover" data-alt="Close-up portrait of an elegant woman with professional makeup and perfectly groomed eyebrows, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdesupJ064h87CAwW0L9AdQHbqyk4itj8T1vvY4DUhK_Ymc0nQpJ28L1Ng81eW4NkurfE2nFnUP5hoYhAzGvYKgp2eq0BNaPi2gygFgz6ec2AFCPLr_2gjIsyaSGYK3Sx6IyEltFBp0BWEvTqjECele9Y9hCmScdYzYqIB9ZDok8gkvVT95ay9wOLvTvyV6rEZChKY3tY8Byvwy1om3nNIZ4EnhGZhBNGRnMxPYP-jUkXUica7F3qwmDj1VFfboslZJZlJh0BiyvQ"/>
+</div>
+<div>
+<p class="font-headline text-sm font-bold text-purple-950">Elena Richards</p>
+<p class="font-label text-xs tracking-wider text-purple-600 uppercase">Gold Member</p>
+</div>
+</div>
+<nav class="flex flex-col flex-grow">
+<!-- Active Tab: My Points -->
+<a class="flex items-center gap-4 px-8 py-4 text-purple-600 dark:text-purple-400 hover:bg-purple-100/50 dark:hover:bg-purple-800/20 rounded-r-full hover:translate-x-1 transition-transform duration-300 font-['Manrope'] text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined">person</span>
+<span>Profile</span>
+</a>
+<a class="flex items-center gap-4 px-8 py-4 bg-purple-100 dark:bg-purple-900/40 text-purple-950 dark:text-white rounded-r-full font-semibold font-['Manrope'] text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span>My Points</span>
+</a>
+<a class="flex items-center gap-4 px-8 py-4 text-purple-600 dark:text-purple-400 hover:bg-purple-100/50 dark:hover:bg-purple-800/20 rounded-r-full hover:translate-x-1 transition-transform duration-300 font-['Manrope'] text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span>Available Vouchers</span>
+</a>
+<a class="flex items-center gap-4 px-8 py-4 text-purple-600 dark:text-purple-400 hover:bg-purple-100/50 dark:hover:bg-purple-800/20 rounded-r-full hover:translate-x-1 transition-transform duration-300 font-['Manrope'] text-sm font-medium tracking-wide" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span>Redeemed Vouchers</span>
+</a>
+</nav>
+<div class="px-8 mt-auto flex flex-col gap-2">
+<a class="flex items-center gap-4 py-2 text-purple-600 dark:text-purple-400 hover:text-purple-900 transition-colors text-sm font-medium" href="#">
+<span class="material-symbols-outlined">help</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-4 py-2 text-purple-600 dark:text-purple-400 hover:text-purple-900 transition-colors text-sm font-medium" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-72 min-h-screen px-12 py-24 max-w-7xl">
+<!-- Header Section with Breathing Asymmetry -->
+<header class="mb-20">
+<h2 class="font-headline text-5xl md:text-6xl text-primary font-bold tracking-tighter mb-4 opacity-90">
+                Welcome, Elena
+            </h2>
+<div class="flex items-center gap-3">
+<span class="inline-block px-4 py-1 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label text-xs font-bold tracking-widest uppercase">
+                    Gold Member Status
+                </span>
+<div class="h-px w-24 bg-outline-variant/30"></div>
+</div>
+</header>
+<!-- Points Balance: High Impact Card -->
+<section class="mb-24 grid grid-cols-1 md:grid-cols-12 gap-12 items-end">
+<div class="md:col-span-7">
+<div class="editorial-gradient rounded-xl p-12 text-on-primary shadow-2xl relative overflow-hidden">
+<!-- Decorative Background Element -->
+<div class="absolute -right-20 -top-20 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
+<div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
+<div class="relative z-10">
+<p class="font-label text-sm uppercase tracking-widest mb-2 text-primary-fixed-dim">Points Balance</p>
+<div class="flex items-baseline gap-4">
+<span class="font-headline text-8xl font-bold">4,500</span>
+<span class="font-headline text-2xl font-light italic text-primary-fixed">Points</span>
+</div>
+<div class="mt-8 flex gap-4">
+<button class="bg-white text-primary px-8 py-3 rounded-full font-label font-bold text-sm hover:scale-105 transition-transform duration-300">
+                                Redeem Now
+                            </button>
+<button class="border border-white/30 text-white px-8 py-3 rounded-full font-label font-bold text-sm hover:bg-white/10 transition-colors">
+                                History
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<div class="md:col-span-5 pb-4">
+<div class="bg-surface-container-high rounded-xl p-8 border border-outline-variant/10">
+<h3 class="font-headline text-xl text-primary font-bold mb-4">Membership Perks</h3>
+<ul class="space-y-4">
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            Complimentary Brow Shaping on Birthday
+                        </li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            2x Points on Threading Services
+                        </li>
+<li class="flex items-center gap-3 text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            Exclusive Early Access to New Products
+                        </li>
+</ul>
+</div>
+</div>
+</section>
+<!-- Available Vouchers: Bento Style Grid -->
+<section class="mb-24">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h3 class="font-headline text-3xl text-primary font-bold">Available Vouchers</h3>
+<p class="text-on-surface-variant mt-2">Personalized rewards tailored for your next visit.</p>
+</div>
+<button class="text-primary font-label font-bold text-sm border-b-2 border-primary pb-1 hover:text-on-primary-container transition-colors">
+                    View All
+                </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Voucher 1 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-400">
+<div class="h-40 overflow-hidden relative">
+<img alt="Spa treatment setting" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Lush spa treatment room with soft purple orchids and white linen towels on a massage table, warm candle lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgm6YhfONPQz_a1yvf4ub5m1kHevrlwpRmhfhQIcIl5SFEaAD9Pzbq-1KgQTkk7KTc46Ru57aw4YvISGDnX7PLRO3XHAEC4nd-q5v6C7ndPHynyEw4JI66Wy19YY2j3qV6Yr4HOK1nhFMjNlWDWUx-FSK5lB_Q4PW7mFDzhQoUaDa4CA7yzgym0Sc-Hjqq9lCfuLLMLGVbVBiApYpu30BqDsbM6d8Su3Dx8QC7YWuDKp_r2QLgSC3hj0RJDzeRaG2SkQh3CKJYs-w"/>
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary/10 transition-colors"></div>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs uppercase tracking-tighter">
+                            1,500 pts
+                        </div>
+</div>
+<div class="p-8">
+<h4 class="font-headline text-xl text-primary font-bold mb-2">Signature Brow Threading</h4>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Redeem for a full brow shaping and consultation with our master artists.</p>
+<div class="flex items-center justify-between gap-4 pt-6 border-t border-purple-100/50">
+<div class="bg-surface-container p-2 rounded">
+<span class="material-symbols-outlined text-primary text-3xl">barcode_scanner</span>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label font-bold text-xs hover:bg-primary-container transition-colors">
+                                REDEEM
+                            </button>
+</div>
+</div>
+</div>
+<!-- Voucher 2 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-400">
+<div class="h-40 overflow-hidden relative">
+<img alt="Cosmetic products" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="High-end skincare and brow products arranged on a marble surface with soft shadows and lavender petals" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAELJYnTPKQSD1rZNTbrnAXBnp_HbRQUDf5AaWElzw95L0jI6R8uC9w7esoqgZHw3fol4beYPPtpzXprRszMwLALOPh--fqYYRZW6SdDg48ztryImfCFz-u8hqtYfaUlgR16pyvlet5Sk3gtnEaWTK1fwmDf-H6RoCDm4udpHTsDaWrB1MZV3YgVrAxphZGhT99_rTrE3rsJTeMJJ4sSi05601c6aBLbsKBTd9weoI0o62mLbPGHmsLMEy_Iwqh9eNk-dJjoSnHjHQ"/>
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary/10 transition-colors"></div>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs uppercase tracking-tighter">
+                            800 pts
+                        </div>
+</div>
+<div class="p-8">
+<h4 class="font-headline text-xl text-primary font-bold mb-2">$15 Retail Discount</h4>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Valid for any in-studio purchase of our Velvet Editorial product line.</p>
+<div class="flex items-center justify-between gap-4 pt-6 border-t border-purple-100/50">
+<div class="bg-surface-container p-2 rounded">
+<span class="material-symbols-outlined text-primary text-3xl">barcode_scanner</span>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label font-bold text-xs hover:bg-primary-container transition-colors">
+                                REDEEM
+                            </button>
+</div>
+</div>
+</div>
+<!-- Voucher 3 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-400">
+<div class="h-40 overflow-hidden relative">
+<img alt="Luxury facial" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Close up of a woman receiving a facial treatment with soft focus background and professional lighting, luxury spa vibes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4LXTCxPE7Mdv85Tn-f1uHO72dupSxqJGMkeQ8TiiTTvBGua-HZ5H2OqqJdaLrYbWJg7eVART2-4WkZxhsIT35YEGXRPojPJtO34PXpTdWvWWFu9MiIeurL_huTpmYREh1M-uMDr07NXHAt38R5VntoObRWooiI8a292aDAjAQyiHT-87YZcDucsG5mRlQoqDrn3VtxN97pwqa2uvMqTBaoZb9IAIBGzRw59mzUjHvt3z0tZo6rqS4BhBasrXVCXAPmwueJzZbpJU"/>
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-primary/10 transition-colors"></div>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-primary font-bold text-xs uppercase tracking-tighter">
+                            3,000 pts
+                        </div>
+</div>
+<div class="p-8">
+<h4 class="font-headline text-xl text-primary font-bold mb-2">Tinting &amp; Glow Combo</h4>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">A luxury eyebrow tint combined with our signature soothing eye mask treatment.</p>
+<div class="flex items-center justify-between gap-4 pt-6 border-t border-purple-100/50">
+<div class="bg-surface-container p-2 rounded">
+<span class="material-symbols-outlined text-primary text-3xl">barcode_scanner</span>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label font-bold text-xs hover:bg-primary-container transition-colors">
+                                REDEEM
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Earn More Points Banner -->
+<section class="rounded-xl border-2 border-dashed border-primary-fixed p-12 flex flex-col md:flex-row items-center justify-between gap-8 bg-primary-fixed/20">
+<div class="flex items-center gap-8">
+<div class="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-primary text-4xl">volunteer_activism</span>
+</div>
+<div>
+<h4 class="font-headline text-2xl text-primary font-bold">Refer a Friend</h4>
+<p class="text-on-surface-variant">Share the beauty. Get 500 points for every successful referral.</p>
+</div>
+</div>
+<button class="whitespace-nowrap bg-primary text-on-primary px-10 py-4 rounded-full font-label font-bold text-sm tracking-widest hover:scale-105 transition-all">
+                INVITE NOW
+            </button>
+</section>
+</main>
+<!-- Footer Anchor -->
+<footer class="ml-72 bg-purple-50 dark:bg-purple-950 w-auto py-16 px-8 mt-24">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-7xl mx-auto border-t border-purple-100/15 pt-12">
+<div>
+<h5 class="font-headline text-xl font-bold text-purple-950 dark:text-white mb-6">The Velvet Editorial</h5>
+<p class="text-purple-600 dark:text-purple-400 text-sm leading-relaxed max-w-xs">
+                    Elevating the art of precision beauty since 2012. Our studio provides an editorial-grade experience for every client.
+                </p>
+</div>
+<div>
+<h6 class="font-label text-xs font-bold uppercase tracking-widest text-primary mb-6">Quick Links</h6>
+<ul class="space-y-4">
+<li><a class="text-purple-600 dark:text-purple-400 hover:text-purple-800 transition-colors text-sm" href="#">Instagram</a></li>
+<li><a class="text-purple-600 dark:text-purple-400 hover:text-purple-800 transition-colors text-sm" href="#">Facebook</a></li>
+<li><a class="text-purple-600 dark:text-purple-400 hover:text-purple-800 transition-colors text-sm" href="#">Privacy Policy</a></li>
+<li><a class="text-purple-600 dark:text-purple-400 hover:text-purple-800 transition-colors text-sm" href="#">Contact Us</a></li>
+</ul>
+</div>
+<div class="flex flex-col justify-between">
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full border border-purple-200 flex items-center justify-center text-purple-900 hover:bg-primary hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined text-lg">public</span>
+</a>
+<a class="w-10 h-10 rounded-full border border-purple-200 flex items-center justify-center text-purple-900 hover:bg-primary hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined text-lg">call</span>
+</a>
+</div>
+<p class="font-label text-sm tracking-wide text-purple-600 dark:text-purple-400 mt-8">
+                    © 2024 Brow Waxing and Threading Studio. All rights reserved.
+                </p>
+</div>
+</div>
+</footer>
+</body></html>

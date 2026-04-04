@@ -4,6 +4,7 @@ import com.salonpos.config.BiometricProperties;
 import com.salonpos.domain.StaffFaceProfile;
 import com.salonpos.domain.StaffProfile;
 import com.salonpos.dto.CreateStaffRequest;
+import com.salonpos.dto.PublicStaffResponse;
 import com.salonpos.dto.StaffProfileResponse;
 import com.salonpos.dto.StaffCreateResponse;
 import com.salonpos.dto.StaffFaceReEnrollResponse;
@@ -56,6 +57,12 @@ public class StaffService {
                 staff.getDisplayName(),
                 staff.getRoleType(),
                 staff.isActive()))
+            .toList();
+    }
+
+    public List<PublicStaffResponse> listPublic() {
+        return staffProfileRepository.findAllByActiveTrueOrderByDisplayNameAsc().stream()
+            .map(staff -> new PublicStaffResponse(staff.getId(), staff.getDisplayName()))
             .toList();
     }
 

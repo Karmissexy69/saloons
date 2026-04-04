@@ -21,17 +21,20 @@ public class RefundService {
     private final SalesTransactionRepository salesTransactionRepository;
     private final RefundRepository refundRepository;
     private final CommissionService commissionService;
+    private final LoyaltyService loyaltyService;
     private final AuditLogService auditLogService;
 
     public RefundService(
         SalesTransactionRepository salesTransactionRepository,
         RefundRepository refundRepository,
         CommissionService commissionService,
+        LoyaltyService loyaltyService,
         AuditLogService auditLogService
     ) {
         this.salesTransactionRepository = salesTransactionRepository;
         this.refundRepository = refundRepository;
         this.commissionService = commissionService;
+        this.loyaltyService = loyaltyService;
         this.auditLogService = auditLogService;
     }
 
@@ -58,6 +61,7 @@ public class RefundService {
 
         BigDecimal ratio = amount.divide(transaction.getTotal(), 6, RoundingMode.HALF_UP);
         commissionService.reverseForRefund(transaction.getId(), ratio);
+        loyaltyService.reverseForRefund(saved);
 
         if (amount.compareTo(transaction.getTotal()) == 0) {
             transaction.setStatus(TransactionStatus.REFUNDED);

@@ -7,6 +7,9 @@ import java.time.OffsetDateTime;
 
 public record CreateAppointmentRequest(
     Long customerId,
+    String guestName,
+    String guestPhone,
+    String guestEmail,
     Long staffId,
     @NotNull Long branchId,
     Long serviceId,
@@ -14,6 +17,7 @@ public record CreateAppointmentRequest(
     OffsetDateTime endAt,
     AppointmentStatus status,
     BigDecimal depositAmount,
-    String notes
+    String customerNote,
+    String internalNote
 ) {
 }

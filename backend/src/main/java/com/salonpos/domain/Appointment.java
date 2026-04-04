@@ -51,15 +51,67 @@ public class Appointment {
     @Column(nullable = false)
     private AppointmentStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "booking_channel", nullable = false)
+    private AppointmentBookingChannel bookingChannel;
+
     @Column(name = "deposit_amount", precision = 12, scale = 2)
     private BigDecimal depositAmount;
 
-    private String notes;
+    @Column(name = "notes")
+    private String internalNote;
+
+    @Column(name = "customer_note")
+    private String customerNote;
+
+    @Column(name = "guest_name")
+    private String guestName;
+
+    @Column(name = "guest_phone")
+    private String guestPhone;
+
+    @Column(name = "guest_phone_normalized")
+    private String guestPhoneNormalized;
+
+    @Column(name = "guest_email")
+    private String guestEmail;
+
+    @Column(name = "booking_reference")
+    private String bookingReference;
+
+    @Column(name = "cancellation_reason")
+    private String cancellationReason;
+
+    @Column(name = "cancelled_at")
+    private OffsetDateTime cancelledAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "cancelled_by_type")
+    private AppointmentCancellationActorType cancelledByType;
+
+    @Column(name = "cancelled_by_id")
+    private Long cancelledById;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "converted_transaction_id")
     private SalesTransaction convertedTransaction;
 
+    @Column(name = "receipt")
+    private String receiptNo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_customer_id")
+    private Customer createdByCustomer;
+
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt;
+
+    @Column(name = "confirmation_email_sent_at")
+    private OffsetDateTime confirmationEmailSentAt;
+
+    @Column(name = "reminder_email_sent_at")
+    private OffsetDateTime reminderEmailSentAt;
 }

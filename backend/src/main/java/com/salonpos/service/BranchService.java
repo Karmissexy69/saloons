@@ -3,6 +3,7 @@ package com.salonpos.service;
 import com.salonpos.domain.Branch;
 import com.salonpos.dto.BranchResponse;
 import com.salonpos.dto.CreateBranchRequest;
+import com.salonpos.dto.PublicBranchResponse;
 import com.salonpos.dto.UpdateBranchRequest;
 import com.salonpos.exception.BadRequestException;
 import com.salonpos.exception.NotFoundException;
@@ -27,6 +28,13 @@ public class BranchService {
         return branchRepository.findAllByOrderByNameAsc()
             .stream()
             .map(this::toResponse)
+            .toList();
+    }
+
+    public List<PublicBranchResponse> listPublic() {
+        return branchRepository.findAllByActiveTrueOrderByNameAsc()
+            .stream()
+            .map(branch -> new PublicBranchResponse(branch.getId(), branch.getName(), branch.getAddress()))
             .toList();
     }
 

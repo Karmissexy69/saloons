@@ -9,6 +9,7 @@ export type NavKey =
   | "staff"
   | "services"
   | "settings"
+  | "loyalty"
   | "appointments"
   | "pos-terminal"
   | "receipts"
@@ -31,6 +32,7 @@ const NAV_ITEMS: NavItem[] = [
   { key: "staff", label: "Staff", icon: "group", group: "ops" },
   { key: "services", label: "Services", icon: "content_cut", group: "ops" },
   { key: "settings", label: "Settings", icon: "settings", group: "management" },
+  { key: "loyalty", label: "Loyalty", icon: "loyalty", group: "management" },
   { key: "appointments", label: "Appointments", icon: "calendar_today", group: "ops" },
   { key: "pos-terminal", label: "POS Terminal", icon: "point_of_sale", group: "commerce" },
   { key: "receipts", label: "Receipts", icon: "receipt_long", group: "commerce" },

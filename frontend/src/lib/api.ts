@@ -9,6 +9,7 @@ import type {
   CommissionStatementResponse,
   ConvertAppointmentToBillRequest,
   CreateAppointmentRequest,
+  UpdateAppointmentRequest,
   CreateRefundRequest,
   CreateRefundResponse,
   CreateServiceRequest,
@@ -27,6 +28,14 @@ import type {
   TransactionStatus,
   AuditLogResponse,
   AppointmentStatus,
+  CustomerResponse,
+  CreateCustomerRequest,
+  UpdateCustomerRequest,
+  LoyaltyPointsTransactionResponse,
+  CustomerVoucherResponse,
+  VoucherCatalogResponse,
+  LoyaltySettingsResponse,
+  SaveVoucherCatalogRequest,
 } from "./types";
 
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() || "http://localhost:8080";
@@ -143,6 +152,115 @@ export async function updateSetting(token: string, key: string, value: string): 
     method: "PUT",
     headers: authHeaders(token, { "Content-Type": "application/json" }),
     body: JSON.stringify({ value }),
+  });
+}
+
+export async function searchCustomers(token: string, q?: string): Promise<CustomerResponse[]> {
+  const queryString = buildQuery({ q });
+  return requestJson<CustomerResponse[]>(`/api/customers${queryString}`, {
+    method: "GET",
+    headers: authHeaders(token),
+  });
+}
+
+export async function getCustomer(token: string, customerId: number): Promise<CustomerResponse> {
+  return requestJson<CustomerResponse>(`/api/customers/${customerId}`, {
+    method: "GET",
+    headers: authHeaders(token),
+  });
+}
+
+export async function createCustomer(token: string, payload: CreateCustomerRequest): Promise<CustomerResponse> {
+  return requestJson<CustomerResponse>("/api/customers", {
+    method: "POST",
+    headers: authHeaders(token, { "Content-Type": "application/json" }),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateCustomer(token: string, customerId: number, payload: UpdateCustomerRequest): Promise<CustomerResponse> {
+  return requestJson<CustomerResponse>(`/api/customers/${customerId}`, {
+    method: "PATCH",
+    headers: authHeaders(token, { "Content-Type": "application/json" }),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getCustomerPointsHistory(token: string, customerId: number): Promise<LoyaltyPointsTransactionResponse[]> {
+  return requestJson<LoyaltyPointsTransactionResponse[]>(`/api/customers/${customerId}/points-history`, {
+    method: "GET",
+    headers: authHeaders(token),
+  });
+}
+
+export async function getCustomerVouchers(token: string, customerId: number): Promise<CustomerVoucherResponse[]> {
+  return requestJson<CustomerVoucherResponse[]>(`/api/customers/${customerId}/vouchers`, {
+    method: "GET",
+    headers: authHeaders(token),
+  });
+}
+
+export async function adjustCustomerPoints(
+  token: string,
+  customerId: number,
+  payload: { pointsDelta: number; remarks: string }
+): Promise<LoyaltyPointsTransactionResponse> {
+  return requestJson<LoyaltyPointsTransactionResponse>(`/api/customers/${customerId}/points-adjustments`, {
+    method: "POST",
+    headers: authHeaders(token, { "Content-Type": "application/json" }),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function redeemCustomerVoucher(token: string, customerId: number, catalogId: number): Promise<CustomerVoucherResponse> {
+  return requestJson<CustomerVoucherResponse>(`/api/customers/${customerId}/vouchers/redeem/${catalogId}`, {
+    method: "POST",
+    headers: authHeaders(token),
+  });
+}
+
+export async function getLoyaltySettings(token: string): Promise<LoyaltySettingsResponse> {
+  return requestJson<LoyaltySettingsResponse>("/api/admin/loyalty-settings", {
+    method: "GET",
+    headers: authHeaders(token),
+  });
+}
+
+export async function updateLoyaltySettings(
+  token: string,
+  payload: { pointsEarnPercent: number; pointsEnabled: boolean; voucherRedemptionEnabled: boolean; reminderLeadHours: number }
+): Promise<LoyaltySettingsResponse> {
+  return requestJson<LoyaltySettingsResponse>("/api/admin/loyalty-settings", {
+    method: "PUT",
+    headers: authHeaders(token, { "Content-Type": "application/json" }),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function listAdminVouchers(token: string): Promise<VoucherCatalogResponse[]> {
+  return requestJson<VoucherCatalogResponse[]>("/api/admin/vouchers", {
+    method: "GET",
+    headers: authHeaders(token),
+  });
+}
+
+export async function createAdminVoucher(token: string, payload: SaveVoucherCatalogRequest): Promise<VoucherCatalogResponse> {
+  return requestJson<VoucherCatalogResponse>("/api/admin/vouchers", {
+    method: "POST",
+    headers: authHeaders(token, { "Content-Type": "application/json" }),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateAdminVoucher(
+  token: string,
+  voucherId: number,
+  payload: SaveVoucherCatalogRequest
+): Promise<VoucherCatalogResponse> {
+  return requestJson<VoucherCatalogResponse>(`/api/admin/vouchers/${voucherId}`, {
+    method: "PATCH",
+    headers: authHeaders(token, { "Content-Type": "application/json" }),
+    body: JSON.stringify(payload),
   });
 }
 
@@ -367,12 +485,25 @@ export async function listAppointments(
     to?: string;
     branchId?: number;
     status?: AppointmentStatus;
+    q?: string;
   }
 ): Promise<AppointmentResponse[]> {
   const queryString = buildQuery(query);
   return requestJson<AppointmentResponse[]>(`/api/appointments${queryString}`, {
     method: "GET",
     headers: authHeaders(token),
+  });
+}
+
+export async function updateAppointment(
+  token: string,
+  id: number,
+  payload: UpdateAppointmentRequest
+): Promise<AppointmentResponse> {
+  return requestJson<AppointmentResponse>(`/api/appointments/${id}`, {
+    method: "PATCH",
+    headers: authHeaders(token, { "Content-Type": "application/json" }),
+    body: JSON.stringify(payload),
   });
 }
 
@@ -385,6 +516,14 @@ export async function updateAppointmentStatus(
     method: "PATCH",
     headers: authHeaders(token, { "Content-Type": "application/json" }),
     body: JSON.stringify({ status }),
+  });
+}
+
+export async function cancelAppointment(token: string, id: number, reason: string): Promise<AppointmentResponse> {
+  return requestJson<AppointmentResponse>(`/api/appointments/${id}/cancel`, {
+    method: "POST",
+    headers: authHeaders(token, { "Content-Type": "application/json" }),
+    body: JSON.stringify({ reason }),
   });
 }
 

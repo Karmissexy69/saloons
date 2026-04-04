@@ -11,6 +11,7 @@ import java.util.List;
 public record ConvertAppointmentToBillRequest(
     @NotNull Long cashierId,
     @NotNull @PositiveOrZero BigDecimal discountTotal,
+    Long customerVoucherId,
     @NotNull @Valid List<PaymentRequest> payments
 ) {
     public record PaymentRequest(

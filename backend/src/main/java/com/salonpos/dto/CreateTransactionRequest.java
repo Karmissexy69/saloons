@@ -12,7 +12,9 @@ import java.util.List;
 
 public record CreateTransactionRequest(
     @NotNull Long branchId,
+    Long appointmentId,
     Long customerId,
+    Long customerVoucherId,
     @NotNull Long cashierId,
     @NotEmpty @Valid List<LineRequest> lines,
     @NotEmpty @Valid List<PaymentRequest> payments,

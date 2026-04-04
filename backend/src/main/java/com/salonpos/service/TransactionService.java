@@ -2,6 +2,8 @@ package com.salonpos.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.salonpos.domain.Appointment;
+import com.salonpos.domain.AppointmentStatus;
 import com.salonpos.domain.Branch;
 import com.salonpos.domain.Customer;
 import com.salonpos.domain.Payment;
@@ -16,6 +18,7 @@ import com.salonpos.dto.CreateTransactionRequest;
 import com.salonpos.dto.CreateTransactionResponse;
 import com.salonpos.exception.BadRequestException;
 import com.salonpos.exception.NotFoundException;
+import com.salonpos.repository.AppointmentRepository;
 import com.salonpos.repository.CustomerRepository;
 import com.salonpos.repository.ReceiptRepository;
 import com.salonpos.repository.SalesTransactionRepository;
@@ -35,12 +38,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionService {
 
+    private final AppointmentRepository appointmentRepository;
     private final CustomerRepository customerRepository;
     private final ServiceItemRepository serviceItemRepository;
     private final SalesTransactionRepository salesTransactionRepository;
     private final ReceiptRepository receiptRepository;
     private final StaffProfileRepository staffProfileRepository;
     private final CommissionService commissionService;
+    private final LoyaltyService loyaltyService;
     private final AuditLogService auditLogService;
     private final ReceiptNumberGenerator receiptNumberGenerator;
     private final BranchService branchService;
@@ -49,12 +54,14 @@ public class TransactionService {
     private final ObjectMapper objectMapper;
 
     public TransactionService(
+        AppointmentRepository appointmentRepository,
         CustomerRepository customerRepository,
         ServiceItemRepository serviceItemRepository,
         SalesTransactionRepository salesTransactionRepository,
         ReceiptRepository receiptRepository,
         StaffProfileRepository staffProfileRepository,
         CommissionService commissionService,
+        LoyaltyService loyaltyService,
         AuditLogService auditLogService,
         ReceiptNumberGenerator receiptNumberGenerator,
         BranchService branchService,
@@ -62,12 +69,14 @@ public class TransactionService {
         PaymentProofStorageService paymentProofStorageService,
         ObjectMapper objectMapper
     ) {
+        this.appointmentRepository = appointmentRepository;
         this.customerRepository = customerRepository;
         this.serviceItemRepository = serviceItemRepository;
         this.salesTransactionRepository = salesTransactionRepository;
         this.receiptRepository = receiptRepository;
         this.staffProfileRepository = staffProfileRepository;
         this.commissionService = commissionService;
+        this.loyaltyService = loyaltyService;
         this.auditLogService = auditLogService;
         this.receiptNumberGenerator = receiptNumberGenerator;
         this.branchService = branchService;
@@ -78,6 +87,8 @@ public class TransactionService {
 
     @Transactional
     public CreateTransactionResponse create(CreateTransactionRequest request) {
+        Appointment linkedAppointment = resolveLinkedAppointment(request.appointmentId(), request.branchId());
+
         Map<Long, ServiceItem> serviceById = new HashMap<>();
         serviceItemRepository.findAllById(
                 request.lines().stream().map(CreateTransactionRequest.LineRequest::serviceId).toList())
@@ -91,6 +102,17 @@ public class TransactionService {
         if (request.customerId() != null) {
             customer = customerRepository.findById(request.customerId())
                 .orElseThrow(() -> new NotFoundException("Customer not found: " + request.customerId()));
+        } else if (linkedAppointment != null && linkedAppointment.getCustomer() != null) {
+            customer = linkedAppointment.getCustomer();
+        }
+
+        if (
+            linkedAppointment != null
+                && linkedAppointment.getCustomer() != null
+                && customer != null
+                && !linkedAppointment.getCustomer().getId().equals(customer.getId())
+        ) {
+            throw new BadRequestException("Appointment customer must match the checkout customer.");
         }
 
         BigDecimal subtotal = BigDecimal.ZERO;
@@ -111,7 +133,22 @@ public class TransactionService {
         }
 
         subtotal = scale(subtotal);
-        BigDecimal total = scale(subtotal.subtract(scale(request.discountTotal())));
+        BigDecimal manualDiscount = scale(request.discountTotal());
+        BigDecimal subtotalAfterManualDiscount = scale(subtotal.subtract(manualDiscount));
+        if (subtotalAfterManualDiscount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new BadRequestException("Total cannot be negative after discounts.");
+        }
+
+        LoyaltyService.VoucherApplication voucherApplication = loyaltyService.prepareVoucherApplication(
+            customer == null ? null : customer.getId(),
+            request.customerVoucherId(),
+            request.branchId(),
+            subtotalAfterManualDiscount,
+            lines
+        );
+        BigDecimal appliedVoucherDiscount = voucherApplication.discount();
+        BigDecimal effectiveDiscountTotal = scale(manualDiscount.add(appliedVoucherDiscount));
+        BigDecimal total = scale(subtotal.subtract(effectiveDiscountTotal));
         if (total.compareTo(BigDecimal.ZERO) < 0) {
             throw new BadRequestException("Total cannot be negative after discounts.");
         }
@@ -136,9 +173,11 @@ public class TransactionService {
         transaction.setCashierId(cashier.getId());
         transaction.setStatus(TransactionStatus.PAID);
         transaction.setSubtotal(subtotal);
-        transaction.setDiscountTotal(scale(request.discountTotal()));
+        transaction.setDiscountTotal(effectiveDiscountTotal);
+        transaction.setAppliedVoucherDiscount(appliedVoucherDiscount);
         transaction.setTotal(total);
         transaction.setSoldAt(OffsetDateTime.now());
+        transaction.setCustomerVoucher(voucherApplication.customerVoucher());
 
         for (TransactionLine line : lines) {
             line.setTransaction(transaction);
@@ -169,7 +208,9 @@ public class TransactionService {
             }
 
             salesTransactionRepository.save(transaction);
+            loyaltyService.consumeVoucher(voucherApplication, transaction);
             commissionService.generateForPaidTransaction(transaction);
+            loyaltyService.recordPaidTransaction(transaction);
 
             Receipt receipt = new Receipt();
             receipt.setTransaction(transaction);
@@ -178,6 +219,8 @@ public class TransactionService {
             receipt.setSentStatus("GENERATED");
             receipt.setGeneratedAt(OffsetDateTime.now());
             receiptRepository.save(receipt);
+
+            linkAppointmentToTransaction(linkedAppointment, transaction, customer);
         } catch (RuntimeException ex) {
             storedProofKeys.forEach(paymentProofStorageService::deleteQuietly);
             throw ex;
@@ -191,6 +234,41 @@ public class TransactionService {
             transaction.getTotal());
         auditLogService.log("TRANSACTION_CREATED", "transaction", transaction.getId(), null, response);
         return response;
+    }
+
+    private Appointment resolveLinkedAppointment(Long appointmentId, Long branchId) {
+        if (appointmentId == null) {
+            return null;
+        }
+
+        Appointment appointment = appointmentRepository.findDetailedById(appointmentId)
+            .orElseThrow(() -> new NotFoundException("Appointment not found: " + appointmentId));
+
+        if (!appointment.getBranchId().equals(branchId)) {
+            throw new BadRequestException("Appointment branch must match the checkout branch.");
+        }
+        if (appointment.getConvertedTransaction() != null || (appointment.getReceiptNo() != null && !appointment.getReceiptNo().isBlank())) {
+            throw new BadRequestException("Appointment already has a receipt.");
+        }
+        if (appointment.getStatus() == AppointmentStatus.CANCELLED || appointment.getStatus() == AppointmentStatus.NO_SHOW) {
+            throw new BadRequestException("Cancelled or no-show appointments cannot be checked out.");
+        }
+        return appointment;
+    }
+
+    private void linkAppointmentToTransaction(Appointment appointment, SalesTransaction transaction, Customer customer) {
+        if (appointment == null) {
+            return;
+        }
+
+        appointment.setConvertedTransaction(transaction);
+        appointment.setReceiptNo(transaction.getReceiptNo());
+        if (customer != null && appointment.getCustomer() == null) {
+            appointment.setCustomer(customer);
+        }
+        appointment.setStatus(AppointmentStatus.COMPLETED);
+        appointment.setUpdatedAt(OffsetDateTime.now());
+        appointmentRepository.save(appointment);
     }
 
     private String buildReceiptJson(SalesTransaction transaction, Branch branch, StaffProfile cashier) {
@@ -208,6 +286,7 @@ public class TransactionService {
         root.put("soldAt", transaction.getSoldAt());
         root.put("subtotal", transaction.getSubtotal());
         root.put("discountTotal", transaction.getDiscountTotal());
+        root.put("appliedVoucherDiscount", transaction.getAppliedVoucherDiscount());
         root.put("total", transaction.getTotal());
 
         List<Map<String, Object>> items = transaction.getLines().stream().map(line -> {
@@ -232,6 +311,10 @@ public class TransactionService {
         }).toList();
 
         root.put("payments", payments);
+        if (transaction.getCustomerVoucher() != null) {
+            root.put("customerVoucherId", transaction.getCustomerVoucher().getId());
+            root.put("customerVoucherCode", transaction.getCustomerVoucher().getVoucherCatalog().getCode());
+        }
 
         try {
             return objectMapper.writeValueAsString(root);

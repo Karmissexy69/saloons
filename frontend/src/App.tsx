@@ -7,6 +7,7 @@ import { AttendanceLogsPage } from "./pages/AttendanceLogsPage";
 import { StaffManagementPage } from "./pages/StaffManagementPage";
 import { ServiceCatalogPage } from "./pages/ServiceCatalogPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { LoyaltyVouchersPage } from "./pages/LoyaltyVouchersPage";
 import { AppointmentsPage } from "./pages/AppointmentsPage";
 import { PosTerminalPage } from "./pages/PosTerminalPage";
 import { ReceiptsPage } from "./pages/ReceiptsPage";
@@ -15,7 +16,7 @@ import { CommissionPage } from "./pages/CommissionPage";
 import { SalesReportPage } from "./pages/SalesReportPage";
 import { AuditLogsPage } from "./pages/AuditLogsPage";
 import { listBranches } from "./lib/api";
-import type { AuthLoginResponse, BranchResponse } from "./lib/types";
+import type { AppointmentCheckoutDraft, AuthLoginResponse, BranchResponse } from "./lib/types";
 import { getAllowedNavKeysForRole, isNavAllowedForRole } from "./lib/permissions";
 
 const TOKEN_KEY = "browpos_token";
@@ -35,6 +36,7 @@ function parsePathToNavKey(pathname: string): NavKey {
     "staff",
     "services",
     "settings",
+    "loyalty",
     "appointments",
     "pos-terminal",
     "receipts",
@@ -63,6 +65,7 @@ export default function App() {
   const [selectedBranchId, setSelectedBranchId] = useState<number | null>(null);
   const [branchError, setBranchError] = useState("");
   const [branchReloadToken, setBranchReloadToken] = useState(0);
+  const [appointmentCheckoutDraft, setAppointmentCheckoutDraft] = useState<AppointmentCheckoutDraft | null>(null);
   const isAuthenticated = !!token && !!username && !!role;
   const selectedBranch = branches.find((branch) => branch.id === selectedBranchId) ?? null;
 
@@ -142,6 +145,12 @@ export default function App() {
   function handleOpenReceipt(receiptNo: string) {
     setActiveTab("receipts");
     setPath(`/receipts?receiptNo=${encodeURIComponent(receiptNo)}`);
+  }
+
+  function handleStartAppointmentCheckout(draft: AppointmentCheckoutDraft) {
+    setAppointmentCheckoutDraft(draft);
+    setActiveTab("pos-terminal");
+    setPath("/pos-terminal");
   }
 
   useEffect(() => {
@@ -246,11 +255,27 @@ export default function App() {
       {activeTab === "settings" ? (
         <SettingsPage token={token} branches={branches} onBranchesChanged={handleBranchesChanged} />
       ) : null}
+      {activeTab === "loyalty" ? (
+        <LoyaltyVouchersPage token={token} branches={branches} />
+      ) : null}
       {activeTab === "appointments" ? (
-        <AppointmentsPage token={token} selectedBranchId={selectedBranchId} selectedBranchName={selectedBranch?.name ?? ""} />
+        <AppointmentsPage
+          token={token}
+          selectedBranchId={selectedBranchId}
+          selectedBranchName={selectedBranch?.name ?? ""}
+          canStartCheckout={isNavAllowedForRole("pos-terminal", role)}
+          onStartCheckout={handleStartAppointmentCheckout}
+          onViewReceipt={handleOpenReceipt}
+        />
       ) : null}
       {activeTab === "pos-terminal" ? (
-        <PosTerminalPage token={token} selectedBranchId={selectedBranchId} onViewReceipt={handleOpenReceipt} />
+        <PosTerminalPage
+          token={token}
+          selectedBranchId={selectedBranchId}
+          onViewReceipt={handleOpenReceipt}
+          appointmentCheckoutDraft={appointmentCheckoutDraft}
+          onAppointmentCheckoutDraftConsumed={() => setAppointmentCheckoutDraft(null)}
+        />
       ) : null}
       {activeTab === "receipts" ? (
         <ReceiptsPage token={token} selectedBranchId={selectedBranchId} selectedBranchName={selectedBranch?.name ?? ""} />

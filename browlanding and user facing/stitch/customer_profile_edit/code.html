@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile Settings | The Velvet Editorial</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scale-up-102 { transition-transform: scale(1.02); }
+        .silk-transition { transition: all 400ms cubic-bezier(0.22, 1, 0.36, 1); }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-high": "#e9e7eb",
+                      "on-primary": "#ffffff",
+                      "tertiary": "#201e27",
+                      "inverse-primary": "#e0b6ff",
+                      "on-surface": "#1b1b1e",
+                      "primary-fixed-dim": "#e0b6ff",
+                      "on-tertiary-fixed": "#1c1a23",
+                      "tertiary-fixed-dim": "#cac4d0",
+                      "surface-container-low": "#f5f3f7",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-on-surface": "#f2f0f4",
+                      "tertiary-fixed": "#e6e0ec",
+                      "surface-bright": "#faf9fc",
+                      "on-background": "#1b1b1e",
+                      "secondary-fixed-dim": "#d7bcf2",
+                      "on-secondary-container": "#67507f",
+                      "on-tertiary-fixed-variant": "#48454f",
+                      "on-tertiary-container": "#a09ba6",
+                      "surface": "#faf9fc",
+                      "secondary": "#6b5584",
+                      "outline-variant": "#cec3d1",
+                      "on-surface-variant": "#4c4450",
+                      "secondary-container": "#e3c7fe",
+                      "on-primary-fixed-variant": "#5e3282",
+                      "error": "#ba1a1a",
+                      "primary-container": "#4a1d6e",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#533d6b",
+                      "error-container": "#ffdad6",
+                      "background": "#faf9fc",
+                      "surface-dim": "#dbd9dd",
+                      "surface-container-highest": "#e3e2e6",
+                      "inverse-surface": "#303033",
+                      "on-primary-fixed": "#2e004e",
+                      "primary-fixed": "#f2daff",
+                      "secondary-fixed": "#efdbff",
+                      "on-secondary-fixed": "#26113c",
+                      "tertiary-container": "#36333c",
+                      "primary": "#330056",
+                      "surface-tint": "#774a9c",
+                      "on-error": "#ffffff",
+                      "outline": "#7d7481",
+                      "on-primary-container": "#b989e0",
+                      "surface-container": "#efedf1",
+                      "surface-variant": "#e3e2e6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Noto Serif"],
+                      "body": ["Manrope"],
+                      "label": ["Manrope"]
+              }
+            },
+          }
+        }
+    </script>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#faf9fc]/80 backdrop-blur-xl transition-colors duration-300">
+<div class="flex justify-between items-center px-8 py-4 w-full max-w-screen-2xl mx-auto">
+<div class="font-['Noto_Serif'] text-2xl italic font-bold text-[#330056]">The Velvet Editorial</div>
+<div class="flex items-center gap-8">
+<div class="hidden md:flex gap-8 text-[#4a1d6e]/60 font-['Noto_Serif'] text-lg tracking-tight">
+<a class="hover:text-[#330056] transition-colors duration-300" href="#">Services</a>
+<a class="hover:text-[#330056] transition-colors duration-300" href="#">Editorial</a>
+<a class="hover:text-[#330056] transition-colors duration-300" href="#">Studios</a>
+</div>
+<div class="flex items-center gap-4 text-[#330056]">
+<span class="material-symbols-outlined cursor-pointer hover:scale-110 transition-transform">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:scale-110 transition-transform">shopping_bag</span>
+<img class="w-10 h-10 rounded-full object-cover border-2 border-primary-container/10" data-alt="close-up portrait of a woman with impeccably groomed brows and soft lighting in a high-end beauty salon setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5cxv2_5_KOyhgPOQPqLPUvKh2mQ4FESqGFwM6mtup58h6mrxATrLb-MB3O26-lkRaBc8LYlY-Dps5VHtpf-iYKTROtsyRCDFUpTml2yOaNnjOE8sXrA-wbstPXdYXDvzhETgTP876y33bduTA1mtTbWw0Mm702-nboVDio30bOQbhW8QZp116DgbMwdJYl0dN2qTM5jD6Hu4-XtX8RFI6a_uABNQgecoI08CRkLJjfE2r0VOgJhlEvVMzM5xstxXAv7KeRiuQ67g"/>
+</div>
+</div>
+</div>
+</nav>
+<div class="flex pt-20">
+<!-- SideNavBar -->
+<aside class="h-screen w-72 fixed left-0 top-0 pt-24 bg-[#faf9fc] border-r border-[#cec3d1]/15 flex flex-col hidden lg:flex">
+<div class="px-10 mb-10">
+<div class="w-16 h-16 rounded-full overflow-hidden mb-4">
+<img class="w-full h-full object-cover" data-alt="Professional studio portrait of a woman with elegant makeup and polished aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCW0wb_zd4rW__JKGFEsJJhgRIQBNRB1b1AI5qpANO4e7fkizIEdKQiW0zx8Pg3RCuXxeyI0DoYGUOMZsWDJF2vsBT-0WBERxRQgu0VkOHjfYb6XDCLN_CNqFWhIskl25DXvHZEF93cS-koa1dagMNW3-bxvCnWwfTdQhOkSdTPhP0mFepswW5Z4GveNhpnJgpfe3Pb1hwx9cCzw3-iPPcfO8ysk7gUgjRKwZ9eB5INWGCHRBC7vUZ_smpeV-09qO8HrLlU8V0EqWw"/>
+</div>
+<h2 class="font-['Noto_Serif'] text-[#330056] text-xl font-bold">Welcome back</h2>
+<p class="text-[#4a1d6e]/70 text-sm font-medium">Your curated beauty journey</p>
+</div>
+<nav class="flex flex-col gap-1 w-full">
+<!-- Profile Tab (Active) -->
+<a class="flex items-center gap-4 text-[#330056] font-semibold bg-[#efedf1] rounded-l-full ml-4 pl-6 py-3 silk-transition" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-sm">Profile</span>
+</a>
+<!-- Other Tabs -->
+<a class="flex items-center gap-4 text-[#4a1d6e]/70 pl-10 py-3 hover:bg-[#f5f3f7] transition-all silk-transition" href="#">
+<span class="material-symbols-outlined" data-icon="stars">stars</span>
+<span class="text-sm">My Points</span>
+</a>
+<a class="flex items-center gap-4 text-[#4a1d6e]/70 pl-10 py-3 hover:bg-[#f5f3f7] transition-all silk-transition" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span class="text-sm">Available Vouchers</span>
+</a>
+<a class="flex items-center gap-4 text-[#4a1d6e]/70 pl-10 py-3 hover:bg-[#f5f3f7] transition-all silk-transition" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-sm">Redeemed Vouchers</span>
+</a>
+</nav>
+<div class="mt-auto p-10">
+<button class="w-full bg-primary text-white py-3 rounded-full font-medium text-sm hover:scale-105 transition-transform duration-300">
+                    Book New Treatment
+                </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 lg:ml-72 min-h-screen p-8 md:p-16">
+<div class="max-w-4xl mx-auto">
+<header class="mb-12">
+<h1 class="font-headline text-4xl md:text-5xl text-primary font-bold tracking-tight mb-4">Profile Settings</h1>
+<p class="font-body text-on-surface-variant text-lg">Manage your personal details and preferences.</p>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+<!-- Profile Picture Section -->
+<div class="md:col-span-4">
+<div class="bg-surface-container-lowest rounded-xl p-8 flex flex-col items-center text-center">
+<div class="relative group mb-6">
+<div class="w-32 h-32 rounded-full overflow-hidden ring-4 ring-primary-fixed-dim ring-offset-4 ring-offset-surface-container-lowest">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a client with detailed lash and brow work against a neutral studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA20Aznl-EoFBCtSEurMqdP3BLWvDPgSovGShh9MQFpQBRUtJkz2pMuVd7X-Jvt5duMA79vVsFekC6liwfyyOfvbP4Dsl-TbRAWlZ9Z7jts9TUyewWic7hPGiILLOtnGhFqb0lfObNra39o3Afww0MXKMW9k__jxuPhL9FbqtSJwI3q8zmtkkrdkPQG0jf0vLTjpjpZzapDhAMvd4qIsU-pPSNObcWZWau8Hlh6vm_hbV_knsYuACjWz6fno13jEt6GuUqaD8C7Hyw"/>
+</div>
+<div class="absolute inset-0 rounded-full bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined text-white text-3xl">photo_camera</span>
+</div>
+</div>
+<button class="text-primary text-sm font-semibold mb-2 hover:underline underline-offset-4">Upload Image</button>
+<button class="text-error text-xs font-medium hover:opacity-70">Remove</button>
+</div>
+</div>
+<!-- Information Form -->
+<div class="md:col-span-8 space-y-10">
+<!-- Personal Information -->
+<section>
+<h3 class="font-headline text-2xl text-primary mb-6">Personal Information</h3>
+<div class="grid grid-cols-1 gap-6">
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 px-1">Full Name</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-primary-fixed-dim text-on-surface font-medium" type="text" value="Elena Vance"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 px-1">Email Address</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-primary-fixed-dim text-on-surface font-medium" type="email" value="elena.vance@editorial.com"/>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 px-1">Phone Number</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-primary-fixed-dim text-on-surface font-medium" type="tel" value="+44 7700 900123"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Salon Preferences -->
+<section>
+<h3 class="font-headline text-2xl text-primary mb-6">Salon Preferences</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 px-1">Favorite Staff Member</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-primary-fixed-dim text-on-surface font-medium appearance-none">
+<option>Elena Richards</option>
+<option>Marcus Thorne</option>
+<option>Sofia Vance</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 px-1">Favorite Branch</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-primary-fixed-dim text-on-surface font-medium appearance-none">
+<option>Mayfair Editorial Studio</option>
+<option>Chelsea Garden Studio</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<div class="flex items-center gap-6 pt-6">
+<button class="bg-primary text-white px-10 py-4 rounded-full font-bold text-sm hover:scale-105 silk-transition shadow-lg shadow-primary/10">
+                                Save Changes
+                            </button>
+<button class="text-primary px-8 py-4 rounded-full font-bold text-sm bg-surface-container-highest hover:bg-surface-container-high silk-transition">
+                                Cancel
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="w-full py-12 bg-[#efedf1] mt-auto">
+<div class="flex flex-col items-center gap-6 w-full px-8">
+<div class="flex gap-8">
+<a class="text-[#4a1d6e]/50 font-['Manrope'] text-xs tracking-widest uppercase hover:text-[#330056] transition-opacity" href="#">Privacy Policy</a>
+<a class="text-[#4a1d6e]/50 font-['Manrope'] text-xs tracking-widest uppercase hover:text-[#330056] transition-opacity" href="#">Terms of Service</a>
+<a class="text-[#4a1d6e]/50 font-['Manrope'] text-xs tracking-widest uppercase hover:text-[#330056] transition-opacity" href="#">Contact Support</a>
+</div>
+<p class="text-[#4a1d6e]/50 font-['Manrope'] text-xs tracking-widest uppercase">© 2024 The Velvet Editorial Salon. All rights reserved.</p>
+</div>
+</footer>
+<!-- Mobile BottomNavBar -->
+<nav class="fixed bottom-0 w-full bg-surface-container-lowest border-t border-outline-variant/15 flex md:hidden justify-around py-3 z-50">
+<div class="flex flex-col items-center gap-1 text-[#4a1d6e]/60">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#4a1d6e]/60">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Services</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#330056]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Profile</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#4a1d6e]/60">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Book</span>
+</div>
+</nav>
+</body></html>

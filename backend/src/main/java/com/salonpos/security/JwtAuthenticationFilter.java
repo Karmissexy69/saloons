@@ -1,5 +1,7 @@
 package com.salonpos.security;
 
+import com.salonpos.domain.Customer;
+import com.salonpos.repository.CustomerRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,10 +20,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final AppUserDetailsService appUserDetailsService;
+    private final CustomerRepository customerRepository;
 
-    public JwtAuthenticationFilter(JwtService jwtService, AppUserDetailsService appUserDetailsService) {
+    public JwtAuthenticationFilter(
+        JwtService jwtService,
+        AppUserDetailsService appUserDetailsService,
+        CustomerRepository customerRepository
+    ) {
         this.jwtService = jwtService;
         this.appUserDetailsService = appUserDetailsService;
+        this.customerRepository = customerRepository;
     }
 
     @Override
@@ -38,18 +46,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        String username;
+        String subject;
+        String role;
+        String principalType;
 
         try {
-            username = jwtService.extractUsername(token);
+            subject = jwtService.extractUsername(token);
+            role = jwtService.extractRole(token);
+            principalType = jwtService.extractPrincipalType(token);
         } catch (Exception ex) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
-            if (jwtService.isTokenValid(token, userDetails.getUsername())) {
+        if (subject != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = resolveUserDetails(subject, role, principalType);
+            if (userDetails != null && jwtService.isTokenValid(token, userDetails.getUsername())) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
@@ -61,5 +73,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private UserDetails resolveUserDetails(String subject, String role, String principalType) {
+        if ("CUSTOMER".equalsIgnoreCase(role) || JwtService.CUSTOMER_PRINCIPAL_TYPE.equalsIgnoreCase(principalType)) {
+            try {
+                Long customerId = Long.parseLong(subject);
+                Customer customer = customerRepository.findById(customerId).orElse(null);
+                return customer == null ? null : new CustomerPrincipal(customer);
+            } catch (NumberFormatException ex) {
+                return null;
+            }
+        }
+        return appUserDetailsService.loadUserByUsername(subject);
     }
 }

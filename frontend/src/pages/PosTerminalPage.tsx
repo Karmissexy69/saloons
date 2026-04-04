@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createTransaction, listServices, listStaff } from "../lib/api";
+import { createTransaction, getCustomerVouchers, listServices, listStaff, searchCustomers } from "../lib/api";
 import { formatCurrency } from "../lib/currency";
-import type { PaymentMethod, ServiceItemResponse, StaffProfileResponse } from "../lib/types";
+import type { AppointmentCheckoutDraft, CustomerResponse, CustomerVoucherResponse, PaymentMethod, ServiceItemResponse, StaffProfileResponse } from "../lib/types";
 
 type Props = {
   token: string;
   selectedBranchId: number | null;
   onViewReceipt: (receiptNo: string) => void;
+  appointmentCheckoutDraft: AppointmentCheckoutDraft | null;
+  onAppointmentCheckoutDraftConsumed: () => void;
 };
 
 type CartLine = {
@@ -19,7 +21,7 @@ type CartLine = {
 
 const PAYMENT_OPTIONS: PaymentMethod[] = ["CASH", "CARD", "QR", "BANK_TRANSFER"];
 
-export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Props) {
+export function PosTerminalPage({ token, selectedBranchId, onViewReceipt, appointmentCheckoutDraft, onAppointmentCheckoutDraftConsumed }: Props) {
   const [services, setServices] = useState<ServiceItemResponse[]>([]);
   const [staff, setStaff] = useState<StaffProfileResponse[]>([]);
 
@@ -28,8 +30,14 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Prop
 
   const [cashierId, setCashierId] = useState("");
   const [assignedStaffId, setAssignedStaffId] = useState("");
+  const [customerQuery, setCustomerQuery] = useState("");
+  const [customerResults, setCustomerResults] = useState<CustomerResponse[]>([]);
+  const [selectedCustomerId, setSelectedCustomerId] = useState("");
+  const [customerVouchers, setCustomerVouchers] = useState<CustomerVoucherResponse[]>([]);
+  const [selectedVoucherId, setSelectedVoucherId] = useState("");
   const [cart, setCart] = useState<CartLine[]>([]);
   const [discountTotal, setDiscountTotal] = useState("0");
+  const [checkoutSource, setCheckoutSource] = useState<AppointmentCheckoutDraft | null>(null);
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("CASH");
   const [paymentReference, setPaymentReference] = useState("");
@@ -47,6 +55,7 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Prop
   const paymentProofVideoRef = useRef<HTMLVideoElement>(null);
   const paymentProofCanvasRef = useRef<HTMLCanvasElement>(null);
   const paymentProofStreamRef = useRef<MediaStream | null>(null);
+  const appliedDraftIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -113,6 +122,76 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Prop
     };
   }, [paymentProofPreviewUrl]);
 
+  useEffect(() => {
+    if (appointmentCheckoutDraft === null) {
+      appliedDraftIdRef.current = null;
+    }
+  }, [appointmentCheckoutDraft]);
+
+  useEffect(() => {
+    if (!appointmentCheckoutDraft) {
+      return;
+    }
+    if (selectedBranchId !== null && appointmentCheckoutDraft.branchId !== selectedBranchId) {
+      setError("Open the matching branch before loading this appointment into POS.");
+      return;
+    }
+    if (appointmentCheckoutDraft.serviceId !== null && services.length === 0) {
+      return;
+    }
+    if (appliedDraftIdRef.current === appointmentCheckoutDraft.appointmentId) {
+      return;
+    }
+
+    appliedDraftIdRef.current = appointmentCheckoutDraft.appointmentId;
+    setCheckoutSource(appointmentCheckoutDraft);
+    setCompletedReceiptNo("");
+    setDiscountTotal("0");
+    setPaymentMethod("CASH");
+    setPaymentReference("");
+    clearPaymentProof();
+    setPaymentProofModalOpen(false);
+    setPaymentProofError("");
+
+    if (appointmentCheckoutDraft.staffId !== null) {
+      setAssignedStaffId(String(appointmentCheckoutDraft.staffId));
+    }
+
+    if (appointmentCheckoutDraft.serviceId !== null) {
+      const service = services.find((item) => item.id === appointmentCheckoutDraft.serviceId);
+      if (service) {
+        setCart([
+          {
+            serviceId: service.id,
+            serviceName: service.name,
+            unitPrice: service.price,
+            qty: 1,
+            assignedStaffId: appointmentCheckoutDraft.staffId ?? undefined,
+          },
+        ]);
+      }
+    } else {
+      setCart([]);
+    }
+
+    if (appointmentCheckoutDraft.customerId !== null) {
+      const appointmentCustomer = appointmentToCustomer(appointmentCheckoutDraft);
+      setCustomerResults((current) => {
+        const remaining = current.filter((item) => item.id !== appointmentCustomer.id);
+        return [appointmentCustomer, ...remaining];
+      });
+      setSelectedCustomerId(String(appointmentCheckoutDraft.customerId));
+      void loadCustomerVouchersForCustomer(appointmentCheckoutDraft.customerId);
+    } else {
+      setSelectedCustomerId("");
+      setCustomerVouchers([]);
+      setSelectedVoucherId("");
+    }
+
+    setNotice(`Appointment ${appointmentCheckoutDraft.bookingReference} loaded into POS. You can add more services before checkout.`);
+    onAppointmentCheckoutDraftConsumed();
+  }, [appointmentCheckoutDraft, onAppointmentCheckoutDraftConsumed, selectedBranchId, services]);
+
   const categories = useMemo(() => {
     const all = Array.from(new Set(services.map((item) => item.categoryName))).sort();
     return ["ALL", ...all];
@@ -134,10 +213,28 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Prop
     }
     return parsed;
   }, [discountTotal]);
-  const finalTotal = useMemo(() => {
+  const subtotalAfterManualDiscount = useMemo(() => {
     const total = subtotal - discountValue;
     return total > 0 ? total : 0;
   }, [subtotal, discountValue]);
+  const voucherDiscount = useMemo(() => {
+    const voucher = customerVouchers.find((item) => item.id === Number(selectedVoucherId));
+    if (!voucher || subtotalAfterManualDiscount <= 0) return 0;
+    if (voucher.status !== "AVAILABLE") return 0;
+    if (voucher.branchId !== null && voucher.branchId !== selectedBranchId) return 0;
+    if (voucher.minSpend !== null && subtotalAfterManualDiscount < voucher.minSpend) return 0;
+    if (voucher.voucherType === "FIXED_AMOUNT") return Math.min(subtotalAfterManualDiscount, voucher.discountValue);
+    if (voucher.voucherType === "PERCENTAGE") return Math.min(subtotalAfterManualDiscount, subtotalAfterManualDiscount * (voucher.discountValue / 100));
+    if (voucher.voucherType === "SERVICE") {
+      const matchingLine = cart.find((line) => line.serviceId === voucher.serviceId);
+      return matchingLine ? matchingLine.unitPrice * matchingLine.qty : 0;
+    }
+    return 0;
+  }, [cart, customerVouchers, selectedBranchId, selectedVoucherId, subtotalAfterManualDiscount]);
+  const finalTotal = useMemo(() => {
+    const total = subtotalAfterManualDiscount - voucherDiscount;
+    return total > 0 ? total : 0;
+  }, [subtotalAfterManualDiscount, voucherDiscount]);
   const paymentProofRequired = requiresPaymentProof(paymentMethod);
 
   function addService(service: ServiceItemResponse) {
@@ -224,6 +321,39 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Prop
     setPaymentProofModalOpen(false);
   }
 
+  async function handleSearchCustomers() {
+    try {
+      const data = await searchCustomers(token, customerQuery.trim() || undefined);
+      setCustomerResults(data);
+      if (data[0]) {
+        await handleSelectCustomer(String(data[0].id), data);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to search customers");
+    }
+  }
+
+  async function handleSelectCustomer(nextCustomerId: string, pool: CustomerResponse[] = customerResults) {
+    setSelectedCustomerId(nextCustomerId);
+    setSelectedVoucherId("");
+    if (!nextCustomerId) {
+      setCustomerVouchers([]);
+      return;
+    }
+    try {
+      await loadCustomerVouchersForCustomer(Number(nextCustomerId));
+      const customer = pool.find((item) => String(item.id) === nextCustomerId);
+      if (customer) setNotice(`Customer ${customer.name} selected.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load customer vouchers");
+    }
+  }
+
+  async function loadCustomerVouchersForCustomer(customerId: number) {
+    const vouchers = await getCustomerVouchers(token, customerId);
+    setCustomerVouchers(vouchers.filter((item) => item.status === "AVAILABLE"));
+  }
+
   async function handleCheckout() {
     if (selectedBranchId === null) {
       setError("Select a branch in the header before checkout.");
@@ -258,6 +388,9 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Prop
       const proofImageBase64 = paymentProofBlob ? await blobToBase64(paymentProofBlob) : undefined;
       const response = await createTransaction(token, {
         branchId: selectedBranchId,
+        appointmentId: checkoutSource?.appointmentId,
+        customerId: selectedCustomerId ? Number(selectedCustomerId) : undefined,
+        customerVoucherId: selectedVoucherId ? Number(selectedVoucherId) : undefined,
         cashierId: Number(cashierId),
         discountTotal: discountValue,
         lines: cart.map((line) => ({
@@ -282,10 +415,12 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Prop
       setCart([]);
       setPaymentReference("");
       setDiscountTotal("0");
+      setSelectedVoucherId("");
       setPaymentMethod("CASH");
       clearPaymentProof();
       setPaymentProofModalOpen(false);
       setPaymentProofError("");
+      setCheckoutSource(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to submit transaction");
     } finally {
@@ -466,6 +601,17 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Prop
         <aside className="st-pos-cart">
           <h2>Current Transaction</h2>
 
+          {checkoutSource ? (
+            <div className="st-pos-appointment-banner">
+              <div>
+                <p>Linked Appointment</p>
+                <strong>{checkoutSource.bookingReference}</strong>
+                <span>{checkoutSource.displayName ?? "Guest booking"} | {checkoutSource.serviceName ?? "General service"}</span>
+              </div>
+              <button type="button" className="st-link-btn" onClick={() => setCheckoutSource(null)}>Unlink</button>
+            </div>
+          ) : null}
+
           <div className="st-pos-assignment">
             <label>Assigned Staff</label>
             <div className="st-pos-select-card">
@@ -483,15 +629,30 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Prop
               <span className="material-symbols-outlined">expand_more</span>
             </div>
 
-            <label>Select Customer</label>
-            <div className="st-pos-select-card static">
-              <div className="st-pos-select-lead">
-                <span className="st-pos-avatar material-symbols-outlined">person</span>
-                <span>Walk-in Customer</span>
+              <label>Select Customer</label>
+              <div className="st-grid">
+                <input value={customerQuery} onChange={(e) => setCustomerQuery(e.target.value)} placeholder="Search member by name or phone" />
+                <button type="button" className="st-btn st-btn-secondary" onClick={handleSearchCustomers}>Find Member</button>
+                <select value={selectedCustomerId} onChange={(e) => void handleSelectCustomer(e.target.value)}>
+                  <option value="">Walk-in Customer</option>
+                  {customerResults.map((customer) => (
+                    <option key={customer.id} value={customer.id}>
+                      {customer.name} • {customer.phone} • {customer.pointsBalance} pts
+                    </option>
+                  ))}
+                </select>
+                {selectedCustomerId ? (
+                  <select value={selectedVoucherId} onChange={(e) => setSelectedVoucherId(e.target.value)}>
+                    <option value="">No voucher</option>
+                    {customerVouchers.map((voucher) => (
+                      <option key={voucher.id} value={voucher.id}>
+                        {voucher.code} • {voucher.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
               </div>
-              <span className="material-symbols-outlined">search</span>
             </div>
-          </div>
 
           <div className="st-pos-lines">
             {cart.length === 0 ? (
@@ -529,12 +690,18 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Prop
               <span>Subtotal</span>
               <span>{formatCurrency(subtotal)}</span>
             </div>
-            {discountValue > 0 ? (
-              <div className="st-pos-total-row">
-                <span>Discount</span>
-                <span>-{formatCurrency(discountValue)}</span>
-              </div>
-            ) : null}
+              {discountValue > 0 ? (
+                <div className="st-pos-total-row">
+                  <span>Discount</span>
+                  <span>-{formatCurrency(discountValue)}</span>
+                </div>
+              ) : null}
+              {voucherDiscount > 0 ? (
+                <div className="st-pos-total-row">
+                  <span>Voucher</span>
+                  <span>-{formatCurrency(voucherDiscount)}</span>
+                </div>
+              ) : null}
 
             <div className="st-pos-total-divider" />
 
@@ -684,6 +851,28 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt }: Prop
 
 function requiresPaymentProof(method: PaymentMethod): boolean {
   return method === "CARD" || method === "QR";
+}
+
+function appointmentToCustomer(appointment: AppointmentCheckoutDraft): CustomerResponse {
+  return {
+    id: appointment.customerId ?? 0,
+    name: appointment.customerName ?? appointment.displayName ?? "Customer",
+    phone: appointment.customerPhone ?? appointment.displayPhone ?? "",
+    phoneNormalized: null,
+    email: appointment.customerEmail,
+    birthday: null,
+    notes: null,
+    marketingOptIn: false,
+    status: "ACTIVE",
+    favoriteStaffId: appointment.staffId,
+    favoriteStaffName: appointment.staffName,
+    secondaryFavoriteStaffId: null,
+    secondaryFavoriteStaffName: null,
+    pointsBalance: 0,
+    totalSpend: 0,
+    totalVisits: 0,
+    lastVisitAt: null,
+  };
 }
 
 function blobToBase64(blob: Blob): Promise<string> {

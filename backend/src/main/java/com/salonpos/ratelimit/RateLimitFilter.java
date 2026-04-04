@@ -30,6 +30,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private static final String JSON_BODY_ATTRIBUTE = RateLimitFilter.class.getName() + ".jsonBody";
     private static final Pattern STAFF_REENROLL_PATTERN = Pattern.compile("^/api/staff/(\\d+)/face/re-enroll$");
     private static final Pattern APPOINTMENT_CONVERT_PATTERN = Pattern.compile("^/api/appointments/(\\d+)/convert-to-bill$");
+    private static final Pattern PUBLIC_APPOINTMENT_CANCEL_PATTERN = Pattern.compile("^/api/public/appointments/([^/]+)/cancel(?:/(request-otp|confirm))?$");
 
     private final RateLimitProperties rateLimitProperties;
     private final RateLimitBucketService rateLimitBucketService;
@@ -96,6 +97,23 @@ public class RateLimitFilter extends OncePerRequestFilter {
             return checks;
         }
 
+        if (HttpMethod.POST.matches(method) && "/api/customer-auth/request-otp".equals(path)) {
+            checks.add(new ResolvedCheck(RateLimitPolicyNames.CUSTOMER_OTP_REQUEST_IP, "ip:" + clientIp));
+            String email = textValue(jsonBody(request), "email");
+            if (!email.isBlank()) {
+                checks.add(new ResolvedCheck(RateLimitPolicyNames.CUSTOMER_OTP_REQUEST_EMAIL, "email:" + email.toLowerCase()));
+            }
+            return checks;
+        }
+
+        if (HttpMethod.POST.matches(method) && "/api/customer-auth/verify-otp".equals(path)) {
+            String email = textValue(jsonBody(request), "email");
+            if (!email.isBlank()) {
+                checks.add(new ResolvedCheck(RateLimitPolicyNames.CUSTOMER_OTP_VERIFY_EMAIL, "email:" + email.toLowerCase()));
+            }
+            return checks;
+        }
+
         if (HttpMethod.POST.matches(method) && "/api/attendance/verify-face".equals(path)) {
             checks.add(new ResolvedCheck(RateLimitPolicyNames.ATTENDANCE_VERIFY_FACE_IP, "ip:" + clientIp));
 
@@ -103,6 +121,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
             if (staffId != null) {
                 checks.add(new ResolvedCheck(RateLimitPolicyNames.ATTENDANCE_VERIFY_FACE_STAFF, "staff:" + staffId));
             }
+            return checks;
+        }
+
+        if (HttpMethod.POST.matches(method) && "/api/public/appointments".equals(path)) {
+            String email = textValue(jsonBody(request), "guestEmail");
+            String identity = email.isBlank() ? "ip:" + clientIp : "ip:" + clientIp + ":email:" + email.toLowerCase();
+            checks.add(new ResolvedCheck(RateLimitPolicyNames.PUBLIC_APPOINTMENT_CREATE, identity));
             return checks;
         }
 
@@ -154,6 +179,17 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 if (!username.isBlank()) {
                     checks.add(new ResolvedCheck(RateLimitPolicyNames.APPOINTMENT_CONVERT, "user:" + username.toLowerCase()));
                 }
+                return checks;
+            }
+        }
+
+        if (HttpMethod.POST.matches(method)) {
+            Matcher publicCancelMatcher = PUBLIC_APPOINTMENT_CANCEL_PATTERN.matcher(path);
+            if (publicCancelMatcher.matches()) {
+                checks.add(new ResolvedCheck(
+                    RateLimitPolicyNames.PUBLIC_APPOINTMENT_CANCEL,
+                    "ip:" + clientIp + ":booking:" + publicCancelMatcher.group(1)
+                ));
                 return checks;
             }
         }

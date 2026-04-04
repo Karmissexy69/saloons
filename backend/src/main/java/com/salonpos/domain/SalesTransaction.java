@@ -53,11 +53,18 @@ public class SalesTransaction {
     @Column(name = "discount_total", nullable = false, precision = 12, scale = 2)
     private BigDecimal discountTotal;
 
+    @Column(name = "applied_voucher_discount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal appliedVoucherDiscount;
+
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal total;
 
     @Column(name = "sold_at", nullable = false)
     private OffsetDateTime soldAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_voucher_id")
+    private CustomerVoucher customerVoucher;
 
     @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TransactionLine> lines = new ArrayList<>();

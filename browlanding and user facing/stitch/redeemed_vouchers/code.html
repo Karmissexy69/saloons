@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Redeemed Vouchers | The Velvet Editorial</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#48454f",
+                    "inverse-surface": "#303033",
+                    "primary": "#330056",
+                    "inverse-primary": "#e0b6ff",
+                    "surface": "#faf9fc",
+                    "on-secondary-fixed-variant": "#533d6b",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f5f3f7",
+                    "surface-dim": "#dbd9dd",
+                    "on-tertiary-fixed": "#1c1a23",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#e6e0ec",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#faf9fc",
+                    "primary-fixed": "#f2daff",
+                    "on-surface-variant": "#4c4450",
+                    "primary-fixed-dim": "#e0b6ff",
+                    "surface-container": "#efedf1",
+                    "on-primary-fixed-variant": "#5e3282",
+                    "on-secondary-fixed": "#26113c",
+                    "on-primary-container": "#b989e0",
+                    "surface-tint": "#774a9c",
+                    "background": "#faf9fc",
+                    "tertiary-fixed-dim": "#cac4d0",
+                    "tertiary-container": "#36333c",
+                    "outline": "#7d7481",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#d7bcf2",
+                    "on-tertiary-container": "#a09ba6",
+                    "primary-container": "#4a1d6e",
+                    "surface-container-highest": "#e3e2e6",
+                    "secondary-container": "#e3c7fe",
+                    "secondary": "#6b5584",
+                    "on-primary-fixed": "#2e004e",
+                    "on-background": "#1b1b1e",
+                    "surface-variant": "#e3e2e6",
+                    "on-error": "#ffffff",
+                    "surface-container-high": "#e9e7eb",
+                    "on-secondary-container": "#67507f",
+                    "secondary-fixed": "#efdbff",
+                    "inverse-on-surface": "#f2f0f4",
+                    "tertiary": "#201e27",
+                    "on-surface": "#1b1b1e",
+                    "outline-variant": "#cec3d1",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0 32px 64px -12px rgba(46, 0, 78, 0.04);
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #faf9fc;
+        }
+        h1, h2, h3, .serif {
+            font-family: 'Noto Serif', serif;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- TopNavBar (Shared Component) -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-purple-950/80 backdrop-blur-xl shadow-sm dark:shadow-purple-900/20">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-8 h-20">
+<div class="font-['Noto_Serif'] text-2xl font-bold tracking-tighter text-purple-950 dark:text-white italic">
+                The Velvet Editorial
+            </div>
+<div class="hidden md:flex items-center gap-10">
+<a class="font-['Noto_Serif'] text-lg font-medium tracking-tight text-purple-600 dark:text-purple-300 hover:text-purple-900 dark:hover:text-white transition-colors hover:scale-105 transition-transform duration-300" href="#">Home</a>
+<a class="font-['Noto_Serif'] text-lg font-medium tracking-tight text-purple-600 dark:text-purple-300 hover:text-purple-900 dark:hover:text-white transition-colors hover:scale-105 transition-transform duration-300" href="#">Services</a>
+<a class="font-['Noto_Serif'] text-lg font-medium tracking-tight text-purple-600 dark:text-purple-300 hover:text-purple-900 dark:hover:text-white transition-colors hover:scale-105 transition-transform duration-300" href="#">About</a>
+<button class="bg-primary text-on-primary px-8 py-2.5 rounded-full font-medium hover:scale-105 transition-transform duration-300">Book Now</button>
+</div>
+</div>
+</nav>
+<div class="flex min-h-screen pt-20">
+<!-- SideNavBar (Shared Component) -->
+<aside class="h-full w-72 fixed left-0 top-0 border-r border-purple-100/10 bg-purple-50/50 dark:bg-purple-950/50 backdrop-blur-md flex flex-col py-24 gap-8 z-40">
+<div class="px-8 mb-4">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-fixed">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="close-up portrait of an elegant woman with professional makeup and soft lighting in a studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7TzVs9VQf3Te8SSIV3rV0Y-rql57iHu8MbS45gULnpabJ2rpLQGPvO_aaoAlTDGIOOXNiI090kzdigaR7fyKYh1BkW7IOiLTCiVCpH_hLbDH-eey4cWWHpPqgD8yK6J-pLkRPFM9E8RmpOxSTfcqN86BA2qauNGwcpLhbtbEz1Z-oMPf_5EtD5ClnBBAA8hklkfLIUYZS36aeiGzIuuR4IGfUbkbaF8f2_trIlRHKvUl00RFT2I2uYZ1wRrpBzQBXu984OIPxvl4"/>
+</div>
+<div>
+<h3 class="font-['Noto_Serif'] text-xl font-bold text-purple-950 dark:text-white">Your Sanctuary</h3>
+<p class="font-['Manrope'] text-xs font-medium tracking-wide text-purple-600 dark:text-purple-400">Gold Member</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary py-3 rounded-full font-['Manrope'] text-sm font-semibold hover:translate-x-1 transition-transform duration-400 cubic-bezier(0.22, 1, 0.36, 1)">
+                    Redeem Points
+                </button>
+</div>
+<nav class="flex flex-col flex-grow">
+<a class="flex items-center gap-4 px-8 py-4 text-purple-600 dark:text-purple-400 hover:bg-purple-100/50 dark:hover:bg-purple-800/20 rounded-r-full font-['Manrope'] text-sm font-medium tracking-wide hover:translate-x-1 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined">person</span>
+                    Profile
+                </a>
+<a class="flex items-center gap-4 px-8 py-4 text-purple-600 dark:text-purple-400 hover:bg-purple-100/50 dark:hover:bg-purple-800/20 rounded-r-full font-['Manrope'] text-sm font-medium tracking-wide hover:translate-x-1 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined">stars</span>
+                    My Points
+                </a>
+<a class="flex items-center gap-4 px-8 py-4 text-purple-600 dark:text-purple-400 hover:bg-purple-100/50 dark:hover:bg-purple-800/20 rounded-r-full font-['Manrope'] text-sm font-medium tracking-wide hover:translate-x-1 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+                    Available Vouchers
+                </a>
+<a class="flex items-center gap-4 px-8 py-4 bg-purple-100 dark:bg-purple-900/40 text-purple-950 dark:text-white rounded-r-full font-['Manrope'] text-sm font-semibold tracking-wide hover:translate-x-1 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+                    Redeemed Vouchers
+                </a>
+</nav>
+<div class="mt-auto px-8 flex flex-col gap-2">
+<a class="flex items-center gap-4 py-3 text-purple-600 dark:text-purple-400 font-['Manrope'] text-sm font-medium hover:translate-x-1 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined">help</span>
+                    Support
+                </a>
+<a class="flex items-center gap-4 py-3 text-purple-600 dark:text-purple-400 font-['Manrope'] text-sm font-medium hover:translate-x-1 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined">logout</span>
+                    Sign Out
+                </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-grow ml-72 px-12 py-16">
+<header class="max-w-5xl mb-16 relative">
+<h1 class="text-6xl font-bold tracking-tight text-primary mb-4 leading-tight">Legacy of <br/><span class="italic text-on-primary-container">Elegance</span></h1>
+<p class="text-on-surface-variant max-w-xl text-lg leading-relaxed font-light">
+                    A chronicle of your past treatments and the rewards you've enjoyed. Your journey toward precision and self-care, beautifully archived.
+                </p>
+<div class="absolute -top-10 -right-20 w-64 h-64 bg-primary-fixed/20 rounded-full blur-3xl -z-10"></div>
+</header>
+<!-- Voucher History - Bento Style Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
+<!-- Redeemed Voucher 1 -->
+<div class="group relative bg-surface-container-lowest rounded-xl p-8 overflow-hidden editorial-shadow opacity-75 border border-outline-variant/10">
+<div class="absolute top-0 right-0 p-4">
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">Redeemed</span>
+</div>
+<div class="mb-6 opacity-40">
+<span class="material-symbols-outlined text-4xl text-primary" data-weight="fill">confirmation_number</span>
+</div>
+<h3 class="text-2xl font-bold text-tertiary mb-2">Signature Brow Sculpt</h3>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Full threading and custom tinting service used at our downtown studio.</p>
+<div class="pt-6 border-t border-surface-container flex justify-between items-end">
+<div>
+<p class="text-[10px] text-outline uppercase tracking-tighter mb-1">Date of use</p>
+<p class="text-sm font-semibold text-tertiary">Oct 24, 2023</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase tracking-tighter mb-1">Value</p>
+<p class="text-sm font-semibold text-primary">$45.00</p>
+</div>
+</div>
+<!-- Decorative overlay for 'spent' feel -->
+<div class="absolute inset-0 bg-white/10 pointer-events-none"></div>
+</div>
+<!-- Redeemed Voucher 2 -->
+<div class="group relative bg-surface-container-lowest rounded-xl p-8 overflow-hidden editorial-shadow opacity-75 border border-outline-variant/10">
+<div class="absolute top-0 right-0 p-4">
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">Redeemed</span>
+</div>
+<div class="mb-6 opacity-40">
+<span class="material-symbols-outlined text-4xl text-primary" data-weight="fill">loyalty</span>
+</div>
+<h3 class="text-2xl font-bold text-tertiary mb-2">Lavender Silk Lash Lift</h3>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Keratin-infused lifting treatment with deep conditioning serum.</p>
+<div class="pt-6 border-t border-surface-container flex justify-between items-end">
+<div>
+<p class="text-[10px] text-outline uppercase tracking-tighter mb-1">Date of use</p>
+<p class="text-sm font-semibold text-tertiary">Sept 12, 2023</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase tracking-tighter mb-1">Value</p>
+<p class="text-sm font-semibold text-primary">$120.00</p>
+</div>
+</div>
+</div>
+<!-- Featured Editorial Image in Grid -->
+<div class="relative rounded-xl overflow-hidden md:col-span-1 lg:col-span-1 min-h-[300px]">
+<img alt="Spa Detail" class="absolute inset-0 w-full h-full object-cover grayscale opacity-60" data-alt="macro close-up of delicate purple flowers and a minimalist white ceramic vase on a textured stone surface with soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbDjshKSCsUHPpsDiESbLqwtndFpqxSSTVLisgqjFXETznh6R2loR8G0mfBzA1hi4bP2iSFu6xXdOq1RZaZgRjh4oga9M6LFtzexcRhGSCJe9ZzQ8aNvyvLQ9tSxUW05AKR2eEQojP7PqcgtkxjjqxaxGwXhrAUN_LdmGsRKwYcTag-w-KfWIxo5WVekovvbWEhShqa71-L_IY8M6LWjEw1bKDWEXQn8ijrOkeUhInS7RziQMaIkTOkX7B4oIkYgXTJPb-JxNsEUs"/>
+<div class="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex items-center justify-center p-8 text-center">
+<div>
+<h4 class="serif text-white text-xl italic mb-2">Precision in every thread.</h4>
+<div class="h-0.5 w-12 bg-white/50 mx-auto"></div>
+</div>
+</div>
+</div>
+<!-- Redeemed Voucher 3 -->
+<div class="group relative bg-surface-container-lowest rounded-xl p-8 overflow-hidden editorial-shadow opacity-75 border border-outline-variant/10">
+<div class="absolute top-0 right-0 p-4">
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">Redeemed</span>
+</div>
+<div class="mb-6 opacity-40">
+<span class="material-symbols-outlined text-4xl text-primary" data-weight="fill">spa</span>
+</div>
+<h3 class="text-2xl font-bold text-tertiary mb-2">Calm Facial Massage</h3>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">30-minute relaxation session with essential botanical oils.</p>
+<div class="pt-6 border-t border-surface-container flex justify-between items-end">
+<div>
+<p class="text-[10px] text-outline uppercase tracking-tighter mb-1">Date of use</p>
+<p class="text-sm font-semibold text-tertiary">Aug 05, 2023</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase tracking-tighter mb-1">Value</p>
+<p class="text-sm font-semibold text-primary">$55.00</p>
+</div>
+</div>
+</div>
+<!-- Redeemed Voucher 4 -->
+<div class="group relative bg-surface-container-lowest rounded-xl p-8 overflow-hidden editorial-shadow opacity-75 border border-outline-variant/10">
+<div class="absolute top-0 right-0 p-4">
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">Redeemed</span>
+</div>
+<div class="mb-6 opacity-40">
+<span class="material-symbols-outlined text-4xl text-primary" data-weight="fill">auto_awesome</span>
+</div>
+<h3 class="text-2xl font-bold text-tertiary mb-2">Bridal Glow Package</h3>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Full face threading, lash extension, and brow lamination.</p>
+<div class="pt-6 border-t border-surface-container flex justify-between items-end">
+<div>
+<p class="text-[10px] text-outline uppercase tracking-tighter mb-1">Date of use</p>
+<p class="text-sm font-semibold text-tertiary">June 18, 2023</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase tracking-tighter mb-1">Value</p>
+<p class="text-sm font-semibold text-primary">$180.00</p>
+</div>
+</div>
+</div>
+<!-- Redeemed Voucher 5 -->
+<div class="group relative bg-surface-container-lowest rounded-xl p-8 overflow-hidden editorial-shadow opacity-75 border border-outline-variant/10">
+<div class="absolute top-0 right-0 p-4">
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">Redeemed</span>
+</div>
+<div class="mb-6 opacity-40">
+<span class="material-symbols-outlined text-4xl text-primary" data-weight="fill">history_edu</span>
+</div>
+<h3 class="text-2xl font-bold text-tertiary mb-2">Member Gift: Tinting</h3>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">Quarterly loyalty gift for active Gold status members.</p>
+<div class="pt-6 border-t border-surface-container flex justify-between items-end">
+<div>
+<p class="text-[10px] text-outline uppercase tracking-tighter mb-1">Date of use</p>
+<p class="text-sm font-semibold text-tertiary">May 30, 2023</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase tracking-tighter mb-1">Value</p>
+<p class="text-sm font-semibold text-primary">Gifted</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-24 max-w-5xl">
+<div class="bg-surface-container-high rounded-xl p-12 flex flex-col md:flex-row items-center gap-12 overflow-hidden relative">
+<div class="flex-1 z-10">
+<h2 class="text-4xl font-bold text-primary mb-4 leading-tight">Ready for your next transformation?</h2>
+<p class="text-on-surface-variant mb-8 text-lg">Your points balance is currently 1,450. You're only 50 points away from a complimentary brow sculpt.</p>
+<button class="bg-primary text-on-primary px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition-transform duration-300 editorial-shadow">Book Your Session</button>
+</div>
+<div class="w-full md:w-1/3 aspect-square relative z-10">
+<img alt="Service" class="w-full h-full object-cover rounded-xl grayscale" data-alt="soft focus close-up of a skilled threading artist at work with professional lighting highlighting the texture of the thread" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcwcshWs5iOVyO3dPCZ72dBwumIpZBas4mdMXA6wZmpFomI_IReML7pJ222egFfN3OsNzOLORX1rXVuTa0A1QnAhAAx6x3msS6Y0N2yMQRipCD__5azttKZUOUbZK0hvGKTS2tDst4X7tGMGP7T_6tdLbE8l3f-KkrifyOfN9pMhJUKu5SzpxaZ1MExFJ6fy7DoT7I6XEa396vxkQsifl423e0BCITHLRBgqq3ysXFMYpd4PtcGs5r_yo0GoGLKOihGqmzxAV5KAI"/>
+</div>
+<!-- Artistic Background Element -->
+<div class="absolute -right-20 -bottom-20 text-[200px] font-['Noto_Serif'] text-primary/5 italic select-none pointer-events-none">Sanctuary</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer (Shared Component) -->
+<footer class="w-full py-16 px-8 mt-24 bg-purple-50 dark:bg-purple-950 border-t border-purple-100/15">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-7xl mx-auto">
+<div>
+<h4 class="font-['Noto_Serif'] text-xl font-bold text-purple-950 dark:text-white mb-6">The Velvet Editorial</h4>
+<p class="font-['Manrope'] text-sm tracking-wide text-purple-600 dark:text-purple-400 leading-relaxed">Curating beauty through precision and luxurious atmosphere. Your destination for editorial-grade threading and skincare.</p>
+</div>
+<div class="md:text-center">
+<p class="font-['Manrope'] text-sm tracking-wide text-purple-900 dark:text-purple-100 font-bold mb-6">Connect With Us</p>
+<div class="flex md:justify-center gap-6">
+<a class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200 transition-colors font-['Manrope'] text-sm" href="#">Instagram</a>
+<a class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200 transition-colors font-['Manrope'] text-sm" href="#">Facebook</a>
+</div>
+</div>
+<div class="md:text-right">
+<p class="font-['Manrope'] text-sm tracking-wide text-purple-900 dark:text-purple-100 font-bold mb-6">Support</p>
+<div class="flex flex-col gap-3">
+<a class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200 transition-colors font-['Manrope'] text-sm" href="#">Privacy Policy</a>
+<a class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200 transition-colors font-['Manrope'] text-sm" href="#">Contact Us</a>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-purple-200/20">
+<p class="text-center font-['Manrope'] text-xs tracking-widest text-purple-400">© 2024 Brow Waxing and Threading Studio. All rights reserved.</p>
+</div>
+</footer>
+</body></html>

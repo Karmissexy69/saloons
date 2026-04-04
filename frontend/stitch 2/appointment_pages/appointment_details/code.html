@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Appointment Details - Precision Curator Ops</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#a9b4b9",
+                    "tertiary-dim": "#4f516c",
+                    "secondary-container": "#d3e4fe",
+                    "primary-fixed-dim": "#ccd4ee",
+                    "on-primary-fixed-variant": "#535b71",
+                    "error-container": "#fe8983",
+                    "on-background": "#2a3439",
+                    "on-tertiary": "#fbf8ff",
+                    "on-error": "#fff7f6",
+                    "inverse-surface": "#0b0f10",
+                    "surface-container-highest": "#d9e4ea",
+                    "on-tertiary-fixed": "#393c55",
+                    "surface-container-lowest": "#ffffff",
+                    "error": "#9f403d",
+                    "background": "#f7f9fb",
+                    "on-error-container": "#752121",
+                    "tertiary-container": "#dcddfe",
+                    "primary-dim": "#4a5268",
+                    "on-tertiary-fixed-variant": "#565873",
+                    "on-secondary-fixed": "#314055",
+                    "on-surface-variant": "#566166",
+                    "primary": "#565e74",
+                    "error-dim": "#4e0309",
+                    "on-tertiary-container": "#4c4e69",
+                    "surface-dim": "#cfdce3",
+                    "surface": "#f7f9fb",
+                    "tertiary-fixed-dim": "#cecfef",
+                    "secondary-fixed": "#d3e4fe",
+                    "outline": "#717c82",
+                    "on-secondary-container": "#435368",
+                    "surface-container": "#e8eff3",
+                    "on-secondary": "#f7f9ff",
+                    "surface-tint": "#565e74",
+                    "on-secondary-fixed-variant": "#4d5d73",
+                    "secondary-fixed-dim": "#c5d6f0",
+                    "surface-variant": "#d9e4ea",
+                    "surface-container-low": "#f0f4f7",
+                    "on-primary": "#f7f7ff",
+                    "surface-bright": "#f7f9fb",
+                    "on-surface": "#2a3439",
+                    "on-primary-fixed": "#373f54",
+                    "inverse-on-surface": "#9a9d9f",
+                    "inverse-primary": "#dae2fd",
+                    "tertiary": "#5b5d78",
+                    "primary-container": "#dae2fd",
+                    "primary-fixed": "#dae2fd",
+                    "on-primary-container": "#4a5167",
+                    "tertiary-fixed": "#dcddfe",
+                    "secondary-dim": "#44546a",
+                    "secondary": "#506076",
+                    "surface-container-high": "#e1e9ee"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-overlay {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d9e4ea;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-container">
+<!-- Background: Daily Calendar View (Blurred) -->
+<div class="fixed inset-0 flex overflow-hidden">
+<!-- SideNavBar Anchor -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-100 dark:bg-slate-900 flex flex-col py-8 z-0">
+<div class="px-6 mb-10">
+<h1 class="font-headline font-bold text-slate-900 text-xl">Main Branch</h1>
+<p class="text-xs text-slate-500 font-label">Operational Center</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="text-slate-600 dark:text-slate-400 mx-2 flex items-center px-4 py-3 rounded-full font-label text-sm">
+<span class="material-symbols-outlined mr-3">dashboard</span> Dashboard
+                </div>
+<div class="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white rounded-full mx-2 px-4 py-3 font-bold flex items-center font-label text-sm">
+<span class="material-symbols-outlined mr-3">calendar_today</span> Daily Calendar
+                </div>
+<div class="text-slate-600 dark:text-slate-400 mx-2 flex items-center px-4 py-3 rounded-full font-label text-sm">
+<span class="material-symbols-outlined mr-3">calendar_view_week</span> Weekly View
+                </div>
+<div class="text-slate-600 dark:text-slate-400 mx-2 flex items-center px-4 py-3 rounded-full font-label text-sm">
+<span class="material-symbols-outlined mr-3">event_note</span> Appointments
+                </div>
+<div class="text-slate-600 dark:text-slate-400 mx-2 flex items-center px-4 py-3 rounded-full font-label text-sm">
+<span class="material-symbols-outlined mr-3">store</span> Branch Settings
+                </div>
+</nav>
+</aside>
+<!-- Main Canvas (Blurred Content) -->
+<main class="ml-64 flex-1 flex flex-col bg-surface overflow-hidden blur-md opacity-40">
+<!-- TopNavBar Anchor -->
+<header class="flex justify-between items-center px-8 w-full bg-slate-50 h-16 border-b border-slate-200/50">
+<span class="text-xl font-bold text-slate-900 font-headline">Precision Curator Ops</span>
+<div class="flex items-center gap-6">
+<div class="bg-surface-container-highest px-4 py-1.5 rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">search</span>
+<span class="text-sm text-on-surface-variant font-label">Search records...</span>
+</div>
+<span class="material-symbols-outlined text-slate-600">notifications</span>
+<span class="material-symbols-outlined text-slate-600">settings</span>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high">
+<img alt="User profile" data-alt="portrait of a professional male operations manager in a bright office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlEpP2eB1hNtEmZT93hBl6zeyh0ss7LUzXfRYn1x14KjKYiM2bMrIxRTB5hOFXBhpgxb3gwVK3d7hVs3BcalSmt49m91_qqhdHKLJH78aX3GKvGkKMwUHKWWhwWu60XdT-yOrcn2N48JPEGEoUprwXca7klVVKqXRwMqbqmoPj1oxa2txsIHpFuZvpsVhnXpieJOf-nutM0XrGk3lwJ6BZFy1a5UUYp4EBQRCMy0Qdjeg1TLfD4Ag1z4Nlg9KnqHvG_pCy2rr9pKws"/>
+</div>
+</div>
+</header>
+<!-- Calendar Content Mock -->
+<div class="p-8 grid grid-cols-5 gap-6">
+<div class="col-span-5 h-20 bg-surface-container-low rounded-xl"></div>
+<div class="col-span-1 h-96 bg-surface-container-lowest rounded-xl"></div>
+<div class="col-span-1 h-96 bg-surface-container-lowest rounded-xl"></div>
+<div class="col-span-1 h-96 bg-surface-container-lowest rounded-xl"></div>
+<div class="col-span-1 h-96 bg-surface-container-lowest rounded-xl"></div>
+<div class="col-span-1 h-96 bg-surface-container-lowest rounded-xl"></div>
+</div>
+</main>
+</div>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-dim/40 glass-overlay">
+<!-- Modal Card -->
+<div class="w-full max-w-2xl bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden border border-white/20">
+<!-- Modal Header -->
+<div class="px-8 py-6 bg-surface-container-high flex justify-between items-center">
+<div>
+<span class="text-xs font-bold uppercase tracking-widest text-primary mb-1 block font-label">Verification Queue</span>
+<h2 class="text-2xl font-headline font-extrabold text-on-surface tracking-tight">Appointment Details</h2>
+</div>
+<button class="p-2 hover:bg-surface-dim/20 rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</button>
+</div>
+<!-- Modal Content -->
+<div class="p-8">
+<!-- Bento Grid Layout for Info -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Primary Customer Section -->
+<div class="col-span-12 md:col-span-7 bg-surface-container-low p-6 rounded-xl">
+<div class="flex items-start gap-4 mb-6">
+<div class="w-16 h-16 rounded-xl overflow-hidden shadow-sm">
+<img alt="Customer profile" data-alt="professional headshot of a smiling woman with a creative style for customer profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrRl5XrfDh9l7vYP7rm28KHXPBcqye7-7lAmp-NAlBDcfw5ChlVnFTZhGMFMvZ76GZCGOB_wl9UU-Lc51HKU_fBY2Fk2LxRUayhm2RPu3M2nt22R9Z5FwW7MwfgOAMtgOKQcLz3s0UY71nz4wyOiwdu_i6fug-3BynlSmIjZ-i5Ump7it293FqCzXoGRgIGw3HexMXBJGS5hFPXrHxiaCL0T_DyOdjP5WbUfuRbw9hhj0SWq0t4h_rtKXSFmKEtoUu1maHWpH2lEVo"/>
+</div>
+<div>
+<p class="text-xs font-label text-on-surface-variant mb-0.5">Customer Name</p>
+<h3 class="text-xl font-headline font-bold text-on-surface">Alexandra Sterling</h3>
+<div class="flex gap-2 mt-2">
+<span class="bg-success-container/10 border border-on-primary-container/20 text-on-primary-container px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase font-label">Verified Client</span>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-dim text-lg">call</span>
+<span class="text-sm font-medium text-on-surface font-body">+1 (555) 234-8901</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-dim text-lg">mail</span>
+<span class="text-sm font-medium text-on-surface font-body">a.sterling@curator.ops</span>
+</div>
+</div>
+</div>
+<!-- Status & Time Section -->
+<div class="col-span-12 md:col-span-5 flex flex-col gap-6">
+<div class="bg-surface-container-highest p-6 rounded-xl flex-1 flex flex-col justify-center">
+<p class="text-xs font-label text-on-surface-variant mb-2">Booking Status</p>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary animate-pulse"></div>
+<span class="text-lg font-headline font-bold text-on-surface">Confirmed</span>
+</div>
+</div>
+<div class="bg-primary p-6 rounded-xl flex-1 text-on-primary">
+<p class="text-xs font-label opacity-80 mb-2">Duration</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-primary">schedule</span>
+<span class="text-lg font-headline font-bold">90 Minutes</span>
+</div>
+</div>
+</div>
+<!-- Service Details Section -->
+<div class="col-span-12 bg-surface-container-low p-6 rounded-xl">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div>
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant block mb-3 font-label">Service Type</label>
+<div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary">content_cut</span>
+<div>
+<p class="text-sm font-bold text-on-surface">Full Precision Grooming</p>
+<p class="text-xs text-on-surface-variant">Signature styling &amp; architectural trim</p>
+</div>
+</div>
+</div>
+<div>
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant block mb-3 font-label">Assigned Stylist</label>
+<div class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-lg border border-outline-variant/10">
+<div class="w-8 h-8 rounded-full overflow-hidden">
+<img alt="Stylist profile" data-alt="headshot of a stylish male stylist with modern haircut" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5SOwKYAR4DviKoNGhGDerckegW4-JjZGL-_tFtZarViflbbQZAGHM8tWiV-C7HuwHcaElbmZSn_abR6Vj1s8-vpjsVzoE35B9n6-W6ZfRD_IiSz5J-S2pAIknwpmKLb2ccMJbzTP9t2-xIoCKWb6_tw12YZu6I_w0YvYZ4tt5ke6So5whEdMGhmPo3qh_CQrOgRxzr4NhssQlU1UrTEBOIckrn0HZV9vGtGpyyHDB-zd-WKBQKQkp3BzsS6LzFPd9zTIPQ8E5mmtw"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Julian Rossi</p>
+<p class="text-xs text-on-surface-variant">Lead Precision Specialist</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer / Actions -->
+<div class="px-8 py-6 bg-surface-container-low flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex gap-4">
+<button class="px-6 py-2.5 rounded-md border border-outline-variant text-on-surface-variant text-sm font-semibold hover:bg-surface-dim transition-colors">
+                        Reschedule
+                    </button>
+<button class="px-6 py-2.5 rounded-md text-error text-sm font-semibold hover:bg-error-container/20 transition-colors">
+                        Cancel Appointment
+                    </button>
+</div>
+<button class="w-full md:w-auto px-8 py-3 bg-gradient-to-br from-primary to-primary-dim text-on-primary rounded-md text-sm font-bold shadow-lg flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-lg">receipt_long</span>
+                    Convert to Bill
+                </button>
+</div>
+</div>
+</div>
+</body></html>
