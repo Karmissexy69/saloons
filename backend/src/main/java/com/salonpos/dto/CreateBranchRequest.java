@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 public record CreateBranchRequest(
     @NotBlank String name,
     String address,
-    Boolean active
+    Boolean active,
+    String openingTime,
+    String closingTime
 ) {
 }

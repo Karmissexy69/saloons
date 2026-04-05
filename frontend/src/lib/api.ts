@@ -119,7 +119,7 @@ export async function listBranches(token: string): Promise<BranchResponse[]> {
 
 export async function createBranch(
   token: string,
-  payload: { name: string; address?: string; active?: boolean }
+  payload: { name: string; address?: string; active?: boolean; openingTime?: string; closingTime?: string }
 ): Promise<BranchResponse> {
   return requestJson<BranchResponse>("/api/branches", {
     method: "POST",
@@ -131,7 +131,7 @@ export async function createBranch(
 export async function updateBranch(
   token: string,
   branchId: number,
-  payload: { name: string; address?: string; active?: boolean }
+  payload: { name: string; address?: string; active?: boolean; openingTime?: string; closingTime?: string }
 ): Promise<BranchResponse> {
   return requestJson<BranchResponse>(`/api/branches/${branchId}`, {
     method: "PATCH",

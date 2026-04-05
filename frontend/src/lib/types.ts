@@ -18,6 +18,8 @@ export type BranchResponse = {
   name: string;
   address: string | null;
   active: boolean;
+  openingTime: string;
+  closingTime: string;
 };
 
 export type AppSettingResponse = {

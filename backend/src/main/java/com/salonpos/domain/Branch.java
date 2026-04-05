@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,12 @@ public class Branch {
 
     @Column(nullable = false)
     private boolean active = true;
+
+    @Column(name = "opening_time", nullable = false)
+    private LocalTime openingTime;
+
+    @Column(name = "closing_time", nullable = false)
+    private LocalTime closingTime;
 
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;

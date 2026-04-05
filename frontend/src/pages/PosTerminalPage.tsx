@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createTransaction, getCustomerVouchers, listServices, listStaff, searchCustomers } from "../lib/api";
+import { createTransaction, getCustomer, getCustomerVouchers, listServices, listStaff, searchCustomers } from "../lib/api";
 import { formatCurrency } from "../lib/currency";
 import type { AppointmentCheckoutDraft, CustomerResponse, CustomerVoucherResponse, PaymentMethod, ServiceItemResponse, StaffProfileResponse } from "../lib/types";
 
@@ -33,6 +33,7 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt, appoin
   const [customerQuery, setCustomerQuery] = useState("");
   const [customerResults, setCustomerResults] = useState<CustomerResponse[]>([]);
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
+  const [selectedCustomer, setSelectedCustomer] = useState<CustomerResponse | null>(null);
   const [customerVouchers, setCustomerVouchers] = useState<CustomerVoucherResponse[]>([]);
   const [selectedVoucherId, setSelectedVoucherId] = useState("");
   const [cart, setCart] = useState<CartLine[]>([]);
@@ -56,6 +57,7 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt, appoin
   const paymentProofCanvasRef = useRef<HTMLCanvasElement>(null);
   const paymentProofStreamRef = useRef<MediaStream | null>(null);
   const appliedDraftIdRef = useRef<number | null>(null);
+  const suppressCustomerSearchRef = useRef(false);
 
   useEffect(() => {
     async function loadData() {
@@ -129,6 +131,42 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt, appoin
   }, [appointmentCheckoutDraft]);
 
   useEffect(() => {
+    const query = customerQuery.trim();
+    if (suppressCustomerSearchRef.current) {
+      suppressCustomerSearchRef.current = false;
+      return;
+    }
+    if (query.length < 2) {
+      setCustomerResults((current) => {
+        if (selectedCustomer && query.length > 0) {
+          return current.filter((item) => item.id === selectedCustomer.id);
+        }
+        return [];
+      });
+      return;
+    }
+
+    let cancelled = false;
+    const timer = window.setTimeout(async () => {
+      try {
+        const data = await searchCustomers(token, query);
+        if (!cancelled) {
+          setCustomerResults(data);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Failed to search customers");
+        }
+      }
+    }, 220);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [customerQuery, selectedCustomer, token]);
+
+  useEffect(() => {
     if (!appointmentCheckoutDraft) {
       return;
     }
@@ -180,10 +218,11 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt, appoin
         const remaining = current.filter((item) => item.id !== appointmentCustomer.id);
         return [appointmentCustomer, ...remaining];
       });
-      setSelectedCustomerId(String(appointmentCheckoutDraft.customerId));
-      void loadCustomerVouchersForCustomer(appointmentCheckoutDraft.customerId);
+      void handleSelectCustomer(String(appointmentCheckoutDraft.customerId), [appointmentCustomer], appointmentCustomer);
     } else {
       setSelectedCustomerId("");
+      setSelectedCustomer(null);
+      setCustomerQuery("");
       setCustomerVouchers([]);
       setSelectedVoucherId("");
     }
@@ -236,6 +275,10 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt, appoin
     return total > 0 ? total : 0;
   }, [subtotalAfterManualDiscount, voucherDiscount]);
   const paymentProofRequired = requiresPaymentProof(paymentMethod);
+  const showCustomerDropdown =
+    customerQuery.trim().length >= 2 &&
+    customerResults.length > 0 &&
+    customerQuery.trim().toLowerCase() !== selectedCustomer?.name.trim().toLowerCase();
 
   function addService(service: ServiceItemResponse) {
     setCart((current) => {
@@ -321,29 +364,29 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt, appoin
     setPaymentProofModalOpen(false);
   }
 
-  async function handleSearchCustomers() {
-    try {
-      const data = await searchCustomers(token, customerQuery.trim() || undefined);
-      setCustomerResults(data);
-      if (data[0]) {
-        await handleSelectCustomer(String(data[0].id), data);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to search customers");
-    }
-  }
-
-  async function handleSelectCustomer(nextCustomerId: string, pool: CustomerResponse[] = customerResults) {
+  async function handleSelectCustomer(
+    nextCustomerId: string,
+    pool: CustomerResponse[] = customerResults,
+    fallbackCustomer?: CustomerResponse
+  ) {
     setSelectedCustomerId(nextCustomerId);
     setSelectedVoucherId("");
     if (!nextCustomerId) {
+      setSelectedCustomer(null);
+      suppressCustomerSearchRef.current = true;
+      setCustomerQuery("");
+      setCustomerResults([]);
       setCustomerVouchers([]);
       return;
     }
     try {
+      const customer = await resolveSelectedCustomer(Number(nextCustomerId), pool, fallbackCustomer);
+      setSelectedCustomer(customer);
+      suppressCustomerSearchRef.current = true;
+      setCustomerQuery(customer.name);
+      setCustomerResults((current) => mergeCustomerResults([customer, ...pool, ...current]));
       await loadCustomerVouchersForCustomer(Number(nextCustomerId));
-      const customer = pool.find((item) => String(item.id) === nextCustomerId);
-      if (customer) setNotice(`Customer ${customer.name} selected.`);
+      setNotice(`Customer ${customer.name} selected.`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load customer vouchers");
     }
@@ -352,6 +395,22 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt, appoin
   async function loadCustomerVouchersForCustomer(customerId: number) {
     const vouchers = await getCustomerVouchers(token, customerId);
     setCustomerVouchers(vouchers.filter((item) => item.status === "AVAILABLE"));
+  }
+
+  async function resolveSelectedCustomer(
+    customerId: number,
+    pool: CustomerResponse[] = customerResults,
+    fallbackCustomer?: CustomerResponse
+  ) {
+    const pooled = fallbackCustomer ?? pool.find((item) => item.id === customerId) ?? null;
+    try {
+      return await getCustomer(token, customerId);
+    } catch (err) {
+      if (pooled) {
+        return pooled;
+      }
+      throw err;
+    }
   }
 
   async function handleCheckout() {
@@ -631,16 +690,64 @@ export function PosTerminalPage({ token, selectedBranchId, onViewReceipt, appoin
 
               <label>Select Customer</label>
               <div className="st-grid">
-                <input value={customerQuery} onChange={(e) => setCustomerQuery(e.target.value)} placeholder="Search member by name or phone" />
-                <button type="button" className="st-btn st-btn-secondary" onClick={handleSearchCustomers}>Find Member</button>
-                <select value={selectedCustomerId} onChange={(e) => void handleSelectCustomer(e.target.value)}>
-                  <option value="">Walk-in Customer</option>
+                <div className="st-pos-customer-search">
+                  <input
+                    value={customerQuery}
+                    onChange={(e) => setCustomerQuery(e.target.value)}
+                    placeholder="Search member by name, phone, or email"
+                    autoComplete="off"
+                    aria-autocomplete="list"
+                  />
+                  {showCustomerDropdown ? (
+                    <div className="st-pos-customer-dropdown">
+                      {customerResults.map((customer) => (
+                        <button
+                          key={customer.id}
+                          type="button"
+                          className={`st-pos-customer-option${String(customer.id) === selectedCustomerId ? " active" : ""}`}
+                          onMouseDown={(event) => {
+                            event.preventDefault();
+                            void handleSelectCustomer(String(customer.id), customerResults, customer);
+                          }}
+                        >
+                          <div className="st-pos-customer-option-main">
+                            <strong>{customer.name}</strong>
+                            <span>{customer.phone || customer.email || "No contact"}</span>
+                          </div>
+                          <small>{customer.pointsBalance} pts</small>
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+                {selectedCustomer ? (
+                  <div className="st-pos-customer-summary">
+                    <div className="st-pos-customer-summary-main">
+                      <strong>{selectedCustomer.name}</strong>
+                      <span>{selectedCustomer.phone || selectedCustomer.email || "No contact"}</span>
+                    </div>
+                    <div className="st-pos-customer-points">
+                      <small>Points</small>
+                      <strong>{selectedCustomer.pointsBalance} pts</strong>
+                    </div>
+                    <button type="button" className="st-link-btn" onClick={() => void handleSelectCustomer("")}>
+                      Clear
+                    </button>
+                  </div>
+                ) : (
+                  <div className="st-pos-customer-summary st-pos-customer-summary-empty">
+                    <span>Walk-in customer</span>
+                  </div>
+                )}
+                {false ? (
+                  <select className="st-hidden" aria-hidden="true" tabIndex={-1}>
                   {customerResults.map((customer) => (
                     <option key={customer.id} value={customer.id}>
                       {customer.name} • {customer.phone} • {customer.pointsBalance} pts
                     </option>
                   ))}
                 </select>
+                ) : null}
                 {selectedCustomerId ? (
                   <select value={selectedVoucherId} onChange={(e) => setSelectedVoucherId(e.target.value)}>
                     <option value="">No voucher</option>
@@ -873,6 +980,14 @@ function appointmentToCustomer(appointment: AppointmentCheckoutDraft): CustomerR
     totalVisits: 0,
     lastVisitAt: null,
   };
+}
+
+function mergeCustomerResults(customers: CustomerResponse[]): CustomerResponse[] {
+  const unique = new Map<number, CustomerResponse>();
+  for (const customer of customers) {
+    unique.set(customer.id, customer);
+  }
+  return Array.from(unique.values());
 }
 
 function blobToBase64(blob: Blob): Promise<string> {

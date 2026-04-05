@@ -263,6 +263,8 @@ export default function App() {
           token={token}
           selectedBranchId={selectedBranchId}
           selectedBranchName={selectedBranch?.name ?? ""}
+          selectedBranchOpeningTime={selectedBranch?.openingTime ?? null}
+          selectedBranchClosingTime={selectedBranch?.closingTime ?? null}
           canStartCheckout={isNavAllowedForRole("pos-terminal", role)}
           onStartCheckout={handleStartAppointmentCheckout}
           onViewReceipt={handleOpenReceipt}

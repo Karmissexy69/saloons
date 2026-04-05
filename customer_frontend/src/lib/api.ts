@@ -128,6 +128,7 @@ function normalizeCustomer(raw: CustomerProfile): CustomerProfile {
 function normalizeVoucherCatalogItem(raw: Record<string, unknown>): VoucherCatalogItem {
   return {
     catalogId: Number(raw.catalogId ?? raw.id ?? 0),
+    code: raw.code == null ? null : String(raw.code),
     name: String(raw.name ?? ""),
     description: raw.description == null ? null : String(raw.description),
     pointsCost: Number(raw.pointsCost ?? 0),
@@ -138,7 +139,10 @@ function normalizeVoucherCatalogItem(raw: Record<string, unknown>): VoucherCatal
     branchName: raw.branchName == null ? null : String(raw.branchName),
     serviceId: raw.serviceId == null ? null : Number(raw.serviceId),
     serviceName: raw.serviceName == null ? null : String(raw.serviceName),
+    validFrom: raw.validFrom == null ? null : String(raw.validFrom),
     validTo: raw.validTo == null ? null : String(raw.validTo),
+    redeemable: Boolean(raw.redeemable),
+    redemptionBlockedReason: raw.redemptionBlockedReason == null ? null : String(raw.redemptionBlockedReason),
   };
 }
 

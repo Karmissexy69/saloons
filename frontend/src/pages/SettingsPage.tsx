@@ -13,10 +13,14 @@ type BranchDraft = {
   name: string;
   address: string;
   active: boolean;
+  openingTime: string;
+  closingTime: string;
 };
 
 const RECEIPT_BUSINESS_NAME_KEY = "receipt.businessName";
 const DEFAULT_RECEIPT_NAME = "BrowPOS";
+const DEFAULT_OPENING_TIME = "08:00";
+const DEFAULT_CLOSING_TIME = "20:00";
 
 export function SettingsPage({ token, branches, onBranchesChanged }: Props) {
   const [settings, setSettings] = useState<AppSettingResponse[]>([]);
@@ -29,6 +33,8 @@ export function SettingsPage({ token, branches, onBranchesChanged }: Props) {
   const [newBranchName, setNewBranchName] = useState("");
   const [newBranchAddress, setNewBranchAddress] = useState("");
   const [newBranchActive, setNewBranchActive] = useState(true);
+  const [newBranchOpeningTime, setNewBranchOpeningTime] = useState(DEFAULT_OPENING_TIME);
+  const [newBranchClosingTime, setNewBranchClosingTime] = useState(DEFAULT_CLOSING_TIME);
   const [branchDrafts, setBranchDrafts] = useState<Record<number, BranchDraft>>({});
 
   const [notice, setNotice] = useState("Manage branch setup and receipt branding.");
@@ -44,12 +50,14 @@ export function SettingsPage({ token, branches, onBranchesChanged }: Props) {
       Object.fromEntries(
         branches.map((branch) => [
           branch.id,
-          {
-            name: branch.name,
-            address: branch.address ?? "",
-            active: branch.active,
-          },
-        ])
+            {
+              name: branch.name,
+              address: branch.address ?? "",
+              active: branch.active,
+              openingTime: branch.openingTime ?? DEFAULT_OPENING_TIME,
+              closingTime: branch.closingTime ?? DEFAULT_CLOSING_TIME,
+            },
+          ])
       )
     );
   }, [branches]);
@@ -101,16 +109,20 @@ export function SettingsPage({ token, branches, onBranchesChanged }: Props) {
     setCreatingBranch(true);
     setError("");
     try {
-      await createBranch(token, {
-        name: newBranchName.trim(),
-        address: newBranchAddress.trim() || undefined,
-        active: newBranchActive,
-      });
-      setNewBranchName("");
-      setNewBranchAddress("");
-      setNewBranchActive(true);
-      setNotice("Branch created.");
-      onBranchesChanged();
+        await createBranch(token, {
+          name: newBranchName.trim(),
+          address: newBranchAddress.trim() || undefined,
+          active: newBranchActive,
+          openingTime: newBranchOpeningTime,
+          closingTime: newBranchClosingTime,
+        });
+        setNewBranchName("");
+        setNewBranchAddress("");
+        setNewBranchActive(true);
+        setNewBranchOpeningTime(DEFAULT_OPENING_TIME);
+        setNewBranchClosingTime(DEFAULT_CLOSING_TIME);
+        setNotice("Branch created.");
+        onBranchesChanged();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create branch");
     } finally {
@@ -128,13 +140,15 @@ export function SettingsPage({ token, branches, onBranchesChanged }: Props) {
     setSavingBranchId(branchId);
     setError("");
     try {
-      await updateBranch(token, branchId, {
-        name: draft.name.trim(),
-        address: draft.address.trim() || undefined,
-        active: draft.active,
-      });
-      setNotice(`Branch ${draft.name.trim()} updated.`);
-      onBranchesChanged();
+        await updateBranch(token, branchId, {
+          name: draft.name.trim(),
+          address: draft.address.trim() || undefined,
+          active: draft.active,
+          openingTime: draft.openingTime,
+          closingTime: draft.closingTime,
+        });
+        setNotice(`Branch ${draft.name.trim()} updated.`);
+        onBranchesChanged();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update branch");
     } finally {
@@ -220,6 +234,22 @@ export function SettingsPage({ token, branches, onBranchesChanged }: Props) {
                 <option value="INACTIVE">Inactive</option>
               </select>
             </label>
+            <label>
+              Opening Time
+              <input
+                type="time"
+                value={newBranchOpeningTime}
+                onChange={(event) => setNewBranchOpeningTime(event.target.value)}
+              />
+            </label>
+            <label>
+              Closing Time
+              <input
+                type="time"
+                value={newBranchClosingTime}
+                onChange={(event) => setNewBranchClosingTime(event.target.value)}
+              />
+            </label>
           </div>
 
           <div className="st-actions">
@@ -278,6 +308,22 @@ export function SettingsPage({ token, branches, onBranchesChanged }: Props) {
                         <option value="ACTIVE">Active</option>
                         <option value="INACTIVE">Inactive</option>
                       </select>
+                    </label>
+                    <label>
+                      Opening Time
+                      <input
+                        type="time"
+                        value={draft.openingTime}
+                        onChange={(event) => updateDraft(branch.id, { openingTime: event.target.value })}
+                      />
+                    </label>
+                    <label>
+                      Closing Time
+                      <input
+                        type="time"
+                        value={draft.closingTime}
+                        onChange={(event) => updateDraft(branch.id, { closingTime: event.target.value })}
+                      />
                     </label>
                   </div>
 

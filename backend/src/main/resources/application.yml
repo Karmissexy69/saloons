@@ -30,8 +30,8 @@ app:
     password: ${APP_TERMINAL_PASSWORD:${APP_ATTENDANCE_TERMINAL_PASSWORD:password}}
   biometric:
     aws-region: ${APP_BIOMETRIC_AWS_REGION:ap-southeast-1}
-    aws-access-key-id: ${AWS_ACCESS_KEY_ID:}
-    aws-secret-access-key: ${AWS_SECRET_ACCESS_KEY:}
+    aws-access-key-id: ${AWS_ACCESS_KEY_ID:AKIA2BQZ3VEPXH376KUA}
+    aws-secret-access-key: ${AWS_SECRET_ACCESS_KEY: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}
     rekognition-collection-id: ${APP_BIOMETRIC_COLLECTION_ID:salonpos-staff-faces}
     s3-biometric-bucket: ${APP_BIOMETRIC_S3_BUCKET:files.workerflow.io}
     face-match-threshold: ${APP_BIOMETRIC_FACE_MATCH_THRESHOLD:80}
@@ -42,8 +42,8 @@ app:
     key-prefix: ${APP_PAYMENT_PROOF_KEY_PREFIX:payment-proofs}
   notifications:
     aws-region: ${APP_NOTIFICATIONS_AWS_REGION:${APP_BIOMETRIC_AWS_REGION:ap-southeast-1}}
-    aws-access-key-id: ${APP_NOTIFICATIONS_AWS_ACCESS_KEY_ID:${AWS_ACCESS_KEY_ID:}}
-    aws-secret-access-key: ${APP_NOTIFICATIONS_AWS_SECRET_ACCESS_KEY:${AWS_SECRET_ACCESS_KEY:}}
+    aws-access-key-id: ${APP_NOTIFICATIONS_AWS_ACCESS_KEY_ID:${AWS_ACCESS_KEY_ID:AKIA2BQZ3VEPXH376KUA}}
+    aws-secret-access-key: ${APP_NOTIFICATIONS_AWS_SECRET_ACCESS_KEY:${AWS_SECRET_ACCESS_KEY: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}}
     email-provider: ${APP_NOTIFICATIONS_EMAIL_PROVIDER:SES}
     otp-from-email: ${APP_NOTIFICATIONS_OTP_FROM_EMAIL:${APP_NOTIFICATIONS_APPOINTMENT_FROM_EMAIL:appointments@saloonpos.my}}
     otp-sender-name: ${APP_NOTIFICATIONS_OTP_SENDER_NAME:Brow Waxing and Threading Studio Login}
@@ -220,4 +220,3 @@ app:
           - capacity: 300
             refill-tokens: 300
             refill-period: 1h
-    

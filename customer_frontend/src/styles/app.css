@@ -566,6 +566,19 @@ img {
   transform: translateY(-1px);
 }
 
+.ve-button:disabled,
+.ve-button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.58;
+  transform: none;
+  box-shadow: none;
+}
+
+.ve-button:disabled:hover,
+.ve-button[disabled]:hover {
+  transform: none;
+}
+
 .ve-button-primary {
   background: linear-gradient(135deg, var(--ve-primary) 0%, #5b2b86 100%);
   color: white;
@@ -863,6 +876,7 @@ img {
 .ve-field {
   display: grid;
   gap: 8px;
+  align-content: start;
 }
 
 .ve-field-span {
@@ -873,6 +887,10 @@ img {
   color: var(--ve-primary);
   font-size: 0.86rem;
   font-weight: 700;
+}
+
+.ve-field .ve-panel-copy {
+  margin: 0;
 }
 
 .ve-input {

@@ -5,6 +5,8 @@ import { loadPublicBranchesCached, loadPublicServicesCached, loadPublicStaffCach
 import { useStoredSession } from "../lib/session";
 import type { AppointmentRecord, PublicBranch, PublicService, PublicStaff } from "../lib/types";
 
+const SLOT_INTERVAL_MINUTES = 15;
+
 export function BookingPage() {
   const session = useStoredSession();
   const [branches, setBranches] = useState<PublicBranch[]>([]);
@@ -80,6 +82,21 @@ export function BookingPage() {
     () => staff.find((item) => item.id === Number(staffId)) ?? null,
     [staffId, staff]
   );
+  const branchHoursLabel = useMemo(() => formatBranchHoursLabel(selectedBranch), [selectedBranch]);
+  const bookingTimeState = useMemo(
+    () => buildBookingTimeState(selectedBranch, selectedService, dateValue),
+    [dateValue, selectedBranch, selectedService]
+  );
+
+  useEffect(() => {
+    const nextValues = bookingTimeState.options.map((option) => option.value);
+    setTimeValue((current) => {
+      if (nextValues.length === 0) {
+        return "";
+      }
+      return nextValues.includes(current) ? current : nextValues[0];
+    });
+  }, [bookingTimeState.options]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -94,6 +111,15 @@ export function BookingPage() {
 
       if (!selectedBranchId) {
         throw new Error("Choose a branch before submitting the appointment.");
+      }
+      if (bookingTimeState.options.length === 0) {
+        throw new Error(bookingTimeState.warningText || "No bookable appointment times are available for this branch.");
+      }
+      if (!timeValue) {
+        throw new Error("Choose one of the available appointment times before submitting.");
+      }
+      if (!bookingTimeState.options.some((option) => option.value === timeValue)) {
+        throw new Error(`Choose a time within ${branchHoursLabel} for ${selectedBranch?.name || "the selected branch"}.`);
       }
 
       let response: AppointmentRecord;
@@ -127,7 +153,7 @@ export function BookingPage() {
     }
   }
 
-  const bookingDisabled = loadingLookups || !!lookupError || !branchId;
+  const bookingDisabled = loadingLookups || !!lookupError || !branchId || bookingTimeState.options.length === 0 || !timeValue;
 
   return (
     <section className="ve-section ve-booking-page">
@@ -173,6 +199,9 @@ export function BookingPage() {
                   </option>
                 ))}
               </select>
+              <p className="ve-panel-copy">
+                {selectedBranch ? `Online booking hours: ${branchHoursLabel}` : "Select a branch to see available booking hours."}
+              </p>
             </label>
             <label className="ve-field">
               <span>Service</span>
@@ -198,11 +227,38 @@ export function BookingPage() {
             </label>
             <label className="ve-field">
               <span>Date</span>
-              <input className="ve-input" type="date" value={dateValue} onChange={(event) => setDateValue(event.target.value)} required />
+              <input
+                className="ve-input"
+                type="date"
+                value={dateValue}
+                min={getTodayDateInput()}
+                onChange={(event) => setDateValue(event.target.value)}
+                required
+              />
             </label>
             <label className="ve-field">
               <span>Time</span>
-              <input className="ve-input" type="time" value={timeValue} onChange={(event) => setTimeValue(event.target.value)} required />
+              <select
+                className="ve-input"
+                value={timeValue}
+                onChange={(event) => setTimeValue(event.target.value)}
+                disabled={!selectedBranch || bookingTimeState.options.length === 0}
+                required
+              >
+                <option value="">
+                  {!selectedBranch
+                    ? "Choose branch first"
+                    : bookingTimeState.options.length === 0
+                      ? "No times available"
+                      : "Choose time"}
+                </option>
+                {bookingTimeState.options.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <p className="ve-panel-copy">{bookingTimeState.helperText}</p>
             </label>
             <label className="ve-field ve-field-span">
               <span>Notes</span>
@@ -222,6 +278,9 @@ export function BookingPage() {
               {lookupError}
             </div>
           ) : null}
+          {!lookupError && selectedBranch && bookingTimeState.warningText ? (
+            <div className="ve-inline-note ve-inline-note-warning">{bookingTimeState.warningText}</div>
+          ) : null}
           {notice ? <div className="ve-inline-note ve-inline-note-success">{notice}</div> : null}
           {error ? <div className="ve-inline-note ve-inline-note-error">{error}</div> : null}
 
@@ -238,6 +297,10 @@ export function BookingPage() {
               <strong>{selectedBranch?.name || "Choose a branch"}</strong>
             </div>
             <div>
+              <span>Hours</span>
+              <strong>{selectedBranch ? branchHoursLabel : "Select a branch"}</strong>
+            </div>
+            <div>
               <span>Service</span>
               <strong>{selectedService?.name || "You can choose later"}</strong>
             </div>
@@ -247,7 +310,7 @@ export function BookingPage() {
             </div>
             <div>
               <span>Time</span>
-              <strong>{formatDateTime(branchId ? combineDateAndTime(dateValue, timeValue) : "")}</strong>
+              <strong>{formatDateTime(branchId && timeValue ? combineDateAndTime(dateValue, timeValue) : "")}</strong>
             </div>
             <div>
               <span>Estimate</span>
@@ -264,4 +327,143 @@ export function BookingPage() {
       </div>
     </section>
   );
+}
+
+interface BookingTimeOption {
+  label: string;
+  value: string;
+}
+
+interface BookingTimeState {
+  helperText: string;
+  options: BookingTimeOption[];
+  warningText: string;
+}
+
+function buildBookingTimeState(branch: PublicBranch | null, service: PublicService | null, dateValue: string): BookingTimeState {
+  if (!branch) {
+    return {
+      helperText: "Select a branch to see the available booking times.",
+      options: [],
+      warningText: "",
+    };
+  }
+
+  const openingMinutes = toMinutes(branch.openingTime);
+  const closingMinutes = toMinutes(branch.closingTime);
+  const hoursLabel = formatBranchHoursLabel(branch);
+
+  if (openingMinutes == null || closingMinutes == null || closingMinutes <= openingMinutes) {
+    return {
+      helperText: "This branch has no valid online booking hours yet.",
+      options: [],
+      warningText: `Online booking is unavailable because ${branch.name} does not have a valid booking window configured.`,
+    };
+  }
+
+  const durationMinutes = Math.max(service?.durationMinutes ?? 0, 0);
+  const sameDay = dateValue === getTodayDateInput();
+  const nowMinutes = sameDay ? roundUpToSlot(getNowInMinutes()) : openingMinutes;
+  const earliestStart = roundUpToSlot(Math.max(openingMinutes, nowMinutes));
+  const latestStartBase = durationMinutes > 0 ? closingMinutes - durationMinutes : closingMinutes - SLOT_INTERVAL_MINUTES;
+  const latestStart = roundDownToSlot(latestStartBase);
+  const helperText =
+    durationMinutes > 0
+      ? `Available ${hoursLabel}. Last start time already reflects the ${durationMinutes}-minute service duration.`
+      : `Available ${hoursLabel}.`;
+
+  if (latestStart < earliestStart) {
+    return {
+      helperText,
+      options: [],
+      warningText:
+        durationMinutes > 0 && service
+          ? `${service.name} no longer fits inside ${branch.name}'s booking hours for the selected date.`
+          : `No bookable times remain for ${branch.name} on the selected date.`,
+    };
+  }
+
+  const options: BookingTimeOption[] = [];
+  for (let minutes = earliestStart; minutes <= latestStart; minutes += SLOT_INTERVAL_MINUTES) {
+    const value = fromMinutes(minutes);
+    options.push({
+      label: formatClockTime(value),
+      value,
+    });
+  }
+
+  return {
+    helperText,
+    options,
+    warningText: "",
+  };
+}
+
+function formatBranchHoursLabel(branch: PublicBranch | null) {
+  const opening = normalizeTime(branch?.openingTime);
+  const closing = normalizeTime(branch?.closingTime);
+
+  if (!opening || !closing) {
+    return "Hours unavailable";
+  }
+
+  return `${formatClockTime(opening)} - ${formatClockTime(closing)}`;
+}
+
+function normalizeTime(value?: string | null) {
+  if (!value) {
+    return "";
+  }
+
+  const [hours = "", minutes = ""] = value.trim().split(":");
+  const normalizedHours = Number(hours);
+  const normalizedMinutes = Number(minutes);
+
+  if (!Number.isInteger(normalizedHours) || !Number.isInteger(normalizedMinutes)) {
+    return "";
+  }
+
+  return `${String(normalizedHours).padStart(2, "0")}:${String(normalizedMinutes).padStart(2, "0")}`;
+}
+
+function toMinutes(value?: string | null) {
+  const normalized = normalizeTime(value);
+  if (!normalized) {
+    return null;
+  }
+
+  const [hours, minutes] = normalized.split(":").map(Number);
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+    return null;
+  }
+
+  return hours * 60 + minutes;
+}
+
+function fromMinutes(totalMinutes: number) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+function formatClockTime(value: string) {
+  const [hours, minutes] = value.split(":").map(Number);
+  const date = new Date(2024, 0, 1, hours, minutes, 0, 0);
+  return new Intl.DateTimeFormat("en-MY", {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function getNowInMinutes() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+function roundUpToSlot(minutes: number) {
+  return Math.ceil(minutes / SLOT_INTERVAL_MINUTES) * SLOT_INTERVAL_MINUTES;
+}
+
+function roundDownToSlot(minutes: number) {
+  return Math.floor(minutes / SLOT_INTERVAL_MINUTES) * SLOT_INTERVAL_MINUTES;
 }

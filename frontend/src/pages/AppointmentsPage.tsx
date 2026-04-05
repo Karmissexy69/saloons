@@ -25,6 +25,8 @@ type Props = {
   token: string;
   selectedBranchId: number | null;
   selectedBranchName: string;
+  selectedBranchOpeningTime: string | null;
+  selectedBranchClosingTime: string | null;
   canStartCheckout: boolean;
   onStartCheckout: (draft: AppointmentCheckoutDraft) => void;
   onViewReceipt: (receiptNo: string) => void;
@@ -62,9 +64,26 @@ type DailyTile = {
   compact: boolean;
 };
 
+type ScheduleWindow = {
+  openingTime: string;
+  closingTime: string;
+  startMinutes: number;
+  endMinutes: number;
+  totalMinutes: number;
+  canvasHeight: number;
+  label: string;
+};
+
+type ScheduleSlot = {
+  label: string;
+  time: string;
+  period: string;
+  height: number;
+};
+
 const SLOT_HEIGHT = 82;
-const START_HOUR = 8;
-const END_HOUR = 21;
+const DEFAULT_OPENING_TIME = "08:00";
+const DEFAULT_CLOSING_TIME = "20:00";
 const STATUSES: AppointmentStatus[] = ["BOOKED", "CHECKED_IN", "IN_SERVICE", "COMPLETED", "CANCELLED", "NO_SHOW"];
 const longDateFormatter = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 const weekDateFormatter = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric" });
@@ -72,7 +91,16 @@ const weekdayFormatter = new Intl.DateTimeFormat("en-US", { weekday: "long" });
 const monthDayFormatter = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" });
 const timeFormatter = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" });
 
-export function AppointmentsPage({ token, selectedBranchId, selectedBranchName, canStartCheckout, onStartCheckout, onViewReceipt }: Props) {
+export function AppointmentsPage({
+  token,
+  selectedBranchId,
+  selectedBranchName,
+  selectedBranchOpeningTime,
+  selectedBranchClosingTime,
+  canStartCheckout,
+  onStartCheckout,
+  onViewReceipt,
+}: Props) {
   const today = useMemo(() => toDateInput(new Date()), []);
   const [viewMode, setViewMode] = useState<ViewMode>("daily");
   const [focusDate, setFocusDate] = useState(today);
@@ -88,7 +116,7 @@ export function AppointmentsPage({ token, selectedBranchId, selectedBranchName, 
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<number | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sheetMode, setSheetMode] = useState<SheetMode>("create");
-  const [form, setForm] = useState<BookingForm>(() => emptyForm(today));
+  const [form, setForm] = useState<BookingForm>(() => emptyForm(today, undefined, undefined, DEFAULT_OPENING_TIME));
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [busyId, setBusyId] = useState<number | null>(null);
@@ -101,6 +129,10 @@ export function AppointmentsPage({ token, selectedBranchId, selectedBranchName, 
   const focus = useMemo(() => fromDateInput(focusDate), [focusDate]);
   const weekStart = useMemo(() => startOfWeek(focus), [focus]);
   const weekDays = useMemo(() => Array.from({ length: 7 }, (_, index) => addDays(weekStart, index)), [weekStart]);
+  const scheduleWindow = useMemo(
+    () => resolveScheduleWindow(selectedBranchOpeningTime, selectedBranchClosingTime),
+    [selectedBranchClosingTime, selectedBranchOpeningTime]
+  );
   const selectedAppointment = useMemo(() => appointments.find((item) => item.id === selectedAppointmentId) ?? null, [appointments, selectedAppointmentId]);
   const visibleAppointments = useMemo(() => {
     const sorted = [...appointments].sort((left, right) => toDate(left.startAt).getTime() - toDate(right.startAt).getTime());
@@ -109,9 +141,12 @@ export function AppointmentsPage({ token, selectedBranchId, selectedBranchName, 
     return sorted.filter((item) => item.staffId === staffId);
   }, [appointments, filterStaffId]);
   const dayAppointments = useMemo(() => visibleAppointments.filter((item) => toDateInput(toDate(item.startAt)) === focusDate), [focusDate, visibleAppointments]);
-  const dailyTiles = useMemo(() => buildDailyTiles(dayAppointments), [dayAppointments]);
-  const hourSlots = useMemo(() => Array.from({ length: END_HOUR - START_HOUR }, (_, index) => START_HOUR + index), []);
-  const stats = useMemo(() => summarize(visibleAppointments, servicesById, activeStaff.length), [activeStaff.length, servicesById, visibleAppointments]);
+  const dailyTiles = useMemo(() => buildDailyTiles(dayAppointments, scheduleWindow), [dayAppointments, scheduleWindow]);
+  const hourSlots = useMemo(() => buildScheduleSlots(scheduleWindow), [scheduleWindow]);
+  const stats = useMemo(
+    () => summarize(visibleAppointments, servicesById, activeStaff.length, scheduleWindow.totalMinutes),
+    [activeStaff.length, scheduleWindow.totalMinutes, servicesById, visibleAppointments]
+  );
   const weekGrouped = useMemo(() => {
     const grouped = new Map<string, AppointmentResponse[]>();
     for (const day of weekDays) grouped.set(toDateInput(day), []);
@@ -193,7 +228,7 @@ export function AppointmentsPage({ token, selectedBranchId, selectedBranchName, 
     }
     setCustomerResults([]);
     setSheetMode("create");
-    setForm(emptyForm(focusDate, services[0], activeStaff[0]));
+    setForm(emptyForm(focusDate, services[0], activeStaff[0], scheduleWindow.openingTime));
     setSheetOpen(true);
   }
 
@@ -409,10 +444,9 @@ export function AppointmentsPage({ token, selectedBranchId, selectedBranchName, 
           <div className="st-appts-daily-frame">
             <div className="st-appts-time-rail">
               <div className="st-appts-time-rail-head"><span className="material-symbols-outlined">schedule</span></div>
-              {hourSlots.map((hour) => {
-                const slot = hourLabel(hour);
+              {hourSlots.map((slot) => {
                 return (
-                  <div key={hour} className="st-appts-time-slot">
+                  <div key={slot.label} className="st-appts-time-slot" style={{ height: `${slot.height}px` }}>
                     <span>{slot.time}</span>
                     <small>{slot.period}</small>
                   </div>
@@ -439,9 +473,9 @@ export function AppointmentsPage({ token, selectedBranchId, selectedBranchName, 
                 </div>
               </div>
 
-              <div className="st-appts-daily-canvas" style={{ height: `${hourSlots.length * SLOT_HEIGHT}px` }}>
-                <div className="st-appts-daily-grid" style={{ gridTemplateRows: `repeat(${hourSlots.length}, ${SLOT_HEIGHT}px)` }}>
-                  {hourSlots.map((hour) => <div key={hour} />)}
+              <div className="st-appts-daily-canvas" style={{ height: `${scheduleWindow.canvasHeight}px` }}>
+                <div className="st-appts-daily-grid" style={{ gridTemplateRows: hourSlots.map((slot) => `${slot.height}px`).join(" ") }}>
+                  {hourSlots.map((slot) => <div key={slot.label} />)}
                 </div>
                 {dailyTiles.length === 0 ? (
                   <div className="st-appts-daily-empty">
@@ -464,21 +498,25 @@ export function AppointmentsPage({ token, selectedBranchId, selectedBranchName, 
                     onClick={() => setSelectedAppointmentId(tile.appointment.id)}
                   >
                     <div className="st-appts-daily-tile-top">
-                      <div>
+                      <div className="st-appts-daily-tile-top-meta">
                         <span className="st-appts-chip">{channelLabel(tile.appointment.bookingChannel)}</span>
                         <strong>{timeRange(tile.appointment.startAt, tile.appointment.endAt)}</strong>
                       </div>
                       <span className="material-symbols-outlined">{iconName(tile.appointment)}</span>
                     </div>
-                    <h3>{tile.appointment.displayName ?? "Walk-in Guest"}</h3>
-                    <p>{tile.appointment.serviceName ?? "General service"} | <span>{tile.appointment.staffName ?? "Unassigned"}</span></p>
+                    <h3 title={tile.appointment.displayName ?? "Walk-in Guest"}>{tile.appointment.displayName ?? "Walk-in Guest"}</h3>
+                    {!tile.compact ? (
+                      <p title={`${tile.appointment.serviceName ?? "General service"} | ${tile.appointment.staffName ?? "Unassigned"}`}>
+                        {tile.appointment.serviceName ?? "General service"} | <span>{tile.appointment.staffName ?? "Unassigned"}</span>
+                      </p>
+                    ) : null}
                     {!tile.compact ? <div className="st-appts-daily-tile-bottom"><span>{humanizeStatus(tile.appointment.status)}</span><span>{tile.appointment.bookingReference}</span></div> : null}
                   </button>
                 ))}
               </div>
             </div>
 
-            <aside className="st-appts-snapshot-rail">
+            {false ? <aside className="st-appts-snapshot-rail">
               <div className="st-appts-snapshot-content">
                 <h3>Daily Snapshot</h3>
                 <article className="st-appts-snapshot-card st-appts-snapshot-primary">
@@ -502,7 +540,7 @@ export function AppointmentsPage({ token, selectedBranchId, selectedBranchName, 
                 <div className="st-appts-efficiency-bar"><div style={{ width: `${stats.efficiency}%` }} /></div>
                 <div className="st-appts-efficiency-meta"><strong>{stats.efficiency}%</strong><span>{stats.totalAppointments} appointments in scope</span></div>
               </div>
-            </aside>
+            </aside> : null}
           </div>
         </section>
       ) : (
@@ -693,7 +731,7 @@ export function AppointmentsPage({ token, selectedBranchId, selectedBranchName, 
   );
 }
 
-function emptyForm(date: string, firstService?: ServiceItemResponse, firstStaff?: StaffProfileResponse): BookingForm {
+function emptyForm(date: string, firstService?: ServiceItemResponse, firstStaff?: StaffProfileResponse, openingTime = DEFAULT_OPENING_TIME): BookingForm {
   return {
     bookingMode: "guest",
     customerQuery: "",
@@ -704,14 +742,14 @@ function emptyForm(date: string, firstService?: ServiceItemResponse, firstStaff?
     selectedServiceId: String(firstService?.id ?? ""),
     selectedStaffId: String(firstStaff?.id ?? ""),
     scheduledDate: date,
-    scheduledTime: "10:00",
+    scheduledTime: openingTime,
     depositAmount: "0",
     customerNote: "",
     internalNote: "",
   };
 }
 
-function buildDailyTiles(appointments: AppointmentResponse[]): DailyTile[] {
+function buildDailyTiles(appointments: AppointmentResponse[], scheduleWindow: ScheduleWindow): DailyTile[] {
   const sorted = [...appointments].sort((left, right) => toDate(left.startAt).getTime() - toDate(right.startAt).getTime());
   const clusters: AppointmentResponse[][] = [];
   let currentCluster: AppointmentResponse[] = [];
@@ -752,17 +790,32 @@ function buildDailyTiles(appointments: AppointmentResponse[]): DailyTile[] {
       const start = toDate(appointment.startAt);
       const end = endDate(appointment);
       const duration = Math.max(30, Math.round((end.getTime() - start.getTime()) / 60000));
-      const top = ((start.getHours() * 60 + start.getMinutes() - START_HOUR * 60) / 60) * SLOT_HEIGHT;
-      const height = Math.max((duration / 60) * SLOT_HEIGHT, 74);
-      return { appointment, top, height, leftPct: (lane / columns) * 100, widthPct: 100 / columns, columns, tone: toneForStatus(appointment.status), compact: height < 108 };
+      const appointmentStartMinutes = minutesSinceMidnight(start);
+      const appointmentEndMinutes = appointmentStartMinutes + duration;
+      const clampedStartMinutes = Math.min(
+        Math.max(appointmentStartMinutes, scheduleWindow.startMinutes),
+        Math.max(scheduleWindow.startMinutes, scheduleWindow.endMinutes - 15)
+      );
+      const clampedEndMinutes = Math.max(
+        clampedStartMinutes + 15,
+        Math.min(appointmentEndMinutes, scheduleWindow.endMinutes)
+      );
+      const top = ((clampedStartMinutes - scheduleWindow.startMinutes) / 60) * SLOT_HEIGHT;
+      const height = Math.max(((clampedEndMinutes - clampedStartMinutes) / 60) * SLOT_HEIGHT, 52);
+      return { appointment, top, height, leftPct: (lane / columns) * 100, widthPct: 100 / columns, columns, tone: toneForStatus(appointment.status), compact: height < 96 };
     });
   });
 }
 
-function summarize(appointments: AppointmentResponse[], servicesById: Map<number, ServiceItemResponse>, staffCount: number) {
+function summarize(
+  appointments: AppointmentResponse[],
+  servicesById: Map<number, ServiceItemResponse>,
+  staffCount: number,
+  branchOperatingMinutes: number
+) {
   const forecastRevenue = appointments.reduce((sum, item) => sum + (item.serviceId ? servicesById.get(item.serviceId)?.price ?? 0 : 0), 0);
   const totalMinutes = appointments.reduce((sum, item) => sum + durationMinutes(item), 0);
-  const capacityMinutes = Math.max(staffCount, 1) * (END_HOUR - START_HOUR) * 60;
+  const capacityMinutes = Math.max(staffCount, 1) * Math.max(branchOperatingMinutes, 60);
   return {
     totalAppointments: appointments.length,
     forecastRevenue,
@@ -815,7 +868,7 @@ function peakWindow(appointments: AppointmentResponse[]): string {
     const hour = toDate(item.startAt).getHours();
     counts.set(hour, (counts.get(hour) ?? 0) + 1);
   }
-  let bestHour = START_HOUR;
+  let bestHour = 8;
   let highest = 0;
   for (const [hour, count] of counts) {
     if (count > highest) {
@@ -833,6 +886,86 @@ function hourLabel(hour: number) {
   const period = normalized >= 12 ? "PM" : "AM";
   const hour12 = normalized % 12 === 0 ? 12 : normalized % 12;
   return { time: `${String(hour12).padStart(2, "0")}:00`, period };
+}
+
+function resolveScheduleWindow(openingTime: string | null, closingTime: string | null): ScheduleWindow {
+  const normalizedOpening = normalizeTimeInput(openingTime) ?? DEFAULT_OPENING_TIME;
+  const normalizedClosing = normalizeTimeInput(closingTime) ?? DEFAULT_CLOSING_TIME;
+  const startMinutes = parseClockMinutes(normalizedOpening) ?? parseClockMinutes(DEFAULT_OPENING_TIME)!;
+  const rawEndMinutes = parseClockMinutes(normalizedClosing) ?? parseClockMinutes(DEFAULT_CLOSING_TIME)!;
+  const endMinutes = rawEndMinutes > startMinutes ? rawEndMinutes : startMinutes + 60;
+  const totalMinutes = Math.max(60, endMinutes - startMinutes);
+  return {
+    openingTime: normalizedOpening,
+    closingTime: normalizedClosing,
+    startMinutes,
+    endMinutes,
+    totalMinutes,
+    canvasHeight: (totalMinutes / 60) * SLOT_HEIGHT,
+    label: `${formatMinutesLabel(startMinutes)} - ${formatMinutesLabel(endMinutes)}`,
+  };
+}
+
+function buildScheduleSlots(scheduleWindow: ScheduleWindow): ScheduleSlot[] {
+  const slots: ScheduleSlot[] = [];
+  for (let current = scheduleWindow.startMinutes; current < scheduleWindow.endMinutes; current += 60) {
+    const label = formatMinutesLabel(current);
+    const remainingMinutes = scheduleWindow.endMinutes - current;
+    const slotMinutes = Math.min(60, remainingMinutes);
+    const parts = formatMinutesParts(current);
+    slots.push({
+      label,
+      time: parts.time,
+      period: parts.period,
+      height: (slotMinutes / 60) * SLOT_HEIGHT,
+    });
+  }
+  return slots;
+}
+
+function normalizeTimeInput(value: string | null): string | null {
+  if (!value || !value.trim()) {
+    return null;
+  }
+  const parts = value.trim().split(":");
+  if (parts.length < 2) {
+    return null;
+  }
+  return `${parts[0].padStart(2, "0")}:${parts[1].padStart(2, "0")}`;
+}
+
+function parseClockMinutes(value: string): number | null {
+  const parts = value.split(":");
+  if (parts.length < 2) {
+    return null;
+  }
+  const hour = Number(parts[0]);
+  const minute = Number(parts[1]);
+  if (!Number.isInteger(hour) || !Number.isInteger(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+    return null;
+  }
+  return hour * 60 + minute;
+}
+
+function formatMinutesLabel(totalMinutes: number): string {
+  const parts = formatMinutesParts(totalMinutes);
+  return `${parts.time} ${parts.period}`;
+}
+
+function formatMinutesParts(totalMinutes: number) {
+  const normalized = ((totalMinutes % 1440) + 1440) % 1440;
+  const hour = Math.floor(normalized / 60);
+  const minute = normalized % 60;
+  const period = hour >= 12 ? "PM" : "AM";
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  return {
+    time: `${String(hour12).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
+    period,
+  };
+}
+
+function minutesSinceMidnight(date: Date) {
+  return date.getHours() * 60 + date.getMinutes();
 }
 
 function durationMinutes(appointment: AppointmentResponse): number {

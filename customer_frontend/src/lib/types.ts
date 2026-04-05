@@ -7,6 +7,8 @@ export interface PublicBranch {
   id: number;
   name: string;
   address?: string | null;
+  openingTime?: string | null;
+  closingTime?: string | null;
 }
 
 export interface PublicService {
@@ -120,6 +122,7 @@ export interface CustomerVoucher {
 
 export interface VoucherCatalogItem {
   catalogId: number;
+  code?: string | null;
   name: string;
   description?: string | null;
   pointsCost: number;
@@ -130,7 +133,10 @@ export interface VoucherCatalogItem {
   branchName?: string | null;
   serviceId?: number | null;
   serviceName?: string | null;
+  validFrom?: string | null;
   validTo?: string | null;
+  redeemable: boolean;
+  redemptionBlockedReason?: string | null;
 }
 
 export interface CustomerProfileUpdatePayload {
