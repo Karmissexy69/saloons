@@ -1,15 +1,67 @@
 services:
-  postgres:
-    image: postgres:16
-    container_name: salon-pos-postgres
-    environment:
-      POSTGRES_DB: salon_pos
-      POSTGRES_USER: salon
-      POSTGRES_PASSWORD: salon
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+  backend:
+    image: ghcr.io/your-ghcr-namespace/browpos-backend:latest
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "app"
+      traefik.http.services.backend.loadbalancer.server.port: "8080"
+      traefik.http.routers.backend.rule: "Host(`brow-api.saloonpos.my`) && (PathPrefix(`/api`) || PathPrefix(`/v3/api-docs`) || PathPrefix(`/swagger-ui`) || Path(`/swagger-ui.html`))"
+      traefik.http.routers.backend.entrypoints: "websecure"
+      traefik.http.routers.backend.priority: "100"
+      traefik.http.routers.backend.tls: "true"
+      traefik.http.routers.backend.tls.certresolver: "le-cf"
+      traefik.http.routers.backend.middlewares: "backend-cors"
+      traefik.http.middlewares.backend-cors.headers.accesscontrolalloworiginlist: "https://brow.saloonpos.my,https://browsaloon.my"
+      traefik.http.middlewares.backend-cors.headers.accesscontrolallowmethods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      traefik.http.middlewares.backend-cors.headers.accesscontrolallowheaders: "Authorization,Content-Type"
+      traefik.http.middlewares.backend-cors.headers.accesscontrolexposeheaders: "Authorization"
+      traefik.http.middlewares.backend-cors.headers.accesscontrolallowcredentials: "true"
+      traefik.http.middlewares.backend-cors.headers.accesscontrolmaxage: "3600"
+      traefik.http.middlewares.backend-cors.headers.addvaryheader: "true"
+    networks:
+      - app
 
-volumes:
-  pgdata:
+  frontend:
+    image: ghcr.io/your-ghcr-namespace/browpos-frontend:latest
+    restart: unless-stopped
+    environment:
+      API_BASE_URL: "https://brow-api.saloonpos.my"
+    depends_on:
+      - backend
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "app"
+      traefik.http.services.frontend.loadbalancer.server.port: "80"
+      traefik.http.routers.frontend.rule: "Host(`brow.saloonpos.my`)"
+      traefik.http.routers.frontend.entrypoints: "websecure"
+      traefik.http.routers.frontend.priority: "10"
+      traefik.http.routers.frontend.tls: "true"
+      traefik.http.routers.frontend.tls.certresolver: "le-cf"
+    networks:
+      - app
+
+  customer-frontend:
+    image: ghcr.io/your-ghcr-namespace/browpos-customer-frontend:latest
+    restart: unless-stopped
+    environment:
+      API_BASE_URL: "https://brow-api.saloonpos.my"
+    depends_on:
+      - backend
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "app"
+      traefik.http.services.customer-frontend.loadbalancer.server.port: "80"
+      traefik.http.routers.customer-frontend.rule: "Host(`browsaloon.my`)"
+      traefik.http.routers.customer-frontend.entrypoints: "websecure"
+      traefik.http.routers.customer-frontend.priority: "10"
+      traefik.http.routers.customer-frontend.tls: "true"
+      traefik.http.routers.customer-frontend.tls.certresolver: "le-cf"
+    networks:
+      - app
+
+networks:
+  app:
+    external: true

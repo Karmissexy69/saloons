@@ -38,7 +38,26 @@ import type {
   SaveVoucherCatalogRequest,
 } from "./types";
 
-const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() || "http://localhost:8080";
+declare global {
+  interface Window {
+    __APP_CONFIG__?: {
+      API_BASE_URL?: string;
+    };
+  }
+}
+
+function normalizeBaseUrl(rawValue?: string): string {
+  const trimmed = rawValue?.trim();
+  if (!trimmed) {
+    return "";
+  }
+
+  return trimmed.replace(/\/+$/, "").replace(/\/api$/, "");
+}
+
+const BASE_URL =
+  normalizeBaseUrl(window.__APP_CONFIG__?.API_BASE_URL) ||
+  normalizeBaseUrl((import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "");
 
 export class ApiError extends Error {
   status?: number;

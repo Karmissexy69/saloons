@@ -160,7 +160,7 @@ export function BookingPage() {
       <div className="ve-section-head">
         <div>
           <p className="ve-eyebrow">{session ? "Customer Booking" : "Guest Booking"}</p>
-          <h1 className="ve-display-lg">Reserve a treatment using the customer-safe booking flow.</h1>
+          <h1 className="ve-display-lg">Book your appointment and get one step closer to feeling your best.</h1>
         </div>
       </div>
 

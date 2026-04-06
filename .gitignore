@@ -6,6 +6,7 @@ backend/*.iml
 backend/src/main/java/com/salonpos/config/CorsConfig.java
 
 .env
+backend/.env
 frontend/node_modules/
 frontend/dist/
 frontend/.env.local
